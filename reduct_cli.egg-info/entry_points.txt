@@ -1,0 +1,2 @@
+[console_scripts]
+spam-cli = reduct_cli:main.py

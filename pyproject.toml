@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel"]
+
+[project]
+
+name = "reduct-cli"
+version = "0.0.0"
+description = "CLI client for Reduct Storage"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+keywords = ["cli", "reduct-storage", "tool", "database", "timeseries database"]
+authors = [
+    { email = "atimin@gmail.com" },
+    { name = "Alexey Timin" }
+]
+maintainers = [
+    { email = "atimin@gmail.com" },
+    { name = "Alexey Timin" }
+]
+
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Programming Language :: Python :: 3 :: Only",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Topic :: Database :: Front-Ends"
+]
+
+dependencies = [
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest~=7.1"
+]
+
+lint = ["pylint~=2.14"]
+format = ["black~=22.6"]
+docs = [
+    "mkdocs~=1.3",
+    "mkdocs-material~=8.3",
+    "plantuml-markdown~=3.5",
+    "mkdocs-same-dir~=0.1",
+]
+
+
+[project.urls]
+ReductStorage = "https://reduct-storage.dev"
+Documentation = "https://reduct-cli.readthedocs.io/"
+Source = "https://github.com/reduct-storage/reduct-cli"
+Changelog = "https://github.com/reduct-storage/reduct-cli/blob/main/CHANGELOG.md"
+Twitter = "https://twitter.com/ReductStorage"
+Blog = "https://dev.to/reduct-storage"
+
+
+[project.scripts]
+spam-cli = "reduct_cli:main.py"
