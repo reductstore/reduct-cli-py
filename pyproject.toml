@@ -30,6 +30,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "reduct-py"
 ]
 
 [project.optional-dependencies]
