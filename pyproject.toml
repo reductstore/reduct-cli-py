@@ -8,7 +8,7 @@ version = "0.0.0"
 description = "CLI client for Reduct Storage"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
-keywords = ["cli", "reduct-storage", "tool", "database", "timeseries database"]
+keywords = ["cli", "reduct-storage", "tool", "database", "time series database"]
 authors = [
     { email = "atimin@gmail.com" },
     { name = "Alexey Timin" }
@@ -46,7 +46,6 @@ docs = [
     "mkdocs-same-dir~=0.1",
 ]
 
-
 [project.urls]
 ReductStorage = "https://reduct-storage.dev"
 Documentation = "https://reduct-cli.readthedocs.io/"
@@ -57,4 +56,4 @@ Blog = "https://dev.to/reduct-storage"
 
 
 [project.scripts]
-spam-cli = "reduct_cli:main.py"
+reduct-cli = "reduct_cli:main"
