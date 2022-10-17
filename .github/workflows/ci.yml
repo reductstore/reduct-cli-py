@@ -30,7 +30,7 @@ jobs:
         run: python3 -m pip install --no-cache --upgrade pip
 
       - name: Build package
-        run: pip3 wheel . -w ./dist
+        run: pip wheel . -w ./dist --no-deps
 
       - uses: actions/upload-artifact@master
         with:
