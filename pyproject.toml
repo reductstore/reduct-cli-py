@@ -31,7 +31,8 @@ classifiers = [
 ]
 
 dependencies = [
-    "reduct-py"
+    "reduct-py~=1.0",
+    "click~=8.1"
 ]
 
 [project.optional-dependencies]
@@ -58,4 +59,4 @@ Blog = "https://dev.to/reduct-storage"
 
 
 [project.scripts]
-reduct-cli = "reduct_cli:main"
+reduct-cli = "reduct_cli:cli"
