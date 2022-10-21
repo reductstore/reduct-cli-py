@@ -1,6 +1,6 @@
 """Main module"""
 
+import click
+from alias import alias
 
-def cli():
-    """Stub function"""
-    print("Hi")
+cli = click.CommandCollection(sources=[alias(obj={})])
