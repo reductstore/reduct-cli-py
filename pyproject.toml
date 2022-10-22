@@ -31,7 +31,10 @@ classifiers = [
 ]
 
 dependencies = [
-    "reduct-py"
+    "reduct-py~=1.0",
+    "click~=8.1",
+    "tomlkit~=0.11",
+    "rich~=12.6"
 ]
 
 [project.optional-dependencies]

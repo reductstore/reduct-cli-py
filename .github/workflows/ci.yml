@@ -37,6 +37,21 @@ jobs:
           name: package
           path: ./dist
 
+  sanity:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: package
+          path: ./dist
+
+      - name: Install package
+        run: python3 -m pip install dist/*
+
+      - name: Check command
+        run: reduct-cli --help
+
   test:
     needs: build
     runs-on: ubuntu-latest

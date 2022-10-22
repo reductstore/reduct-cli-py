@@ -1,5 +1,5 @@
 """Entry point"""
-from reduct_cli.main import cli
+from reduct_cli import main
 
 if __name__ == "__main__":
-    cli()
+    main()
