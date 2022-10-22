@@ -5,4 +5,11 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/reduct-storage/reduct-cli/ci)
 
 
-CLI client for Reduct Storage
+CLI client for [Reduct Storage](https://reduct-storage.dev)
+
+
+## Installing
+
+```
+pip install reduct-cli
+```

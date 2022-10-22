@@ -61,4 +61,4 @@ Blog = "https://dev.to/reduct-storage"
 
 
 [project.scripts]
-reduct-cli = "reduct_cli:cli"
+reduct-cli = "reduct_cli:main"
