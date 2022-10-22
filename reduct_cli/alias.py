@@ -48,7 +48,7 @@ def rm(ctx, name: str):
     # Check if name exists
     conf: Config = read_config(ctx.obj["config_path"])
     if name not in conf["aliases"]:
-        error_console.print(f"Alias '{name}' doesn't exists")
+        error_console.print(f"Alias '{name}' doesn't exist")
         raise Abort()
 
     conf["aliases"].pop(name)
