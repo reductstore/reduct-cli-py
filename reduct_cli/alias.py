@@ -1,3 +1,4 @@
+"""Alias commands"""
 import click
 from click import Abort
 
@@ -8,13 +9,12 @@ from reduct_cli.consoles import console, error_console
 @click.group()
 def alias():
     """Commands to manage aliases"""
-    pass
 
 
 @alias.command()
 @click.pass_context
-def list(ctx):
-    """List configured aliases"""
+def show(ctx):
+    """Show configured aliases"""
     conf = read_config(ctx.obj["config_path"])
     console.print_json(data=conf["aliases"])
 
@@ -41,7 +41,7 @@ def add(ctx, name: str):
 @alias.command()
 @click.argument("name")
 @click.pass_context
-def rm(ctx, name: str):
+def remove(ctx, name: str):
     """
     Remove alias with NAME
     """

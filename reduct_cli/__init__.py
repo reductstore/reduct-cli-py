@@ -4,4 +4,5 @@ from reduct_cli.cli import cli
 
 
 def main():
-    return cli(obj={})
+    """Entry point to call from scripts"""
+    return cli(obj={})  # pylint:disable=unexpected-keyword-arg, no-value-for-parameter
