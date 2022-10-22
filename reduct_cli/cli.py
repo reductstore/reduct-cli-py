@@ -5,8 +5,8 @@ from typing import Optional
 
 import click
 
-from config import write_config
-from alias import alias
+from reduct_cli.config import write_config
+from reduct_cli.alias import alias
 
 
 @click.group()

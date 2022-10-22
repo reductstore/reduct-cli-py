@@ -1,7 +1,7 @@
 import click
 from click import Abort
 
-from config import Config, read_config, write_config, Alias
+from reduct_cli.config import Config, read_config, write_config, Alias
 from reduct_cli.consoles import console, error_console
 
 
