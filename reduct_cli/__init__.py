@@ -1,2 +1,3 @@
 """Reduct CLI"""
-from reduct_cli.main import alias
+
+from reduct_cli.cli import cli
