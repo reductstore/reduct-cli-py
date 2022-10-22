@@ -25,7 +25,7 @@ def _make_conf() -> Path:
 
 def test__empty_list(runner, conf):
     """Should show empty aliases"""
-    result = runner(f"-c {conf} alias list")
+    result = runner(f"-c {conf} alias show")
     assert result.exit_code == 0
     assert result.output == "{}\n"
 
