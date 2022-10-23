@@ -1,5 +1,4 @@
 """Unit tests for alias command"""
-import json
 import time
 from functools import partial
 from pathlib import Path
@@ -23,33 +22,32 @@ def _make_conf() -> Path:
     return Path(gettempdir()) / str(time.time_ns() % 1000000) / "config.toml"
 
 
+@pytest.fixture(name="url")
+def _make_url() -> str:
+    return "http://127.0.0.1:8383"
+
+
 def test__empty_list(runner, conf):
     """Should show empty aliases"""
-    result = runner(f"-c {conf} alias show")
+    result = runner(f"-c {conf} alias ls")
     assert result.exit_code == 0
-    assert result.output == "{}\n"
+    assert result.output == ""
 
 
-def test__add_alias_ok(runner, conf):
+def test__add_alias_ok(runner, conf, url):
     """Should add an alias"""
-    url = "http://127.0.0.1:8383"
     token = "token"
     result = runner(f"-c {conf} alias add storage", input=f"{url}\n{token}\n")
     assert result.exit_code == 0
 
-    result = runner(f"-c {conf} alias show")
+    result = runner(f"-c {conf} alias ls")
     assert result.exit_code == 0
-
-    json_output = json.loads(result.output)
-    json_output["storage"] = dict(url=url, token=token)
+    assert result.output == "storage\n"
 
 
-def test__add_alias_twice(runner, conf):
+def test__add_alias_twice(runner, conf, url):
     """Should not add an alias if the name alread exists"""
-
-    result = runner(
-        f"-c {conf} alias add storage", input="http://127.0.0.1:8383\ntoken\n"
-    )
+    result = runner(f"-c {conf} alias add storage", input=f"{url}\ntoken\n")
     assert result.exit_code == 0
 
     result = runner(f"-c {conf} alias add storage")
@@ -57,23 +55,48 @@ def test__add_alias_twice(runner, conf):
     assert result.output == "Alias 'storage' already exists\nAborted!\n"
 
 
-def test__rm_ok(runner, conf):
+def test__rm_ok(runner, conf, url):
     """Should remove alias"""
-    result = runner(
-        f"-c {conf} alias add storage", input="http://127.0.0.1:8383\ntoken\n"
-    )
+    result = runner(f"-c {conf} alias add storage", input=f"{url}\ntoken\n")
     assert result.exit_code == 0
 
-    result = runner(f"-c {conf} alias remove storage")
+    result = runner(f"-c {conf} alias rm storage")
     assert result.exit_code == 0
 
-    result = runner(f"-c {conf} alias show")
+    result = runner(f"-c {conf} alias ls")
     assert result.exit_code == 0
-    assert result.output == "{}\n"
+    assert result.output == ""
 
 
 def test__rm_not_exist(runner, conf):
     """Shouldn't remove alias if it doesn't exist"""
-    result = runner(f"-c {conf} alias remove storage")
+    result = runner(f"-c {conf} alias rm storage")
+    assert result.exit_code == 1
+    assert result.output == "Alias 'storage' doesn't exist\nAborted!\n"
+
+
+def test__show(runner, conf, url):
+    """Should show alias"""
+    result = runner(f"-c {conf} alias add storage", input=f"{url}\ntoken\n")
+    assert result.exit_code == 0
+
+    result = runner(f"-c {conf} alias show storage")
+    assert result.exit_code == 0
+    assert result.output.replace(" ", "") == f"URL:{url}\n"
+
+
+def test__show_with_token(runner, conf, url):
+    """Should show alias with token"""
+    result = runner(f"-c {conf} alias add storage", input=f"{url}\ntoken\n")
+    assert result.exit_code == 0
+
+    result = runner(f"-c {conf} alias show --token storage")
+    assert result.exit_code == 0
+    assert result.output.replace(" ", "") == f"URL:{url}\nToken:token\n"
+
+
+def test__show_not_exist(runner, conf):
+    """Should not show alias if alias doesn't exist"""
+    result = runner(f"-c {conf} alias show storage")
     assert result.exit_code == 1
     assert result.output == "Alias 'storage' doesn't exist\nAborted!\n"

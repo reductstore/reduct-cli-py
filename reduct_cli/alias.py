@@ -7,16 +7,34 @@ from reduct_cli.consoles import console, error_console
 
 
 @click.group()
-def alias():
+@click.pass_context
+def alias(ctx):
     """Commands to manage aliases"""
+    ctx.obj["conf"] = read_config(ctx.obj["config_path"])
 
 
 @alias.command()
 @click.pass_context
-def show(ctx):
-    """Show configured aliases"""
-    conf = read_config(ctx.obj["config_path"])
-    console.print_json(data=conf["aliases"])
+def ls(ctx):
+    """Print list of aliases"""
+    for name, _ in ctx.obj["conf"]["aliases"].items():
+        console.print(name)
+
+
+@alias.command()
+@click.argument("name")
+@click.option("--token/--no-token", "-t", help="Show token", default=False)
+@click.pass_context
+def show(ctx, name: str, token: bool):
+    """Show alias configuration"""
+    if name not in ctx.obj["conf"]["aliases"]:
+        error_console.print(f"Alias '{name}' doesn't exist")
+        raise Abort()
+
+    alias_: Alias = ctx.obj["conf"]["aliases"][name]
+    console.print(f"[bold]URL[/bold]:\t\t{alias_['url']}")
+    if token:
+        console.print(f"[bold]Token[/bold]:\t\t{alias_['token']}")
 
 
 @alias.command()
@@ -24,7 +42,7 @@ def show(ctx):
 @click.pass_context
 def add(ctx, name: str):
     """Add a new alias with NAME"""
-    conf: Config = read_config(ctx.obj["config_path"])
+    conf: Config = ctx.obj["conf"]
     if name in conf["aliases"]:
         error_console.print(f"Alias '{name}' already exists")
         raise Abort()
@@ -41,12 +59,12 @@ def add(ctx, name: str):
 @alias.command()
 @click.argument("name")
 @click.pass_context
-def remove(ctx, name: str):
+def rm(ctx, name: str):
     """
     Remove alias with NAME
     """
     # Check if name exists
-    conf: Config = read_config(ctx.obj["config_path"])
+    conf: Config = ctx.obj["conf"]
     if name not in conf["aliases"]:
         error_console.print(f"Alias '{name}' doesn't exist")
         raise Abort()
