@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add alias commands: add, remove, show, [PR-6](https://github.com/reduct-storage/reduct-cli/pull/6)
 
+### Changed:
+
+- Make alias command more idiomatic, [PR-7](https://github.com/reduct-storage/reduct-cli/pull/7)
+
 ## [0.0.0] - 2022-10-17
 
 - Init release
