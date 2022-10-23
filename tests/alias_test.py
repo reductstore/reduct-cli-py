@@ -1,5 +1,4 @@
 """Unit tests for alias command"""
-import json
 import time
 from functools import partial
 from pathlib import Path
