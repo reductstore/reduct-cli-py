@@ -34,7 +34,7 @@ dependencies = [
     "reduct-py~=1.0",
     "click~=8.1",
     "tomlkit~=0.11",
-    "rich~=12.6"
+    "rich~=12.6",
 ]
 
 [project.optional-dependencies]
@@ -65,4 +65,4 @@ reduct-cli = "reduct_cli:main"
 
 
 [tool.pylint]
-good-names="ls,rm"
+good-names = "ls,rm"

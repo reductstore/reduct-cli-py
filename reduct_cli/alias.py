@@ -6,6 +6,17 @@ from reduct_cli.config import Config, read_config, write_config, Alias
 from reduct_cli.consoles import console, error_console
 
 
+def get_alias(config_path: str, name: str) -> Alias:
+    """Helper method to parse alias from config"""
+    conf = read_config(config_path)
+
+    if name not in conf["aliases"]:
+        error_console.print(f"Alias '{name}' doesn't exist")
+        raise Abort()
+    alias_: Alias = conf["aliases"][name]
+    return alias_
+
+
 @click.group()
 @click.pass_context
 def alias(ctx):
@@ -27,11 +38,7 @@ def ls(ctx):
 @click.pass_context
 def show(ctx, name: str, token: bool):
     """Show alias configuration"""
-    if name not in ctx.obj["conf"]["aliases"]:
-        error_console.print(f"Alias '{name}' doesn't exist")
-        raise Abort()
-
-    alias_: Alias = ctx.obj["conf"]["aliases"][name]
+    alias_: Alias = get_alias(ctx.obj["config_path"], name)
     console.print(f"[bold]URL[/bold]:\t\t{alias_['url']}")
     if token:
         console.print(f"[bold]Token[/bold]:\t\t{alias_['token']}")
@@ -65,9 +72,7 @@ def rm(ctx, name: str):
     """
     # Check if name exists
     conf: Config = ctx.obj["conf"]
-    if name not in conf["aliases"]:
-        error_console.print(f"Alias '{name}' doesn't exist")
-        raise Abort()
+    _ = get_alias(ctx.obj["config_path"], name)
 
     conf["aliases"].pop(name)
     write_config(ctx.obj["config_path"], conf)
