@@ -1,7 +1,9 @@
 site_name: CLI client for Reduct Storage
 docs_dir: .
 nav:
-  - Home: README.md
+  - Home:
+      - README.md
+      - docs/aliases.md
   - Reduct Storage: https://reduct-storage.dev
 
 repo_name: reduct-storage/reduct-cli
