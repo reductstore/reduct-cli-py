@@ -4,7 +4,7 @@ from asyncio import new_event_loop as loop
 import click
 from reduct import Client as ReductClient, ServerInfo
 
-from humanize import time_interval, data_size
+from reduct_cli.humanize import time_interval, data_size
 from reduct_cli.alias import get_alias
 from reduct_cli.consoles import console, error_console
 
