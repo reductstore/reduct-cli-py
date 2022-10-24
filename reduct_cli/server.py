@@ -12,7 +12,6 @@ run = loop().run_until_complete
 
 
 @click.group()
-@click.pass_context
 def server():
     """Commands to manage server"""
 
