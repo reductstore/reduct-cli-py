@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2022-10-24
+
 ### Added:
 
 - Add alias commands: add, remove, show, [PR-6](https://github.com/reduct-storage/reduct-cli/pull/6)
@@ -20,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Init release
 
-[Unreleased]: https://github.com/reduct-storage/reduct-cli/compare/v0.0.0...HEAD
+[Unreleased]: https://github.com/reduct-storage/reduct-cli/compare/v0.1.0...HEAD
+
+[0.1.0]: https://github.com/reduct-storage/reduct-cli/compare/v0.0.0...v0.1.0
 
 [0.0.0]: https://github.com/reduct-storage/reduct-cli/compare/tag/v0.0.0
