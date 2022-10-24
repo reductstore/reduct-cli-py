@@ -1,4 +1,6 @@
 """Alias commands"""
+from pathlib import Path
+
 import click
 from click import Abort
 
@@ -6,7 +8,7 @@ from reduct_cli.config import Config, read_config, write_config, Alias
 from reduct_cli.consoles import console, error_console
 
 
-def get_alias(config_path: str, name: str) -> Alias:
+def get_alias(config_path: Path, name: str) -> Alias:
     """Helper method to parse alias from config"""
     conf = read_config(config_path)
 

@@ -30,10 +30,11 @@ def status(ctx, alias: str):
     try:
         info: ServerInfo = run(client.info())
         console.print("Status: [green]Ok[/green]")
+        console.print(f"Version: {info.version}")
         console.print(f"Uptime: {time_interval(info.uptime)}")
         console.print(f"Usage: {data_size(info.usage)}")
         console.print(f"Buckets: {info.bucket_count}")
 
     except Exception as err:
-        console.print("Server Status: [red]Error[/red]")
+        console.print("Status: [red]Error[/red]")
         error_console.print(err)
