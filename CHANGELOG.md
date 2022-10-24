@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added:
 
 - Add alias commands: add, remove, show, [PR-6](https://github.com/reduct-storage/reduct-cli/pull/6)
+- Add `server status` command to check server's status, [PR-9](https://github.com/reduct-storage/reduct-cli/pull/9)
 
 ### Changed:
 

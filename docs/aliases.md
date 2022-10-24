@@ -5,7 +5,7 @@ credentials for every command.
 
 ## Usage Example
 
-You can create an alias with the following comand:
+You can create an alias with the following command:
 
 ```shell
 reduct-cli alias add play
