@@ -8,7 +8,7 @@ MONTH = DAY * 30
 YEAR = MONTH * 12
 
 
-def time_interval(seconds: int) -> str:
+def time_interval(seconds: int) -> str:  # pylint:disable=too-many-return-statements
     """Print readable time interval"""
     if seconds < 0:
         raise ValueError("Seconds must be positive")
@@ -36,6 +36,7 @@ TB = GB * 1000
 
 
 def data_size(size: int) -> str:
+    """Return human-readable size"""
     if size < 0:
         raise ValueError("Size must be positive")
 

@@ -13,7 +13,7 @@ run = loop().run_until_complete
 
 @click.group()
 @click.pass_context
-def server(ctx):
+def server():
     """Commands to manage server"""
 
 
@@ -35,6 +35,6 @@ def status(ctx, alias: str):
         console.print(f"Usage: {data_size(info.usage)}")
         console.print(f"Buckets: {info.bucket_count}")
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-except
         console.print("Status: [red]Error[/red]")
         error_console.print(err)
