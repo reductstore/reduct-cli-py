@@ -43,10 +43,10 @@ def data_size(size: int) -> str:
     if size <= KB:
         return f"{size} B"
     if size <= MB:
-        return f"{int(size / KB)} KB"
+        return f"{round(size / KB)} KB"
     if size <= GB:
-        return f"{int(size / MB)} MB"
+        return f"{round(size / MB)} MB"
     if size <= TB:
-        return f"{int(size / GB)} GB"
+        return f"{round(size / GB)} GB"
 
-    return f"{int(size / TB)} TB"
+    return f"{round(size / TB)} TB"

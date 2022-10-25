@@ -7,6 +7,7 @@ import click
 
 from reduct_cli.config import write_config
 from reduct_cli.alias import alias
+from reduct_cli.bucket import bucket
 from reduct_cli.server import server
 
 
@@ -31,4 +32,5 @@ def cli(ctx, config: Optional[Path] = None):
 
 
 cli.add_command(alias, "alias")
+cli.add_command(bucket, "bucket")
 cli.add_command(server, "server")

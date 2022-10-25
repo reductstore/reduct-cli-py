@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed:
 
 - Improve output of server status command, [PR-12](https://github.com/reduct-storage/reduct-cli/pull/12)
+
 ## [0.1.0] - 2022-10-24
 
 ### Added:
