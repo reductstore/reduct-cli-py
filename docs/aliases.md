@@ -8,12 +8,12 @@ credentials for every command.
 You can create an alias with the following command:
 
 ```shell
-reduct-cli alias add play
+rcli alias add play
 ```
 
 Now you can see it the new alias in list or check it URL:
 
 ```shell
-reduct-cli alias ls
-reduct-cli alias show play # you can add -t flag to see token
+rcli alias ls
+rcli alias show play # you can add -t flag to see token
 ```

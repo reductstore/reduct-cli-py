@@ -17,6 +17,6 @@ pip install reduct-cli
 Check status of a demo server:
 
 ```shell
-reduct-cli alias add play # url: https://play.reduct-storage.dev, token: reduct
-reduct-cli server status play
+rcli alias add play # url: https://play.reduct-storage.dev, token: reduct
+rcli server status play
 ```

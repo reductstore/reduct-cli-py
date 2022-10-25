@@ -49,9 +49,11 @@ jobs:
       - name: Install package
         run: python3 -m pip install dist/*
 
-      - name: Check command
+      - name: Check `reduct-cli` command
         run: reduct-cli --help
 
+      - name: Check `rcli` command
+        run: rcli --help
   test:
     needs: build
     runs-on: ubuntu-latest

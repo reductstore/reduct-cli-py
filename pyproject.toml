@@ -64,7 +64,7 @@ Blog = "https://dev.to/reduct-storage"
 
 [project.scripts]
 reduct-cli = "reduct_cli:main"
-
+rcli = "reduct_cli:main"
 
 [tool.pylint]
 good-names = "ls,rm"
