@@ -1,5 +1,6 @@
 """Alias commands"""
 from pathlib import Path
+from typing import Optional
 
 import click
 from click import Abort
@@ -48,18 +49,22 @@ def show(ctx, name: str, token: bool):
 
 @alias.command()
 @click.argument("name")
+@click.option("--url", "-L", help="Server URL")
+@click.option("--token", "-t", help="API token")
 @click.pass_context
-def add(ctx, name: str):
+def add(ctx, name: str, url: Optional[str], token: Optional[str]):
     """Add a new alias with NAME"""
     conf: Config = ctx.obj["conf"]
     if name in conf["aliases"]:
         error_console.print(f"Alias '{name}' already exists")
         raise Abort()
 
-    entry: Alias = dict(
-        url=click.prompt("URL", type=str),
-        token=click.prompt("API Token", type=str, default=""),
-    )
+    if url is None or len(url) == 0:
+        url = click.prompt("URL", type=str)
+    if token is None:
+        token = click.prompt("API Token", type=str, default="")
+
+    entry: Alias = dict(url=url, token=token)
 
     conf["aliases"][name] = entry
     write_config(ctx.obj["config_path"], conf)
