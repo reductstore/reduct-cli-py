@@ -19,6 +19,17 @@ def test__add_alias_ok(runner, conf, url):
     assert result.output == "storage\n"
 
 
+def test__add_alias_with_options(runner, conf, url):
+    """Should add an alias"""
+    token = "token"
+    result = runner(f"-c {conf} alias add -L {url} -t {token} storage")
+    assert result.exit_code == 0
+
+    result = runner(f"-c {conf} alias ls")
+    assert result.exit_code == 0
+    assert result.output == "storage\n"
+
+
 def test__add_alias_twice(runner, conf, url):
     """Should not add an alias if the name alread exists"""
     result = runner(f"-c {conf} alias add storage", input=f"{url}\ntoken\n")

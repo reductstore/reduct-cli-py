@@ -11,9 +11,21 @@ You can create an alias with the following command:
 rcli alias add play
 ```
 
+YOu can also provide a URL and API token as options:
+
+```shell
+rcli alias  add -L  https://play.reduct-storage.dev -t reduct play
+```
+
 Now you can see it the new alias in list or check it URL:
 
 ```shell
 rcli alias ls
 rcli alias show play # you can add -t flag to see token
+```
+
+To remove an alias, use command `rm`:
+
+```shell
+rcli alias rm play
 ```

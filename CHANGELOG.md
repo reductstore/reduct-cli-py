@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Add `rcli` alias for `reduct-cli`, [PR-10](https://github.com/reduct-storage/reduct-cli/pull/10)
+### Added
 
+- `rcli` alias for `reduct-cli`, [PR-10](https://github.com/reduct-storage/reduct-cli/pull/10)
+- Options for server URL and API token to alias add command, [PR-11](https://github.com/reduct-storage/reduct-cli/pull/11)
+-
 ## [0.1.0] - 2022-10-24
 
 ### Added:
