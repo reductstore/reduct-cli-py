@@ -20,3 +20,10 @@ Check status of a demo server:
 rcli alias add -L  https://play.reduct-storage.dev -t reduct play
 rcli server status play
 ```
+
+## Links
+
+* [Project Homepage](https://reduct-storage.dev)
+* [Documentation](https://reduct-cli.readthedocs.io/)
+* [Reduct Client SDK for Python](https://github.com/reduct-storage/reduct-py)
+* [Reduct Storage](https://github.com/reduct-storage/reduct-storage)
