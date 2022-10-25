@@ -31,8 +31,8 @@ def test__get_status(runner, conf, client):
     result = runner(f"-c {conf} server status test")
     assert result.exit_code == 0
     assert (
-        result.output
-        == "Status: Ok\nVersion: 1.0.0\nUptime: 15 minute(s)\nUsage: 1 MB\nBuckets: 5\n"
+        result.output.replace(" ", "")
+        == "Status:Ok\nVersion:1.0.0\nUptime:15minute(s)\n"
     )
 
 
