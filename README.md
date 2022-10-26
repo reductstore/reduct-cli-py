@@ -19,6 +19,7 @@ Check status of a demo server:
 ```shell
 rcli alias add -L  https://play.reduct-storage.dev -t reduct play
 rcli server status play
+rcli bucket ls --full play
 ```
 
 ## Links

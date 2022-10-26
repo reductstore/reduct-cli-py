@@ -5,6 +5,7 @@ nav:
       - README.md
       - docs/aliases.md
       - docs/server.md
+      - docs/bucket.md
   - Reduct Storage: https://reduct-storage.dev
 
 repo_name: reduct-storage/reduct-cli
