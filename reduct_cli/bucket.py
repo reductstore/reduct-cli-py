@@ -85,11 +85,12 @@ def ls(ctx, alias: str, full: bool):
                 print_datetime(oldest_record, oldest_record),
                 print_datetime(latest_record, oldest_record),
             )
+
             console.print(table)
         else:
             for bckt in buckets:
                 console.print(bckt.name)
 
-    except Exception as err:  # pylint: disable=broad-except
+    except RuntimeError as err:
         console.print("Status: [red]Error[/red]")
         error_console.print(err)
