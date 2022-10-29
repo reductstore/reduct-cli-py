@@ -1,8 +1,17 @@
 """Unit tests for bucket commands"""
-import re
-
 import pytest
 from reduct import BucketInfo, Client
+from rich.console import Console
+from rich.table import Table
+
+
+@pytest.fixture(name="console")
+def _patch_console(mocker) -> Console:
+    table_kls = mocker.patch("reduct_cli.bucket.Table")
+    table_kls.return_value = mocker.Mock(spec=Table)
+
+    console = mocker.patch("reduct_cli.bucket.console")
+    return console
 
 
 @pytest.fixture(name="client")
@@ -28,8 +37,8 @@ def _make_client(mocker) -> Client:
     return kls.return_value
 
 
-@pytest.mark.usefixtures("set_alias")
-def test__get_short_list(runner, conf, client):
+@pytest.mark.usefixtures("set_alias", "client")
+def test__get_short_list(runner, conf):
     """Should print list of buckets"""
 
     result = runner(f"-c {conf} bucket ls test")
@@ -37,37 +46,33 @@ def test__get_short_list(runner, conf, client):
     assert result.output.split("\n") == ["bucket-1", "bucket-2", ""]
 
 
-@pytest.mark.usefixtures("set_alias")
-def test__get_full_list(runner, conf, client):
+@pytest.mark.usefixtures("set_alias", "client")
+def test__get_full_list(runner, conf, console):
     """Should print buckets as a table with full information"""
-
-    def split_and_strip(src: str, sep: str):
-        return [s.strip() for s in src.split(sep) if len(s) > 0]
 
     result = runner(f"-c {conf} bucket ls --full test")
     assert result.exit_code == 0
-    header = result.output.split("\n")[1]
-    assert split_and_strip(header, "┃") == [
+
+    table = console.print.call_args[0][0]
+    # Check headers
+    assert [call[0][0] for call in table.add_column.call_args_list] == [
         "Name",
         "Entry Count",
         "Size",
         "Oldest Record",
         "Latest Record",
     ]
-
-    buckets = result.output.split("\n")[3:5]
-    assert [split_and_strip(bucket, "│") for bucket in buckets] == [
-        ["bucket-1", "1", "1 MB", "1970-01-01T01:1…", "1970-01-01T02:2…"],
-        ["bucket-2", "5", "50 KB", "1970-01-01T02:4…", "1970-01-01T03:1…"],
-    ]
-
-    total = result.output.split("\n")[6]
-    assert split_and_strip(total, "│") == [
-        "Total for 2",
-        "6",
-        "1 MB",
-        "1970-01-01T01:1…",
-        "1970-01-01T03:1…",
+    # Check data
+    assert [call[0] for call in table.add_row.call_args_list] == [
+        ("bucket-1", "1", "1 MB", "1970-01-01T01:16:40", "1970-01-01T02:23:20"),
+        ("bucket-2", "5", "50 KB", "1970-01-01T02:40:00", "1970-01-01T03:13:20"),
+        (
+            "Total for 2 buckets",
+            "6",
+            "1 MB",
+            "1970-01-01T01:16:40",
+            "1970-01-01T03:13:20",
+        ),
     ]
 
 
