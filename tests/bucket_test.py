@@ -59,19 +59,19 @@ def test__get_full_list(runner, conf, console):
         "Name",
         "Entry Count",
         "Size",
-        "Oldest Record",
-        "Latest Record",
+        "Oldest Record (UTC)",
+        "Latest Record (UTC)",
     ]
     # Check data
     assert [call[0] for call in table.add_row.call_args_list] == [
-        ("bucket-1", "1", "1 MB", "1970-01-01T01:16:40", "1970-01-01T02:23:20"),
-        ("bucket-2", "5", "50 KB", "1970-01-01T02:40:00", "1970-01-01T03:13:20"),
+        ("bucket-1", "1", "1 MB", "1970-01-01T00:16:40", "1970-01-01T01:23:20"),
+        ("bucket-2", "5", "50 KB", "1970-01-01T01:40:00", "1970-01-01T02:13:20"),
         (
             "Total for 2 buckets",
             "6",
             "1 MB",
-            "1970-01-01T01:16:40",
-            "1970-01-01T03:13:20",
+            "1970-01-01T00:16:40",
+            "1970-01-01T02:13:20",
         ),
     ]
 

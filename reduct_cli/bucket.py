@@ -1,6 +1,6 @@
 """Bucket commands"""
 from asyncio import new_event_loop as loop
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 import click
@@ -37,8 +37,8 @@ def ls(ctx, alias: str, full: bool):
             table.add_column("Name", justify="right", style="green")
             table.add_column("Entry Count")
             table.add_column("Size")
-            table.add_column("Oldest Record")
-            table.add_column("Latest Record")
+            table.add_column("Oldest Record (UTC)")
+            table.add_column("Latest Record (UTC)")
 
             total_size = 0
             total_entry_count = 0
@@ -47,7 +47,9 @@ def ls(ctx, alias: str, full: bool):
 
             def print_datetime(time_stamp: int, valid: bool):
                 return (
-                    datetime.fromtimestamp(time_stamp / 1000_000).isoformat()
+                    datetime.fromtimestamp(
+                        time_stamp / 1000_000, tz=timezone.utc
+                    ).strftime("%Y-%m-%dT%H:%M:%S")
                     if valid
                     else "---"
                 )
