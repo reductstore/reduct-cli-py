@@ -25,3 +25,8 @@ def _make_conf() -> Path:
 @pytest.fixture(name="url")
 def _make_url() -> str:
     return "http://127.0.0.1:8383"
+
+
+@pytest.fixture(name="set_alias")
+def _set_alias(runner, conf, url):
+    runner(f"-c {conf} alias add test", input=f"{url}\ntoken\n")

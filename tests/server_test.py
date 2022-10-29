@@ -11,11 +11,6 @@ def _make_client(mocker) -> Client:
     return kls.return_value
 
 
-@pytest.fixture(name="set_alias")
-def _set_alias(runner, conf, url):
-    runner(f"-c {conf} alias add test", input=f"{url}\ntoken\n")
-
-
 @pytest.mark.usefixtures("set_alias")
 def test__get_status(runner, conf, client):
     """Should print information about server"""

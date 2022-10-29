@@ -33,6 +33,6 @@ def status(ctx, alias: str):
         console.print(f"Version:    {info.version}")
         console.print(f"Uptime:     {time_interval(info.uptime)}")
 
-    except Exception as err:  # pylint: disable=broad-except
+    except RuntimeError as err:
         console.print("Status: [red]Error[/red]")
         error_console.print(err)
