@@ -1,4 +1,7 @@
 """Helper function for readable time intervals and volumes"""
+# pylint:disable=too-many-return-statements
+from datetime import datetime, timezone
+from typing import Union
 
 MINUTE = 60
 HOUR = MINUTE * 60
@@ -8,25 +11,25 @@ MONTH = DAY * 30
 YEAR = MONTH * 12
 
 
-def time_interval(seconds: int) -> str:  # pylint:disable=too-many-return-statements
+def pretty_time_interval(seconds: Union[int, float]) -> str:
     """Print readable time interval"""
     if seconds < 0:
         raise ValueError("Seconds must be positive")
 
     if seconds <= MINUTE:
-        return f"{seconds} second(s)"
+        return f"{round(seconds)} second(s)"
     if seconds <= HOUR:
-        return f"{int(seconds / MINUTE)} minute(s)"
+        return f"{round(seconds / MINUTE)} minute(s)"
     if seconds <= DAY:
-        return f"{int(seconds / HOUR)} hour(s)"
+        return f"{round(seconds / HOUR)} hour(s)"
     if seconds <= WEEK:
-        return f"{int(seconds / DAY)} day(s)"
+        return f"{round(seconds / DAY)} day(s)"
     if seconds <= MONTH:
-        return f"{int(seconds / WEEK)} week(s)"
+        return f"{round(seconds / WEEK)} week(s)"
     if seconds <= YEAR:
-        return f"{int(seconds / MONTH)} month(s)"
+        return f"{round(seconds / MONTH)} month(s)"
 
-    return f"{int(seconds / YEAR)} year(s)"
+    return f"{round(seconds / YEAR)} year(s)"
 
 
 KB = 1000
@@ -35,7 +38,7 @@ GB = MB * 1000
 TB = GB * 1000
 
 
-def data_size(size: int) -> str:
+def pretty_size(size: int) -> str:
     """Return human-readable size"""
     if size < 0:
         raise ValueError("Size must be positive")
@@ -50,3 +53,14 @@ def data_size(size: int) -> str:
         return f"{round(size / GB)} GB"
 
     return f"{round(size / TB)} TB"
+
+
+def print_datetime(time_stamp: int, valid: bool):
+    """Print datatime as ISO string in UTC or '---' if it's invalid"""
+    return (
+        datetime.fromtimestamp(time_stamp / 1000_000, tz=timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S"
+        )
+        if valid
+        else "---"
+    )

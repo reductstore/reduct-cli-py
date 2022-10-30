@@ -68,3 +68,4 @@ rcli = "reduct_cli:main"
 
 [tool.pylint]
 good-names = "ls,rm"
+disable = ["fixme", "duplicate-code"]
