@@ -25,10 +25,12 @@ def test__get_status(runner, conf, client):
     )
     result = runner(f"-c {conf} server status test")
     assert result.exit_code == 0
-    assert (
-        result.output.replace(" ", "")
-        == "Status:Ok\nVersion:1.0.0\nUptime:15minute(s)\n"
-    )
+    assert result.output.split("\n") == [
+        "Status:     Ok",
+        "Version:    1.0.0",
+        "Uptime:     15 minute(s)",
+        "",
+    ]
 
 
 @pytest.mark.usefixtures("set_alias")
@@ -36,5 +38,5 @@ def test__get_error(runner, conf, client):
     """Should print error if something got wrong"""
     client.info.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} server status test")
-    assert result.exit_code == 0
-    assert result.output == "Status: Error\nOops\n"
+    assert result.exit_code == 1
+    assert result.output == "[RuntimeError] Oops\nAborted!\n"

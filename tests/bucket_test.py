@@ -1,6 +1,6 @@
 """Unit tests for bucket commands"""
 import pytest
-from reduct import BucketInfo, Client
+from reduct import BucketInfo, Client, Bucket, BucketSettings, QuotaType, EntryInfo
 from rich.console import Console
 from rich.table import Table
 
@@ -14,8 +14,39 @@ def _patch_console(mocker) -> Console:
     return console
 
 
+@pytest.fixture(name="bucket")
+def _make_bucket(mocker) -> Bucket:
+    bucket = mocker.Mock(spec=Bucket)
+    bucket.info.return_value = BucketInfo(
+        name="bucket-1",
+        entry_count=1,
+        size=1050000,
+        oldest_record=1000000000,
+        latest_record=5000000000,
+    )
+    bucket.get_settings.return_value = BucketSettings(
+        quota_type=QuotaType.FIFO,
+        quota_size=10 * 12,
+        max_block_size=10 * 5,
+        max_block_records=199,
+    )
+
+    bucket.get_entry_list.return_value = [
+        EntryInfo(
+            name="entry-1",
+            size=1050000,
+            block_count=100,
+            record_count=10000,
+            oldest_record=1000000000,
+            latest_record=5000000000,
+        )
+    ]
+
+    return bucket
+
+
 @pytest.fixture(name="client")
-def _make_client(mocker) -> Client:
+def _make_client(mocker, bucket) -> Client:
     kls = mocker.patch("reduct_cli.bucket.ReductClient")
     kls.return_value = mocker.Mock(spec=Client)
     kls.return_value.list.return_value = [
@@ -34,6 +65,8 @@ def _make_client(mocker) -> Client:
             latest_record=8000000000,
         ),
     ]
+
+    kls.return_value.get_bucket.return_value = bucket
     return kls.return_value
 
 
@@ -81,5 +114,49 @@ def test__get_error(runner, conf, client):
     """Should print error if something got wrong"""
     client.list.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} bucket ls test")
+    assert result.exit_code == 1
+    assert result.output == "[RuntimeError] Oops\nAborted!\n"
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__show_bucket(runner, conf):
+    """Should show bucket's info"""
+
+    result = runner(f"-c {conf} bucket show test/bucket-1")
     assert result.exit_code == 0
-    assert result.output == "Status: Error\nOops\n"
+    assert result.output.split("\n") == [
+        "Entry count:         1",
+        "Size:                1 MB",
+        "Oldest Record (UTC): 1970-01-01T00:16:40",
+        "Latest Record (UTC): 1970-01-01T01:23:20",
+        "History Interval:    1 hour(s)",
+        "",
+    ]
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__show_full_bucket(runner, conf):
+    """Should show bucket's info"""
+
+    result = runner(f"-c {conf} bucket show --full test/bucket-1")
+    assert result.exit_code == 0
+    assert "Entry count:         1" in result.output
+    assert "Oldest Record (UTC): 1970-01-01T00:16:40" in result.output
+    assert "Latest Record (UTC): 1970-01-01T01:23:20" in result.output
+    assert "History Interval:    1 hour(s)" in result.output
+
+    assert "Quota Type:         FIFO" in result.output
+    assert "Quota Size:         120 B" in result.output
+    assert "Max. Block Size:    50 B" in result.output
+    assert "Max. Block Records: 199" in result.output
+
+    assert "entry-1" in result.output
+
+
+@pytest.mark.usefixtures("set_alias")
+def test__show_error(runner, conf, client):
+    """Should print error if something got wrong"""
+    client.get_bucket.side_effect = RuntimeError("Oops")
+    result = runner(f"-c {conf} bucket show test/bucket-1")
+    assert result.exit_code == 1
+    assert result.output == "[RuntimeError] Oops\nAborted!\n"

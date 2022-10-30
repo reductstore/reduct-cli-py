@@ -22,12 +22,12 @@ def get_alias(config_path: Path, name: str) -> Alias:
 
 @click.group()
 @click.pass_context
-def alias(ctx):
+def alias_cmd(ctx):
     """Commands to manage aliases"""
     ctx.obj["conf"] = read_config(ctx.obj["config_path"])
 
 
-@alias.command()
+@alias_cmd.command()
 @click.pass_context
 def ls(ctx):
     """Print list of aliases"""
@@ -35,7 +35,7 @@ def ls(ctx):
         console.print(name)
 
 
-@alias.command()
+@alias_cmd.command()
 @click.argument("name")
 @click.option("--token/--no-token", "-t", help="Show token", default=False)
 @click.pass_context
@@ -47,7 +47,7 @@ def show(ctx, name: str, token: bool):
         console.print(f"[bold]Token[/bold]:\t\t{alias_['token']}")
 
 
-@alias.command()
+@alias_cmd.command()
 @click.argument("name")
 @click.option("--url", "-L", help="Server URL")
 @click.option("--token", "-t", help="API token")
@@ -70,7 +70,7 @@ def add(ctx, name: str, url: Optional[str], token: Optional[str]):
     write_config(ctx.obj["config_path"], conf)
 
 
-@alias.command()
+@alias_cmd.command()
 @click.argument("name")
 @click.pass_context
 def rm(ctx, name: str):
