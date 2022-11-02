@@ -1,21 +1,39 @@
 """Bucket commands"""
 from asyncio import new_event_loop as loop
-from typing import List
+from typing import List, Optional, Tuple
 
 import click
-from click import Abort
-from reduct import Client as ReductClient, BucketInfo, Bucket, BucketSettings
+from reduct import Client as ReductClient, BucketInfo, Bucket, BucketSettings, QuotaType
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
 
 from reduct_cli.alias import get_alias
-from reduct_cli.consoles import console, error_console
+from reduct_cli.consoles import console
 from reduct_cli.error import error_handle
-from reduct_cli.humanize import pretty_size, print_datetime
+from reduct_cli.humanize import pretty_size, print_datetime, parse_ci_size
 from reduct_cli.humanize import pretty_time_interval
 
 run = loop().run_until_complete
+
+
+def __parse_path(path) -> Tuple[str, str]:
+    args = path.split("/")
+    if len(args) != 2:
+        raise RuntimeError(
+            f"Path {path} has wrong format. It must be 'ALIAS/BUCKET_NAME'"
+        )
+    return tuple(args)
+
+
+def __get_bucket_by_path(ctx, path):
+    alias_name, bucket_name = __parse_path(path)
+    alias = get_alias(ctx.obj["config_path"], alias_name)
+    client = ReductClient(
+        alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
+    )
+    bucket: Bucket = run(client.get_bucket(bucket_name))
+    return bucket
 
 
 @click.group()
@@ -101,21 +119,10 @@ def show(ctx, path: str, full: bool):
 
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
-    args = path.split("/")
-    if len(args) != 2:
-        error_console.print(
-            f"Path {path} has wrong format. It must be 'ALIAS/BUCKET_NAME'"
-        )
-        Abort()
-
-    alias = get_alias(ctx.obj["config_path"], args[0])
-    client = ReductClient(
-        alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
-    )
 
     with error_handle():
-        bucket: Bucket = run(client.get_bucket(args[1]))
-        # TODO: Fix when https://github.com/reduct-storage/reduct-py/issues/48 is done
+        bucket = __get_bucket_by_path(ctx, path)
+
         info: BucketInfo = run(bucket.info())
         history_interval = (info.latest_record - info.oldest_record) / 1000000
 
@@ -132,6 +139,8 @@ def show(ctx, path: str, full: bool):
         if not full:
             console.print(info_txt)
         else:
+            # TODO: Fix when https://github.com/reduct-storage/reduct-py/issues/48 is done
+
             settings: BucketSettings = run(bucket.get_settings())
             settings_txt = "\n".join(
                 [
@@ -164,11 +173,47 @@ def show(ctx, path: str, full: bool):
                     ),
                 )
 
-                layout = Layout()
-                layout.split_column(Layout(name="upper"), Layout(table, visible=True))
-                layout["upper"].split_row(
-                    Layout(Panel(info_txt, title="Info"), minimum_size=50),
-                    Layout(Panel(settings_txt, title="Settings")),
-                )
+            layout = Layout()
+            layout.split_column(Layout(name="upper"), Layout(table, visible=True))
+            layout["upper"].split_row(
+                Layout(Panel(info_txt, title="Info"), minimum_size=50),
+                Layout(Panel(settings_txt, title="Settings")),
+            )
 
-                console.print(layout)
+            console.print(layout)
+
+
+@bucket_cmd.command()
+@click.argument("path")
+@click.option("--quota-type", "-Q", help="Quota type. Must be NONE or FIFO")
+@click.option("--quota-size", "-s", help="Quota size in CI format e.g. 1Mb or 3TB")
+@click.option("--block-size", "-b", help="Max. bock size in CI format e.g 64MB")
+@click.option("--block-records", "-R", help="Max. number of records in a block")
+@click.pass_context
+def create(
+    ctx,
+    path: str,
+    quota_type: Optional[QuotaType],
+    quota_size: Optional[str],
+    block_size: Optional[str],
+    block_records: Optional[int],
+):
+    """Create a new bucket
+
+    PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
+    """
+    with error_handle():
+        alias_name, bucket_name = __parse_path(path)
+        alias = get_alias(ctx.obj["config_path"], alias_name)
+        client = ReductClient(
+            alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
+        )
+
+        settings = BucketSettings(
+            quota_type=quota_type,
+            quota_size=parse_ci_size(quota_size),
+            max_block_size=parse_ci_size(block_size),
+            max_block_records=block_records,
+        )
+        run(client.create_bucket(bucket_name, settings))
+        console.print(f"Bucket '{bucket_name}' created")
