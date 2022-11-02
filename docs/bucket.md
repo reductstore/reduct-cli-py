@@ -45,3 +45,17 @@ This command creates a bucket with default settings, you can specify them:
 ```shell
 rcli bucket create --quota-type FIFO --quota-size 20Gb test-storage/bucket-1
 ```
+
+## Updating settings
+
+It's also possible to update settings of an existing bucket with command `update`:
+
+```shell
+rcli bucket update --quota-size 100Gb test-storage/bucket-1
+```
+
+Check the full list of the settings:
+
+```shell
+rcli bucket update --help
+```

@@ -17,6 +17,7 @@ def _patch_console(mocker) -> Console:
 @pytest.fixture(name="bucket")
 def _make_bucket(mocker) -> Bucket:
     bucket = mocker.Mock(spec=Bucket)
+    bucket.name = "bucket-1"
     bucket.info.return_value = BucketInfo(
         name="bucket-1",
         entry_count=1,
@@ -210,3 +211,32 @@ def test__create_error_size(runner, conf, client):
     assert result.output == "[ValueError] Failed to parse 100XX\nAborted!\n"
 
     client.create_bucket.assert_not_called()
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__create_update_settings(runner, conf, bucket):
+    """Should update settings of a bucket"""
+    result = runner(
+        f"-c {conf} bucket update "
+        f"--quota-type FIFO --quota-size 100Gb --block-size 19Mb --block-records 100 test/bucket-1"
+    )
+    assert result.exit_code == 0
+    assert result.output == "Bucket 'bucket-1' was updated\n"
+
+    bucket.set_settings.assert_called_with(
+        BucketSettings(
+            quota_type=QuotaType.FIFO,
+            quota_size=100000000000,
+            max_block_size=19000000,
+            max_block_records=100,
+        ),
+    )
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__update_error(runner, conf, bucket):
+    """Should print error if something got wrong"""
+    bucket.set_settings.side_effect = RuntimeError("Oops")
+    result = runner(f"-c {conf} bucket update test/bucket-1")
+    assert result.exit_code == 1
+    assert result.output == "[RuntimeError] Oops\nAborted!\n"

@@ -197,7 +197,7 @@ def create(
     quota_size: Optional[str],
     block_size: Optional[str],
     block_records: Optional[int],
-):  # pylint: disable=too-many-arguments)
+):  # pylint: disable=too-many-arguments
     """Create a new bucket
 
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
@@ -217,3 +217,35 @@ def create(
         )
         run(client.create_bucket(bucket_name, settings))
         console.print(f"Bucket '{bucket_name}' created")
+
+
+@bucket_cmd.command()
+@click.argument("path")
+@click.option("--quota-type", "-Q", help="Quota type. Must be NONE or FIFO")
+@click.option("--quota-size", "-s", help="Quota size in CI format e.g. 1Mb or 3TB")
+@click.option("--block-size", "-b", help="Max. bock size in CI format e.g 64MB")
+@click.option("--block-records", "-R", help="Max. number of records in a block")
+@click.pass_context
+def update(
+    ctx,
+    path: str,
+    quota_type: Optional[QuotaType],
+    quota_size: Optional[str],
+    block_size: Optional[str],
+    block_records: Optional[int],
+):  # pylint: disable=too-many-arguments
+    """Update a bucket
+
+    PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
+    """
+    with error_handle():
+        bucket = __get_bucket_by_path(ctx, path)
+
+        settings = BucketSettings(
+            quota_type=quota_type,
+            quota_size=parse_ci_size(quota_size),
+            max_block_size=parse_ci_size(block_size),
+            max_block_records=block_records,
+        )
+        run(bucket.set_settings(settings))
+        console.print(f"Bucket '{bucket.name}' was updated")
