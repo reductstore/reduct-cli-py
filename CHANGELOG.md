@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `rcli bucket ls` to list buckets, [PR-13](https://github.com/reduct-storage/reduct-cli/pull/13)
 - `rcli bucket show` to browse a bucket, [PR-14](https://github.com/reduct-storage/reduct-cli/pull/14)
 - `rcli bucket create` to create a bucket, [PR-15](https://github.com/reduct-storage/reduct-cli/pull/15)
+- `rcli bucket update` to update bucket settings, [PR-16](https://github.com/reduct-storage/reduct-cli/pull/16)
 
 ### Changed:
 
