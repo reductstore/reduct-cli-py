@@ -160,3 +160,53 @@ def test__show_error(runner, conf, client):
     result = runner(f"-c {conf} bucket show test/bucket-1")
     assert result.exit_code == 1
     assert result.output == "[RuntimeError] Oops\nAborted!\n"
+
+
+@pytest.mark.usefixtures("set_alias")
+def test__create_bucket_default(runner, conf, client):
+    """Should create a bucket with default settings"""
+    result = runner(f"-c {conf} bucket create test/bucket-1")
+    assert result.exit_code == 0
+    assert result.output == "Bucket 'bucket-1' created\n"
+
+    client.create_bucket.assert_called_with("bucket-1", BucketSettings())
+
+
+@pytest.mark.usefixtures("set_alias")
+def test__create_bucket_settings(runner, conf, client):
+    """Should create a bucket with settings"""
+    result = runner(
+        f"-c {conf} bucket create "
+        f"--quota-type FIFO --quota-size 100Gb --block-size 19Mb --block-records 100 test/bucket-1"
+    )
+    assert result.exit_code == 0
+    assert result.output == "Bucket 'bucket-1' created\n"
+
+    client.create_bucket.assert_called_with(
+        "bucket-1",
+        BucketSettings(
+            quota_type=QuotaType.FIFO,
+            quota_size=100000000000,
+            max_block_size=19000000,
+            max_block_records=100,
+        ),
+    )
+
+
+@pytest.mark.usefixtures("set_alias")
+def test__create_error(runner, conf, client):
+    """Should print error if something got wrong"""
+    client.create_bucket.side_effect = RuntimeError("Oops")
+    result = runner(f"-c {conf} bucket create test/bucket-1")
+    assert result.exit_code == 1
+    assert result.output == "[RuntimeError] Oops\nAborted!\n"
+
+
+@pytest.mark.usefixtures("set_alias")
+def test__create_error_size(runner, conf, client):
+    """Should print error if size is invalid"""
+    result = runner(f"-c {conf} bucket create -s 100XX test/bucket-1")
+    assert result.exit_code == 1
+    assert result.output == "[ValueError] Failed to parse 100XX\nAborted!\n"
+
+    client.create_bucket.assert_not_called()

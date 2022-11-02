@@ -11,23 +11,37 @@ rcli bucket --help
 You can check a list of existing buckets on the server:
 
 ```shell
-rcli bucket ls ALIAS
+rcli bucket ls test-storage
 ```
 
 Or you can print a table with buckets and its information:
 
 ```shell
-rcli bucket ls --full ALIAS
+rcli bucket ls --full test-storage
 ```
 
 To show information about a certain bucket use the `show` subcommand with path `ALIAS/BUCKET_NAME`:
 
 ```shell
-rcli bucket show ALIAS/BUCKET_NAME
+rcli bucket show test-storage/bucket-1
 ```
 
 You can also get the bucket's settings and entry list with flag `--full`:
 
 ```shell
-rcli bucket show --full ALIAS/BUCKET_NAME
+rcli bucket show --full test-storage/bucket-1
+```
+
+## Creating a bucket
+
+To create a bucket you should use command create and provide path to the new bucket `ALIAS/BUCKET_NAME`:
+
+```shell
+rcli bucket create test-storage/bucket-1
+```
+
+This command creates a bucket with default settings, you can specify them:
+
+```shell
+rcli bucket create --quota-type FIFO --quota-size 20Gb test-storage/bucket-1
 ```

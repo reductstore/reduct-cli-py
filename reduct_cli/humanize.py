@@ -1,7 +1,7 @@
 """Helper function for readable time intervals and volumes"""
 # pylint:disable=too-many-return-statements
 from datetime import datetime, timezone
-from typing import Union
+from typing import Union, Optional
 
 MINUTE = 60
 HOUR = MINUTE * 60
@@ -14,7 +14,7 @@ YEAR = MONTH * 12
 def pretty_time_interval(seconds: Union[int, float]) -> str:
     """Print readable time interval"""
     if seconds < 0:
-        raise ValueError("Seconds must be positive")
+        return "---"
 
     if seconds <= MINUTE:
         return f"{round(seconds)} second(s)"
@@ -64,3 +64,23 @@ def print_datetime(time_stamp: int, valid: bool):
         if valid
         else "---"
     )
+
+
+def parse_ci_size(size: Optional[str]) -> Optional[int]:
+    """Parse CI size and return size in bytes"""
+    if size is None:
+        return None
+
+    size = size.strip().upper()
+    if "TB" in size:
+        return int(size.replace("TB", "")) * TB
+    if "GB" in size:
+        return int(size.replace("GB", "")) * GB
+    if "MB" in size:
+        return int(size.replace("MB", "")) * MB
+    if "KB" in size:
+        return int(size.replace("KB", "")) * KB
+    if "B" in size:
+        return int(size.replace("B", ""))
+
+    raise ValueError(f"Failed to parse {size}")
