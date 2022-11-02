@@ -249,3 +249,24 @@ def update(
         )
         run(bucket.set_settings(settings))
         console.print(f"Bucket '{bucket.name}' was updated")
+
+
+@bucket_cmd.command()
+@click.argument("path")
+@click.pass_context
+def rm(ctx, path: str):
+    """
+    Remove bucket
+
+    PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
+    """
+    with error_handle():
+        bucket = __get_bucket_by_path(ctx, path)
+        console.print(
+            f"All data in bucket [b]'{bucket.name}'[/b] will be [b]REMOVED[/b]."
+        )
+        if click.confirm("Do you want to continue?"):
+            run(bucket.remove())
+            console.print(f"Bucket '{bucket.name}' was removed")
+        else:
+            console.print("Canceled")

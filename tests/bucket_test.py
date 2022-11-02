@@ -240,3 +240,45 @@ def test__update_error(runner, conf, bucket):
     result = runner(f"-c {conf} bucket update test/bucket-1")
     assert result.exit_code == 1
     assert result.output == "[RuntimeError] Oops\nAborted!\n"
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__remove(runner, conf, bucket):
+    """Should remove a bucket"""
+    result = runner(f"-c {conf} bucket rm test/bucket-1", input="Y\n")
+    # assert result.exit_code == 0
+    assert result.output == (
+        "All data in bucket 'bucket-1' will be REMOVED.\n"
+        "Do you want to continue? [y/N]: Y\n"
+        "Bucket 'bucket-1' was removed\n"
+    )
+
+    bucket.remove.assert_called_once()
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__remove_canceled(runner, conf, bucket):
+    """Should cancel removing a bucket"""
+    result = runner(f"-c {conf} bucket rm test/bucket-1", input="N\n")
+    # assert result.exit_code == 0
+    assert result.output == (
+        "All data in bucket 'bucket-1' will be REMOVED.\n"
+        "Do you want to continue? [y/N]: N\n"
+        "Canceled\n"
+    )
+
+    bucket.remove.assert_not_called()
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__remove_error(runner, conf, bucket):
+    """Should print error if something got wrong"""
+    bucket.remove.side_effect = RuntimeError("Oops")
+    result = runner(f"-c {conf} bucket rm test/bucket-1", input="Y\n")
+    assert result.exit_code == 1
+    assert result.output == (
+        "All data in bucket 'bucket-1' will be REMOVED.\n"
+        "Do you want to continue? [y/N]: Y\n"
+        "[RuntimeError] Oops\n"
+        "Aborted!\n"
+    )
