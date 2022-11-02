@@ -48,7 +48,7 @@ rcli bucket create --quota-type FIFO --quota-size 20Gb test-storage/bucket-1
 
 ## Updating settings
 
-It's also possible to update settings of an existing bucket with command `update`:
+It's also possible to update settings of an existing bucket with the `update` subcommand:
 
 ```shell
 rcli bucket update --quota-size 100Gb test-storage/bucket-1
@@ -59,3 +59,14 @@ Check the full list of the settings:
 ```shell
 rcli bucket update --help
 ```
+
+## Removing a bucket
+
+To remove a bucket, you can use the `rm` subbcommand:
+
+```shell
+rcli bucket rm test-storage/bucket-1
+```
+
+!!!Warning
+    When you remove a bucket from a storage engine, you remove all its data.
