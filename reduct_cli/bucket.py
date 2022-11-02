@@ -197,7 +197,7 @@ def create(
     quota_size: Optional[str],
     block_size: Optional[str],
     block_records: Optional[int],
-):
+):  # pylint: disable=too-many-arguments)
     """Create a new bucket
 
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
