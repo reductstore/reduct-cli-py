@@ -173,7 +173,7 @@ def test__create_bucket_default(runner, conf, client):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test__create_bucket_default(runner, conf, client):
+def test__create_bucket_settings(runner, conf, client):
     """Should create a bucket with settings"""
     result = runner(
         f"-c {conf} bucket create "
