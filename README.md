@@ -6,6 +6,18 @@
 
 CLI client for [Reduct Storage](https://reduct-storage.dev)
 
+## Features
+
+* Support Reduct Storage API v1.0
+* Bucket management
+* Server status
+* Aliases for servers' credentials
+
+## Requirements
+
+* Python >= 3.8
+* pip
+
 ## Installing
 
 ```
