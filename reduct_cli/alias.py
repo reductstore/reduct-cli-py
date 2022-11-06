@@ -9,17 +9,6 @@ from reduct_cli.config import Config, read_config, write_config, Alias
 from reduct_cli.consoles import console, error_console
 
 
-def get_alias(config_path: Path, name: str) -> Alias:
-    """Helper method to parse alias from config"""
-    conf = read_config(config_path)
-
-    if name not in conf["aliases"]:
-        error_console.print(f"Alias '{name}' doesn't exist")
-        raise Abort()
-    alias_: Alias = conf["aliases"][name]
-    return alias_
-
-
 @click.group()
 @click.pass_context
 def alias_cmd(ctx):

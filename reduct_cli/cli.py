@@ -9,6 +9,7 @@ from reduct_cli.config import write_config
 from reduct_cli.alias import alias_cmd
 from reduct_cli.bucket import bucket_cmd
 from reduct_cli.server import server_cmd
+from reduct_cli.mirror import mirror
 
 
 @click.group()
@@ -35,3 +36,4 @@ def cli(ctx, config: Optional[Path] = None):
 cli.add_command(alias_cmd, "alias")
 cli.add_command(bucket_cmd, "bucket")
 cli.add_command(server_cmd, "server")
+cli.add_command(mirror, "mirror")
