@@ -1,5 +1,4 @@
 """Alias commands"""
-from pathlib import Path
 from typing import Optional
 
 import click
@@ -7,6 +6,7 @@ from click import Abort
 
 from reduct_cli.config import Config, read_config, write_config, Alias
 from reduct_cli.consoles import console, error_console
+from reduct_cli.helpers import get_alias
 
 
 @click.group()

@@ -3,18 +3,28 @@ from asyncio import new_event_loop as loop
 from typing import List, Optional
 
 import click
-from reduct import Client as ReductClient, BucketInfo, BucketSettings, QuotaType
+from reduct import Client as ReductClient, BucketInfo, BucketSettings, QuotaType, Bucket
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
 
 from reduct_cli.consoles import console
 from reduct_cli.error import error_handle
-from reduct_cli.helpers import get_bucket_by_path, parse_path, get_alias
+from reduct_cli.helpers import parse_path, get_alias
 from reduct_cli.humanize import pretty_size, print_datetime, parse_ci_size
 from reduct_cli.humanize import pretty_time_interval
 
 run = loop().run_until_complete
+
+
+async def _get_bucket_by_path(ctx, path):
+    alias_name, bucket_name = parse_path(path)
+    alias = get_alias(ctx.obj["config_path"], alias_name)
+    client = ReductClient(
+        alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
+    )
+    bucket: Bucket = await client.get_bucket(bucket_name)
+    return bucket
 
 
 @click.group()
@@ -102,7 +112,7 @@ def show(ctx, path: str, full: bool):
     """
 
     with error_handle():
-        bucket = run(get_bucket_by_path(ctx, path))
+        bucket = run(_get_bucket_by_path(ctx, path))
 
         info: BucketInfo = run(bucket.info())
         history_interval = (info.latest_record - info.oldest_record) / 1000000
@@ -220,7 +230,7 @@ def update(
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
     with error_handle():
-        bucket = run(get_bucket_by_path(ctx, path))
+        bucket = run(_get_bucket_by_path(ctx, path))
 
         settings = BucketSettings(
             quota_type=quota_type,
@@ -242,7 +252,7 @@ def rm(ctx, path: str):
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
     with error_handle():
-        bucket = run(get_bucket_by_path(ctx, path))
+        bucket = run(_get_bucket_by_path(ctx, path))
         console.print(
             f"All data in bucket [b]'{bucket.name}'[/b] will be [b]REMOVED[/b]."
         )
