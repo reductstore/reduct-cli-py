@@ -1,5 +1,4 @@
 """Alias commands"""
-from pathlib import Path
 from typing import Optional
 
 import click
@@ -7,27 +6,17 @@ from click import Abort
 
 from reduct_cli.config import Config, read_config, write_config, Alias
 from reduct_cli.consoles import console, error_console
-
-
-def get_alias(config_path: Path, name: str) -> Alias:
-    """Helper method to parse alias from config"""
-    conf = read_config(config_path)
-
-    if name not in conf["aliases"]:
-        error_console.print(f"Alias '{name}' doesn't exist")
-        raise Abort()
-    alias_: Alias = conf["aliases"][name]
-    return alias_
+from reduct_cli.helpers import get_alias
 
 
 @click.group()
 @click.pass_context
-def alias_cmd(ctx):
+def alias(ctx):
     """Commands to manage aliases"""
     ctx.obj["conf"] = read_config(ctx.obj["config_path"])
 
 
-@alias_cmd.command()
+@alias.command()
 @click.pass_context
 def ls(ctx):
     """Print list of aliases"""
@@ -35,7 +24,7 @@ def ls(ctx):
         console.print(name)
 
 
-@alias_cmd.command()
+@alias.command()
 @click.argument("name")
 @click.option("--token/--no-token", "-t", help="Show token", default=False)
 @click.pass_context
@@ -47,7 +36,7 @@ def show(ctx, name: str, token: bool):
         console.print(f"[bold]Token[/bold]:\t\t{alias_['token']}")
 
 
-@alias_cmd.command()
+@alias.command()
 @click.argument("name")
 @click.option("--url", "-L", help="Server URL")
 @click.option("--token", "-t", help="API token")
@@ -70,7 +59,7 @@ def add(ctx, name: str, url: Optional[str], token: Optional[str]):
     write_config(ctx.obj["config_path"], conf)
 
 
-@alias_cmd.command()
+@alias.command()
 @click.argument("name")
 @click.pass_context
 def rm(ctx, name: str):

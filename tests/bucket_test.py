@@ -115,8 +115,8 @@ def test__get_error(runner, conf, client):
     """Should print error if something got wrong"""
     client.list.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} bucket ls test")
-    assert result.exit_code == 1
     assert result.output == "[RuntimeError] Oops\nAborted!\n"
+    assert result.exit_code == 1
 
 
 @pytest.mark.usefixtures("set_alias", "client")
@@ -124,7 +124,6 @@ def test__show_bucket(runner, conf):
     """Should show bucket's info"""
 
     result = runner(f"-c {conf} bucket show test/bucket-1")
-    assert result.exit_code == 0
     assert result.output.split("\n") == [
         "Entry count:         1",
         "Size:                1 MB",
@@ -133,6 +132,7 @@ def test__show_bucket(runner, conf):
         "History Interval:    1 hour(s)",
         "",
     ]
+    assert result.exit_code == 0
 
 
 @pytest.mark.usefixtures("set_alias", "client")
@@ -140,7 +140,6 @@ def test__show_full_bucket(runner, conf):
     """Should show bucket's info"""
 
     result = runner(f"-c {conf} bucket show --full test/bucket-1")
-    assert result.exit_code == 0
     assert "Entry count:         1" in result.output
     assert "Oldest Record (UTC): 1970-01-01T00:16:40" in result.output
     assert "Latest Record (UTC): 1970-01-01T01:23:20" in result.output
@@ -152,6 +151,7 @@ def test__show_full_bucket(runner, conf):
     assert "Max. Block Records: 199" in result.output
 
     assert "entry-1" in result.output
+    assert result.exit_code == 0
 
 
 @pytest.mark.usefixtures("set_alias")
@@ -167,8 +167,8 @@ def test__show_error(runner, conf, client):
 def test__create_bucket_default(runner, conf, client):
     """Should create a bucket with default settings"""
     result = runner(f"-c {conf} bucket create test/bucket-1")
-    assert result.exit_code == 0
     assert result.output == "Bucket 'bucket-1' created\n"
+    assert result.exit_code == 0
 
     client.create_bucket.assert_called_with("bucket-1", BucketSettings())
 
@@ -180,8 +180,8 @@ def test__create_bucket_settings(runner, conf, client):
         f"-c {conf} bucket create "
         f"--quota-type FIFO --quota-size 100Gb --block-size 19Mb --block-records 100 test/bucket-1"
     )
-    assert result.exit_code == 0
     assert result.output == "Bucket 'bucket-1' created\n"
+    assert result.exit_code == 0
 
     client.create_bucket.assert_called_with(
         "bucket-1",
@@ -199,16 +199,16 @@ def test__create_error(runner, conf, client):
     """Should print error if something got wrong"""
     client.create_bucket.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} bucket create test/bucket-1")
-    assert result.exit_code == 1
     assert result.output == "[RuntimeError] Oops\nAborted!\n"
+    assert result.exit_code == 1
 
 
 @pytest.mark.usefixtures("set_alias")
 def test__create_error_size(runner, conf, client):
     """Should print error if size is invalid"""
     result = runner(f"-c {conf} bucket create -s 100XX test/bucket-1")
-    assert result.exit_code == 1
     assert result.output == "[ValueError] Failed to parse 100XX\nAborted!\n"
+    assert result.exit_code == 1
 
     client.create_bucket.assert_not_called()
 
@@ -220,8 +220,8 @@ def test__create_update_settings(runner, conf, bucket):
         f"-c {conf} bucket update "
         f"--quota-type FIFO --quota-size 100Gb --block-size 19Mb --block-records 100 test/bucket-1"
     )
-    assert result.exit_code == 0
     assert result.output == "Bucket 'bucket-1' was updated\n"
+    assert result.exit_code == 0
 
     bucket.set_settings.assert_called_with(
         BucketSettings(
@@ -238,20 +238,20 @@ def test__update_error(runner, conf, bucket):
     """Should print error if something got wrong"""
     bucket.set_settings.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} bucket update test/bucket-1")
-    assert result.exit_code == 1
     assert result.output == "[RuntimeError] Oops\nAborted!\n"
+    assert result.exit_code == 1
 
 
 @pytest.mark.usefixtures("set_alias", "client")
 def test__remove(runner, conf, bucket):
     """Should remove a bucket"""
     result = runner(f"-c {conf} bucket rm test/bucket-1", input="Y\n")
-    # assert result.exit_code == 0
     assert result.output == (
         "All data in bucket 'bucket-1' will be REMOVED.\n"
         "Do you want to continue? [y/N]: Y\n"
         "Bucket 'bucket-1' was removed\n"
     )
+    assert result.exit_code == 0
 
     bucket.remove.assert_called_once()
 
@@ -260,12 +260,12 @@ def test__remove(runner, conf, bucket):
 def test__remove_canceled(runner, conf, bucket):
     """Should cancel removing a bucket"""
     result = runner(f"-c {conf} bucket rm test/bucket-1", input="N\n")
-    # assert result.exit_code == 0
     assert result.output == (
         "All data in bucket 'bucket-1' will be REMOVED.\n"
         "Do you want to continue? [y/N]: N\n"
         "Canceled\n"
     )
+    assert result.exit_code == 0
 
     bucket.remove.assert_not_called()
 
@@ -275,10 +275,10 @@ def test__remove_error(runner, conf, bucket):
     """Should print error if something got wrong"""
     bucket.remove.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} bucket rm test/bucket-1", input="Y\n")
-    assert result.exit_code == 1
     assert result.output == (
         "All data in bucket 'bucket-1' will be REMOVED.\n"
         "Do you want to continue? [y/N]: Y\n"
         "[RuntimeError] Oops\n"
         "Aborted!\n"
     )
+    assert result.exit_code == 1

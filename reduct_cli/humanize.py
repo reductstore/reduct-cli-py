@@ -38,8 +38,10 @@ GB = MB * 1000
 TB = GB * 1000
 
 
-def pretty_size(size: int) -> str:
+def pretty_size(size: Union[int, float]) -> str:
     """Return human-readable size"""
+
+    size = int(size)
     if size < 0:
         raise ValueError("Size must be positive")
 

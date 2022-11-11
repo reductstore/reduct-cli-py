@@ -3,9 +3,12 @@ docs_dir: .
 nav:
   - Home:
       - README.md
+  - Usage:
       - docs/aliases.md
       - docs/server.md
       - docs/bucket.md
+      - docs/mirror.md
+  - CLI Reference: docs/cli.md
   - Reduct Storage: https://reduct-storage.dev
 
 repo_name: reduct-storage/reduct-cli
@@ -61,6 +64,8 @@ markdown_extensions:
       check_paths: true
   - plantuml_markdown:
       format: svg
+  - mkdocs-click
+
 
 plugins:
   - same-dir

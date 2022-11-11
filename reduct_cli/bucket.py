@@ -1,47 +1,38 @@
 """Bucket commands"""
 from asyncio import new_event_loop as loop
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 import click
-from reduct import Client as ReductClient, BucketInfo, Bucket, BucketSettings, QuotaType
+from reduct import Client as ReductClient, BucketInfo, BucketSettings, QuotaType
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
 
-from reduct_cli.alias import get_alias
 from reduct_cli.consoles import console
 from reduct_cli.error import error_handle
+from reduct_cli.helpers import parse_path, get_alias
 from reduct_cli.humanize import pretty_size, print_datetime, parse_ci_size
 from reduct_cli.humanize import pretty_time_interval
 
 run = loop().run_until_complete
 
 
-def __parse_path(path) -> Tuple[str, str]:
-    args = path.split("/")
-    if len(args) != 2:
-        raise RuntimeError(
-            f"Path {path} has wrong format. It must be 'ALIAS/BUCKET_NAME'"
-        )
-    return tuple(args)
-
-
-def __get_bucket_by_path(ctx, path):
-    alias_name, bucket_name = __parse_path(path)
+async def _get_bucket_by_path(ctx, path):
+    alias_name, bucket_name = parse_path(path)
     alias = get_alias(ctx.obj["config_path"], alias_name)
     client = ReductClient(
         alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
     )
-    bucket: Bucket = run(client.get_bucket(bucket_name))
-    return bucket
+
+    return await client.get_bucket(bucket_name)
 
 
 @click.group()
-def bucket_cmd():
+def bucket():
     """Commands to manage buckets"""
 
 
-@bucket_cmd.command()
+@bucket.command()
 @click.argument("alias")
 @click.option("--full/--no-full", help="Print full information", default=False)
 @click.pass_context
@@ -69,29 +60,29 @@ def ls(ctx, alias: str, full: bool):
             oldest_record = None
             latest_record = None
 
-            for bucket in buckets:
-                total_size += bucket.size
-                total_entry_count += bucket.entry_count
-                has_data = bucket.size > 0
+            for bucket_info in buckets:
+                total_size += bucket_info.size
+                total_entry_count += bucket_info.entry_count
+                has_data = bucket_info.size > 0
 
                 if has_data:
                     oldest_record = (
-                        min(oldest_record, bucket.oldest_record)
+                        min(oldest_record, bucket_info.oldest_record)
                         if oldest_record
-                        else bucket.oldest_record
+                        else bucket_info.oldest_record
                     )
                     latest_record = (
-                        max(latest_record, bucket.latest_record)
+                        max(latest_record, bucket_info.latest_record)
                         if latest_record
-                        else bucket.latest_record
+                        else bucket_info.latest_record
                     )
 
                 table.add_row(
-                    bucket.name,
-                    str(bucket.entry_count),
-                    pretty_size(bucket.size),
-                    print_datetime(bucket.oldest_record, has_data),
-                    print_datetime(bucket.latest_record, has_data),
+                    bucket_info.name,
+                    str(bucket_info.entry_count),
+                    pretty_size(bucket_info.size),
+                    print_datetime(bucket_info.oldest_record, has_data),
+                    print_datetime(bucket_info.latest_record, has_data),
                 )
 
             table.add_section()
@@ -105,11 +96,11 @@ def ls(ctx, alias: str, full: bool):
 
             console.print(table)
         else:
-            for bucket in buckets:
-                console.print(bucket.name)
+            for bucket_info in buckets:
+                console.print(bucket_info.name)
 
 
-@bucket_cmd.command()
+@bucket.command()
 @click.argument("path")
 @click.option("--full/--no-full", help="Print full information", default=False)
 @click.pass_context
@@ -121,9 +112,9 @@ def show(ctx, path: str, full: bool):
     """
 
     with error_handle():
-        bucket = __get_bucket_by_path(ctx, path)
+        bucket_ = run(_get_bucket_by_path(ctx, path))
 
-        info: BucketInfo = run(bucket.info())
+        info: BucketInfo = run(bucket_.info())
         history_interval = (info.latest_record - info.oldest_record) / 1000000
 
         info_txt = "\n".join(
@@ -141,7 +132,7 @@ def show(ctx, path: str, full: bool):
         else:
             # TODO: Fix when https://github.com/reduct-storage/reduct-py/issues/48 is done
 
-            settings: BucketSettings = run(bucket.get_settings())
+            settings: BucketSettings = run(bucket_.get_settings())
             settings_txt = "\n".join(
                 [
                     f"Quota Type:         {settings.quota_type.name}",
@@ -160,7 +151,7 @@ def show(ctx, path: str, full: bool):
             table.add_column("Latest Record (UTC)")
             table.add_column("History")
 
-            for entry in run(bucket.get_entry_list()):
+            for entry in run(bucket_.get_entry_list()):
                 table.add_row(
                     entry.name,
                     str(entry.record_count),
@@ -183,7 +174,7 @@ def show(ctx, path: str, full: bool):
             console.print(layout)
 
 
-@bucket_cmd.command()
+@bucket.command()
 @click.argument("path")
 @click.option("--quota-type", "-Q", help="Quota type. Must be NONE or FIFO")
 @click.option("--quota-size", "-s", help="Quota size in CI format e.g. 1Mb or 3TB")
@@ -203,7 +194,7 @@ def create(
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
     with error_handle():
-        alias_name, bucket_name = __parse_path(path)
+        alias_name, bucket_name = parse_path(path)
         alias = get_alias(ctx.obj["config_path"], alias_name)
         client = ReductClient(
             alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
@@ -219,7 +210,7 @@ def create(
         console.print(f"Bucket '{bucket_name}' created")
 
 
-@bucket_cmd.command()
+@bucket.command()
 @click.argument("path")
 @click.option("--quota-type", "-Q", help="Quota type. Must be NONE or FIFO")
 @click.option("--quota-size", "-s", help="Quota size in CI format e.g. 1Mb or 3TB")
@@ -239,7 +230,7 @@ def update(
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
     with error_handle():
-        bucket = __get_bucket_by_path(ctx, path)
+        bucket_ = run(_get_bucket_by_path(ctx, path))
 
         settings = BucketSettings(
             quota_type=quota_type,
@@ -247,11 +238,11 @@ def update(
             max_block_size=parse_ci_size(block_size),
             max_block_records=block_records,
         )
-        run(bucket.set_settings(settings))
-        console.print(f"Bucket '{bucket.name}' was updated")
+        run(bucket_.set_settings(settings))
+        console.print(f"Bucket '{bucket_.name}' was updated")
 
 
-@bucket_cmd.command()
+@bucket.command()
 @click.argument("path")
 @click.pass_context
 def rm(ctx, path: str):
@@ -261,12 +252,12 @@ def rm(ctx, path: str):
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
     with error_handle():
-        bucket = __get_bucket_by_path(ctx, path)
+        bucket_ = run(_get_bucket_by_path(ctx, path))
         console.print(
-            f"All data in bucket [b]'{bucket.name}'[/b] will be [b]REMOVED[/b]."
+            f"All data in bucket [b]'{bucket_.name}'[/b] will be [b]REMOVED[/b]."
         )
         if click.confirm("Do you want to continue?"):
-            run(bucket.remove())
-            console.print(f"Bucket '{bucket.name}' was removed")
+            run(bucket_.remove())
+            console.print(f"Bucket '{bucket_.name}' was removed")
         else:
             console.print("Canceled")

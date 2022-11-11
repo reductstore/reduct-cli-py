@@ -109,7 +109,7 @@ jobs:
         run: pylint ./reduct_cli/
 
       - name: Lint tests
-        run: pylint ./tests
+        run: PYTHONPATH=. pylint ./tests
 
 
   py-pip-upload:

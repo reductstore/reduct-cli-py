@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [v0.2.0]
+
+### Added:
+
+- `rcli mirror` to copy data from a bucket to another
+  one, [PR-18](https://github.com/reduct-storage/reduct-cli/pull/18)
+
+## [0.2.0]
 
 ### Added:
 
