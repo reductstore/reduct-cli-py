@@ -1,5 +1,6 @@
 """Mirror command"""
 import asyncio
+import time
 from datetime import datetime
 from typing import Optional
 
@@ -26,6 +27,7 @@ async def _sync_entry(
         f"Entry '{entry.name}'", total=progress_stop - progress_start
     )
     mirrored_size = 0
+    start_op = time.time()
     async for record in src_bucket.query(
         entry.name, start=kwargs["start"], stop=kwargs["stop"]
     ):
@@ -43,7 +45,8 @@ async def _sync_entry(
 
         progress.update(
             task,
-            description=f"Entry '{entry.name}' (copied {pretty_size(mirrored_size)})",
+            description=f"Entry '{entry.name}' (copied {pretty_size(mirrored_size)}, "
+            f"speed {pretty_size(mirrored_size / (time.time() - start_op))}/s)",
             advance=record.timestamp - last_time,
             refresh=True,
         )
@@ -76,15 +79,17 @@ async def _sync_bucket(
 @click.argument("dest")
 @click.option(
     "--start",
-    help="Mirror records with timestamps newer than this time point. Should be ISO date",
+    help="Mirror records with timestamps newer than this time point in ISO format",
 )
 @click.option(
     "--stop",
-    help="Mirror records  with timestamps older than this time point. Should be ISO date",
+    help="Mirror records  with timestamps older than this time point in ISO format",
 )
 @click.pass_context
 def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
-    """Copy data from a service, bucket or entry to another one"""
+    """Copy data from a bucket to another one
+
+    If the destination bucket doesn't exist, it is created with the settings of the"""
 
     with error_handle():
         alias_name, src_bucket = parse_path(src)

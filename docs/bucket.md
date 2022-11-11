@@ -1,6 +1,6 @@
 # Bucket Commands
 
-If you set an [alias](./aliases.md) for your server, you can manage its buckets by using `bucket` subcommand:
+If you set an [alias](./aliases.md) for your server, you can manage its buckets by using the `bucket` subcommand:
 
 ```shell
 rcli bucket --help

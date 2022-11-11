@@ -13,11 +13,11 @@ run = loop().run_until_complete
 
 
 @click.group()
-def server_cmd():
+def server():
     """Commands to manage server"""
 
 
-@server_cmd.command()
+@server.command()
 @click.argument("alias")
 @click.pass_context
 def status(ctx, alias: str):

@@ -11,12 +11,12 @@ from reduct_cli.helpers import get_alias
 
 @click.group()
 @click.pass_context
-def alias_cmd(ctx):
+def alias(ctx):
     """Commands to manage aliases"""
     ctx.obj["conf"] = read_config(ctx.obj["config_path"])
 
 
-@alias_cmd.command()
+@alias.command()
 @click.pass_context
 def ls(ctx):
     """Print list of aliases"""
@@ -24,7 +24,7 @@ def ls(ctx):
         console.print(name)
 
 
-@alias_cmd.command()
+@alias.command()
 @click.argument("name")
 @click.option("--token/--no-token", "-t", help="Show token", default=False)
 @click.pass_context
@@ -36,7 +36,7 @@ def show(ctx, name: str, token: bool):
         console.print(f"[bold]Token[/bold]:\t\t{alias_['token']}")
 
 
-@alias_cmd.command()
+@alias.command()
 @click.argument("name")
 @click.option("--url", "-L", help="Server URL")
 @click.option("--token", "-t", help="API token")
@@ -59,7 +59,7 @@ def add(ctx, name: str, url: Optional[str], token: Optional[str]):
     write_config(ctx.obj["config_path"], conf)
 
 
-@alias_cmd.command()
+@alias.command()
 @click.argument("name")
 @click.pass_context
 def rm(ctx, name: str):
