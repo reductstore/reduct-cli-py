@@ -119,7 +119,8 @@ def test__mirror_ok(
 def test__mirror_ok_with_interval(runner, conf, src_bucket):
     """Should mirror a bucket to another one with time interval"""
     result = runner(
-        f"-c {conf} mirror --start 2022-01-02T00:00:01.100300+02:00 --stop 2022-02-01T00:00:00+02:00 "
+        f"-c {conf} mirror --start 2022-01-02T00:00:01.100300+02:00 "
+        f"--stop 2022-02-01T00:00:00+02:00 "
         f"test/src_bucket test/dest_bucket"
     )
     assert "Entry 'entry-1' (copied 6 B" in result.output
