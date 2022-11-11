@@ -12,6 +12,7 @@ CLI client for [Reduct Storage](https://reduct-storage.dev)
 * Bucket management
 * Server status
 * Aliases for servers' credentials
+* Mirroring data
 
 ## Requirements
 
