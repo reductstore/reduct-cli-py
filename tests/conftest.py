@@ -3,12 +3,23 @@ import time
 from functools import partial
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Callable
+from typing import Callable, Optional, List, Any
 
 import pytest
 from click.testing import CliRunner, Result
 
 from reduct_cli.cli import cli
+
+
+class AsyncIter:  # pylint: disable=too-few-public-methods
+    """Helper class for efficient mocking"""
+
+    def __init__(self, items: Optional[List[Any]] = None):
+        self.items = items if items else []
+
+    async def __aiter__(self):
+        for item in self.items:
+            yield item
 
 
 @pytest.fixture(name="runner")

@@ -39,8 +39,9 @@ TB = GB * 1000
 
 
 def pretty_size(size: Union[int, float]) -> str:
-    size = int(size)
     """Return human-readable size"""
+
+    size = int(size)
     if size < 0:
         raise ValueError("Size must be positive")
 

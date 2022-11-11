@@ -3,7 +3,7 @@ from asyncio import new_event_loop as loop
 from typing import List, Optional
 
 import click
-from reduct import Client as ReductClient, BucketInfo, BucketSettings, QuotaType, Bucket
+from reduct import Client as ReductClient, BucketInfo, BucketSettings, QuotaType
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
@@ -23,8 +23,8 @@ async def _get_bucket_by_path(ctx, path):
     client = ReductClient(
         alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
     )
-    bucket: Bucket = await client.get_bucket(bucket_name)
-    return bucket
+
+    return await client.get_bucket(bucket_name)
 
 
 @click.group()
