@@ -5,7 +5,7 @@ from typing import Tuple
 from click import Abort
 
 from reduct_cli.config import read_config, Alias
-from reduct_cli.consoles import error_console
+from reduct_cli.utils.consoles import error_console
 
 
 def get_alias(config_path: Path, name: str) -> Alias:

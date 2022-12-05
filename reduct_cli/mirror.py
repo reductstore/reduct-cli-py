@@ -8,9 +8,9 @@ import click
 from rich.progress import Progress
 from reduct import Client as ReductClient, ReductError, Bucket, EntryInfo
 
-from reduct_cli.error import error_handle
-from reduct_cli.helpers import parse_path, get_alias
-from reduct_cli.humanize import pretty_size
+from reduct_cli.utils.error import error_handle
+from reduct_cli.utils.helpers import parse_path, get_alias
+from reduct_cli.utils.humanize import pretty_size
 
 
 async def _sync_entry(

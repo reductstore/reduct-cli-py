@@ -5,8 +5,8 @@ import click
 from click import Abort
 
 from reduct_cli.config import Config, read_config, write_config, Alias
-from reduct_cli.consoles import console, error_console
-from reduct_cli.helpers import get_alias
+from reduct_cli.utils.consoles import console, error_console
+from reduct_cli.utils.helpers import get_alias
 
 
 @click.group()

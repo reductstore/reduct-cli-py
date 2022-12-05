@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 from click import Abort
 
-from reduct_cli.consoles import error_console
+from reduct_cli.utils.consoles import error_console
 
 
 @contextmanager
