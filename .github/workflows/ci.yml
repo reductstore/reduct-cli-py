@@ -103,7 +103,7 @@ jobs:
         run: python3 -m pip install dist/*
 
       - name: Install dependencies
-        run: pip3 install .[test,lint]
+        run: python3 -m pip install ".[test,lint]"
 
       - name: Lint main
         run: pylint ./reduct_cli/
