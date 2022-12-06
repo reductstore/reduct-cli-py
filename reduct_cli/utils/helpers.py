@@ -20,7 +20,7 @@ def get_alias(config_path: Path, name: str) -> Alias:
 
 
 def parse_path(path) -> Tuple[str, str]:
-    """Parse path ALIAS/BUCKET"""
+    """Parse path ALIAS/RESOURCE"""
     args = path.split("/")
     if len(args) != 2:
         raise RuntimeError(
