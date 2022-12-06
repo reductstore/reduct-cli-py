@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ "3.8", "3.9", "3.10", "3.11" ]
+        python: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
     steps:
       - uses: actions/setup-python@v4
         with:
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ "3.8", "3.9", "3.10", "3.11" ]
+        python: ["3.7", "3.8", "3.9", "3.10", "3.11" ]
     steps:
       - uses: actions/setup-python@v4
         with:
@@ -99,11 +99,14 @@ jobs:
           name: package
           path: ./dist
 
+      - name: Update pip
+        run: python3 -m pip install --no-cache --upgrade pip setuptools wheel
+
       - name: Install package
         run: python3 -m pip install dist/*
 
       - name: Install dependencies
-        run: pip3 install .[test] && pip3 install .[lint]
+        run: pip3 install .[test,lint]
 
       - name: Lint main
         run: pylint ./reduct_cli/
