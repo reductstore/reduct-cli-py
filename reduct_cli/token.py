@@ -104,6 +104,6 @@ def rm(ctx, alias: str, name: str):
         console.print(f"We are going to [b]remove[/b] token: {name}")
         if click.confirm("Do you want to continue?"):
             run(client.remove_token(name))
-            console.print(f"Token '{name}' deleted")
+            console.print(f"Token '{name}' was deleted")
         else:
-            console.print("Cancelled")
+            console.print("Canceled")
