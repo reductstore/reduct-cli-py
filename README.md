@@ -8,8 +8,9 @@ CLI client for [Reduct Storage](https://reduct-storage.dev)
 
 ## Features
 
-* Support Reduct Storage API v1.0
+* Support Reduct Storage API v1.1
 * Bucket management
+* API token management
 * Server status
 * Aliases for servers' credentials
 * Mirroring data
