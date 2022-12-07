@@ -20,7 +20,7 @@ maintainers = [
 ]
 
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3 :: Only",
     "Environment :: Console",
     "Intended Audience :: Information Technology",
@@ -31,7 +31,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "reduct-py~=1.0",
+    "reduct-py~=1.1",
     "click~=8.1",
     "tomlkit~=0.11",
     "rich~=12.6",

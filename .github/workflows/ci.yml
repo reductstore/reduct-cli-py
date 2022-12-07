@@ -99,6 +99,9 @@ jobs:
           name: package
           path: ./dist
 
+      - name: Update pip
+        run: python3 -m pip install --no-cache --upgrade pip setuptools wheel
+
       - name: Install package
         run: python3 -m pip install dist/*
 

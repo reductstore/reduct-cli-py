@@ -8,11 +8,11 @@ from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
 
-from reduct_cli.consoles import console
-from reduct_cli.error import error_handle
-from reduct_cli.helpers import parse_path, get_alias
-from reduct_cli.humanize import pretty_size, print_datetime, parse_ci_size
-from reduct_cli.humanize import pretty_time_interval
+from reduct_cli.utils.consoles import console
+from reduct_cli.utils.error import error_handle
+from reduct_cli.utils.helpers import parse_path, get_alias
+from reduct_cli.utils.humanize import pretty_size, print_datetime, parse_ci_size
+from reduct_cli.utils.humanize import pretty_time_interval
 
 run = loop().run_until_complete
 

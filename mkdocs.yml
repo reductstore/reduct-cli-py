@@ -8,6 +8,7 @@ nav:
       - docs/server.md
       - docs/bucket.md
       - docs/mirror.md
+      - docs/token.md
   - CLI Reference: docs/cli.md
   - Reduct Storage: https://reduct-storage.dev
 

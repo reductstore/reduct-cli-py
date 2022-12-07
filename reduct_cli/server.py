@@ -4,10 +4,10 @@ from asyncio import new_event_loop as loop
 import click
 from reduct import Client as ReductClient, ServerInfo
 
-from reduct_cli.consoles import console
-from reduct_cli.error import error_handle
-from reduct_cli.helpers import get_alias
-from reduct_cli.humanize import pretty_time_interval
+from reduct_cli.utils.consoles import console
+from reduct_cli.utils.error import error_handle
+from reduct_cli.utils.helpers import get_alias
+from reduct_cli.utils.humanize import pretty_time_interval
 
 run = loop().run_until_complete
 

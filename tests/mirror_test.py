@@ -7,7 +7,7 @@ import pytest
 from reduct import Client, Bucket, BucketSettings, EntryInfo
 from reduct.bucket import Record
 
-from tests.conftest import AsyncIter
+from .conftest import AsyncIter
 
 
 @pytest.fixture(name="src_settings")
