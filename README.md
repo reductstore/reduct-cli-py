@@ -1,8 +1,8 @@
 # Reduct CLI
 
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/reduct-storage/reduct-cli)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/reduct-cli)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/reduct-storage/reduct-cli/ci)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/reduct-storage/reduct-cli)](https://pypi.org/project/reduct-cli)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/reduct-cli)](https://pypi.org/project/reduct-cli)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/reduct-storage/reduct-cli/ci)](https://github.com/reduct-storage/reduct-cli/actions)
 
 CLI client for [Reduct Storage](https://reduct-storage.dev)
 

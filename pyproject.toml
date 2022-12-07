@@ -57,7 +57,7 @@ docs = [
 [project.urls]
 ReductStorage = "https://reduct-storage.dev"
 Documentation = "https://reduct-cli.readthedocs.io/"
-Source = "https://github.com/reduct-storage/reduct-cli"
+SourceCode = "https://github.com/reduct-storage/reduct-cli"
 Changelog = "https://github.com/reduct-storage/reduct-cli/blob/main/CHANGELOG.md"
 Twitter = "https://twitter.com/ReductStorage"
 Blog = "https://dev.to/reduct-storage"
