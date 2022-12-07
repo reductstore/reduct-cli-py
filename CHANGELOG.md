@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `rcli mirror` to copy data from a bucket to another
   one, [PR-18](https://github.com/reduct-storage/reduct-cli/pull/18)
+- `rcli token` to manage API tokens, [PR-20](https://github.com/reduct-storage/reduct-cli/pull/20)
 
 ## [0.2.0]
 
