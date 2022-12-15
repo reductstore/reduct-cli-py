@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improve documentation, [PR-21](https://github.com/reduct-storage/reduct-cli/pull/21)
+
 ## [0.3.0] - 2022-12-07
 
 ### Added:
