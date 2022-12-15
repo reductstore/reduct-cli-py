@@ -4,16 +4,16 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/reduct-cli)](https://pypi.org/project/reduct-cli)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/reduct-storage/reduct-cli/ci)](https://github.com/reduct-storage/reduct-cli/actions)
 
-CLI client for [Reduct Storage](https://reduct-storage.dev)
+The Reduct CLI is a command line client for [Reduct Storage](https://reduct-storage.dev), a self-hosted, open-source,
+time-series blob storage.
 
 ## Features
 
-* Support Reduct Storage API v1.1
-* Bucket management
-* API token management
-* Server status
-* Aliases for servers' credentials
-* Mirroring data
+* Support for Reduct Storage API v1.1
+* Easy management of buckets and tokens
+* Ability to check the status of a storage engine
+* Aliases for storing server credentials
+* Data mirroring between buckets
 
 ## Requirements
 
@@ -21,6 +21,8 @@ CLI client for [Reduct Storage](https://reduct-storage.dev)
 * pip
 
 ## Installing
+
+To install the Reduct CLI, simply use pip:
 
 ```
 pip install reduct-cli

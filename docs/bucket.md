@@ -1,72 +1,82 @@
 # Bucket Commands
 
-If you set an [alias](./aliases.md) for your server, you can manage its buckets by using the `bucket` subcommand:
+The rcli command line client allows you to manage the buckets on your storage engine using the bucket subcommand. For
+example:
 
 ```shell
 rcli bucket --help
 ```
 
-## Browsing buckets
-
-You can check a list of existing buckets on the server:
+You should set an [alias](./aliases.md) for your storage engine, so that you can use the alias in the rcli bucket
+command to refer to the storage engine. For example:
 
 ```shell
 rcli bucket ls test-storage
 ```
 
-Or you can print a table with buckets and its information:
+## Browsing Buckets
+
+To see a list of existing buckets on your storage engine, use the `ls` subcommand of rcli bucket, like this:
+
+```shell
+rcli bucket ls test-storage
+```
+
+To see more detailed information about buckets, use the `--full` flag:
 
 ```shell
 rcli bucket ls --full test-storage
 ```
 
-To show information about a certain bucket use the `show` subcommand with path `ALIAS/BUCKET_NAME`:
+To show detailed information about a specific bucket, use the `show` subcommand with the path to the bucket in the form
+`ALIAS/BUCKET_NAME, like this:
 
 ```shell
 rcli bucket show test-storage/bucket-1
 ```
 
-You can also get the bucket's settings and entry list with flag `--full`:
+You can also use the `--full` flag to show the bucket's settings and entry list:
 
 ```shell
 rcli bucket show --full test-storage/bucket-1
 ```
 
-## Creating a bucket
+## Creating a Bucket
 
-To create a bucket you should use command create and provide path to the new bucket `ALIAS/BUCKET_NAME`:
+To create a new bucket on your storage engine, use the `create` subcommand of `rcli bucket`, like this:
 
 ```shell
 rcli bucket create test-storage/bucket-1
 ```
 
-This command creates a bucket with default settings, you can specify them:
+This command will create a new bucket with default settings. You can specify the settings for the new bucket using the
+available options, such as `--quota-type` and `--quota-size`, like this:
 
 ```shell
 rcli bucket create --quota-type FIFO --quota-size 20Gb test-storage/bucket-1
 ```
 
-## Updating settings
+## Updating Settings
 
-It's also possible to update settings of an existing bucket with the `update` subcommand:
+You can update the settings of an existing bucket using the `update` subcommand of `rcli bucket`, like this:
 
 ```shell
 rcli bucket update --quota-size 100Gb test-storage/bucket-1
 ```
 
-Check the full list of the settings:
+To see the full list of available settings, use the `--help` flag with the `update` subcommand:
 
 ```shell
 rcli bucket update --help
 ```
 
-## Removing a bucket
+## Removing a Bucket
 
-To remove a bucket, you can use the `rm` subbcommand:
+To remove a bucket from your storage engine, use the `rm` subcommand of `rcli bucket`, like this:
 
 ```shell
 rcli bucket rm test-storage/bucket-1
 ```
 
 !!!Warning
-    When you remove a bucket from a storage engine, you remove all its data.
+    When you remove a bucket from your storage engine, you delete all of its data. Use this command with caution.
