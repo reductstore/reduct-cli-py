@@ -1,39 +1,56 @@
 # Token Commands
 
-If you set an [alias](./aliases.md) for your server, you can manage its tokens by using the `token` subcommand:
+The `rcli` command line client allows you to manage the access tokens for your storage engine using the `token`
+subcommand. For example:
 
-```shell
+```
 rcli token --help
 ```
 
-## Listing tokens
-
-You can check a list of existing tokens on the server:
+You should set an [alias](./aliases.md) for your storage engine, so that you can use the alias in the `rcli token`
+command to
+refer to the storage engine. For example:
 
 ```shell
 rcli token ls test-storage
 ```
 
-## Creating a token
+## Listing Tokens
 
-To create a token you should use command create and provide a name of the new token and its permissions:
+To see a list of existing access tokens on your storage engine, use the `ls` subcommand of `rcli token`, like this:
+
+```shell
+rcli token ls test-storage
+```
+
+## Creating a Token
+
+To create a new token on your storage engine, use the `create` subcommand of `rcli token`, like this:
 
 ```shell
 rcli token create test-storage token-1 --full-access --read=bucket-1 --write="bucket-2,bucket-3"
 ```
 
-## Showing a token
+This command creates a new token with the given name and permissions. You can specify the permissions using the
+available options, such as `--full-access` and `--read/--write` to grant or restrict access to specific buckets.
 
-To show information about a certain token use the `show` subcommand:
+## Showing a Token
+
+To see detailed information about a specific token, use the `show` subcommand of `rcli token`, like this:
 
 ```shell
 rcli token show test-storage token-1
 ```
 
-## Removing a token
+This will show the name, permissions, and other details for the specified token.
 
-You can remove a token with the `rm` subcommand:
+## Removing a Token
+
+To remove a token from your storage engine, use the `rm` subcommand of `rcli token`, like this:
 
 ```shell
 rcli token rm test-storage token-1
 ```
+
+This will remove the token with the given name from the storage engine. Be careful when using this command, as it will
+permanently delete the token and any access granted by the token will be lost.

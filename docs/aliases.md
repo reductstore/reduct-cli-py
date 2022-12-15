@@ -1,9 +1,9 @@
 # Aliases
 
-Reduct CLI client uses aliases to communicate with a storage engine, so that a user doesn't need to type its URL and
-credentials for every command.
+The Reduct CLI client uses aliases to simplify communication with a storage engine. This way, users don't have to type the URL and credentials for the storage engine each time they want to use it.
+Creating an alias
 
-## Creating an alias
+To create an alias, use the following rcli command:
 
 You can create an alias with the following command:
 
@@ -11,7 +11,7 @@ You can create an alias with the following command:
 rcli alias add play
 ```
 
-You can also provide a URL and API token as options:
+Alternatively, you can provide the URL and API token for the storage engine as options:
 
 ```shell
 rcli alias  add -L  https://play.reduct-storage.dev -t reduct play
@@ -19,16 +19,16 @@ rcli alias  add -L  https://play.reduct-storage.dev -t reduct play
 
 ## Browsing aliases
 
-Now you can see it the new alias in list or check it URL:
+Once you've created an alias, you can use the rcli alias command to view it in a list or check its URL:
 
 ```shell
 rcli alias ls
-rcli alias show play # you can add -t flag to see token
+rcli alias show play # you can add the -t flag to see the token
 ```
 
 ## Removing an alias
 
-To remove an alias, use command `rm`:
+To remove an alias, use the rm subcommand of rcli alias:
 
 ```shell
 rcli alias rm play
