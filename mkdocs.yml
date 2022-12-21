@@ -1,5 +1,6 @@
 site_name: CLI client for ReductStore
 site_description: The ReductStore CLI is a command line client for ReductStore, a time series database for blob data
+docs_dir: .
 nav:
   - Home:
       - README.md
@@ -77,3 +78,10 @@ extra:
   analytics:
     provider: google
     property: G-KVT7VSNVGC
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
