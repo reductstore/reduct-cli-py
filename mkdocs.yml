@@ -1,4 +1,6 @@
-site_name: CLI client for Reduct Storage
+site_name: CLI client for ReductStore
+site_description: The ReductStore CLI is a command line client for ReductStore, a self-hosted, open-source,
+  time-series blob storage.
 docs_dir: .
 nav:
   - Home:
@@ -10,10 +12,10 @@ nav:
       - docs/mirror.md
       - docs/token.md
   - CLI Reference: docs/cli.md
-  - Reduct Storage: https://reduct-storage.dev
+  - ReductStore: https://www.reduct.store
 
 repo_name: reduct-storage/reduct-cli
-repo_url: https://github.com/reduct-storage/reduct-cli
+repo_url: https://github.com/reductstore/reduct-cli
 edit_uri: edit/main/
 
 

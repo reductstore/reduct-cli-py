@@ -5,11 +5,11 @@ requires = ["setuptools>=40.8.0", "wheel"]
 
 name = "reduct-cli"
 version = "0.3.0"
-description = "CLI client for Reduct Storage"
+description = "CLI client for ReductStore"
 requires-python = ">=3.8"
 readme = "README.md"
 license = { file = "LICENSE" }
-keywords = ["cli", "reduct-storage", "tool", "database", "time series database"]
+keywords = ["cli", "reductstore", "tool", "database", "time series database"]
 authors = [
     { email = "atimin@gmail.com" },
     { name = "Alexey Timin" }
@@ -55,12 +55,12 @@ docs = [
 ]
 
 [project.urls]
-ReductStorage = "https://reduct-storage.dev"
-Documentation = "https://reduct-cli.readthedocs.io/"
-SourceCode = "https://github.com/reduct-storage/reduct-cli"
-Changelog = "https://github.com/reduct-storage/reduct-cli/blob/main/CHANGELOG.md"
-Twitter = "https://twitter.com/ReductStorage"
-Blog = "https://dev.to/reduct-storage"
+ReductStorage = "https://www.reduct.store"
+Documentation = "https://cli.reduct.store"
+SourceCode = "https://github.com/reductstore/reduct-cli"
+Changelog = "https://github.com/reductstore/reduct-cli/blob/main/CHANGELOG.md"
+Twitter = "https://twitter.com/ReductStore"
+Blog = "https://dev.to/reductstore"
 
 
 [project.scripts]
