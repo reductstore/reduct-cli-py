@@ -4,8 +4,8 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/reduct-cli)](https://pypi.org/project/reduct-cli)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/reductstore/reduc-cli/ci.yml?branch=main)](https://github.com/reductstore/reduct-cli/actions)
 
-The ReductStore CLI is a command line client for [ReductStore](https://www.reduct.store), a self-hosted, open-source,
-time-series blob storage.
+The ReductStore CLI is a command line client for [ReductStore](https://www.reduct.store), a time series database for
+blob data. It is written in Python and uses the [ReductStore Client SDK for Python](https://py.reduct.store/).
 
 ## Features
 

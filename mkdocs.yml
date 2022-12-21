@@ -1,7 +1,5 @@
 site_name: CLI client for ReductStore
-site_description: The ReductStore CLI is a command line client for ReductStore, a self-hosted, open-source,
-  time-series blob storage.
-docs_dir: .
+site_description: The ReductStore CLI is a command line client for ReductStore, a time series database for blob data
 nav:
   - Home:
       - README.md
@@ -24,7 +22,9 @@ theme:
   name: material
   language: en
   palette:
-    primary: 231b49
+    primary: indigo
+  logo: docs/img/favicon.png
+  favicon: docs/img/favicon.png
   font:
     text: Roboto
     code: JetBrains Mono
