@@ -82,9 +82,6 @@ jobs:
       - name: Install dependencies
         run: pip3 install .[test]
 
-      - name: Run Reduct Storage
-        run: docker run -p 8383:8383 -v ${PWD}/data:/data -d ghcr.io/reduct-storage/reduct-storage:latest
-
       - name: Run Tests
         run: PYTHONPATH=. pytest tests
 

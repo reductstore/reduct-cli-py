@@ -9,54 +9,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improve documentation, [PR-21](https://github.com/reduct-storage/reduct-cli/pull/21)
+- Improve documentation, [PR-21](https://github.com/reductstore/reduct-cli/pull/21)
+- Update documentation after rebranding, [PR-23](https://github.com/reductstore/reduct-cli/pull/23)
 
 ## [0.3.0] - 2022-12-07
 
 ### Added:
 
 - `rcli mirror` to copy data from a bucket to another
-  one, [PR-18](https://github.com/reduct-storage/reduct-cli/pull/18)
-- `rcli token` to manage API tokens, [PR-20](https://github.com/reduct-storage/reduct-cli/pull/20)
+  one, [PR-18](https://github.com/reductstore/reduct-cli/pull/18)
+- `rcli token` to manage API tokens, [PR-20](https://github.com/reductstore/reduct-cli/pull/20)
 
 ## [0.2.0]
 
 ### Added:
 
-- `rcli` alias for `reduct-cli`, [PR-10](https://github.com/reduct-storage/reduct-cli/pull/10)
+- `rcli` alias for `reduct-cli`, [PR-10](https://github.com/reductstore/reduct-cli/pull/10)
 - Options for server URL and API token to alias add
-  command, [PR-11](https://github.com/reduct-storage/reduct-cli/pull/11)
-- `rcli bucket ls` to list buckets, [PR-13](https://github.com/reduct-storage/reduct-cli/pull/13)
-- `rcli bucket show` to browse a bucket, [PR-14](https://github.com/reduct-storage/reduct-cli/pull/14)
-- `rcli bucket create` to create a bucket, [PR-15](https://github.com/reduct-storage/reduct-cli/pull/15)
-- `rcli bucket update` to update bucket settings, [PR-16](https://github.com/reduct-storage/reduct-cli/pull/16)
-- `rcli bucket rm` to remove a bucket, [PR-17](https://github.com/reduct-storage/reduct-cli/pull/17)
+  command, [PR-11](https://github.com/reductstore/reduct-cli/pull/11)
+- `rcli bucket ls` to list buckets, [PR-13](https://github.com/reductstore/reduct-cli/pull/13)
+- `rcli bucket show` to browse a bucket, [PR-14](https://github.com/reductstore/reduct-cli/pull/14)
+- `rcli bucket create` to create a bucket, [PR-15](https://github.com/reductstore/reduct-cli/pull/15)
+- `rcli bucket update` to update bucket settings, [PR-16](https://github.com/reductstore/reduct-cli/pull/16)
+- `rcli bucket rm` to remove a bucket, [PR-17](https://github.com/reductstore/reduct-cli/pull/17)
 
 ### Changed:
 
-- Improve output of server status command, [PR-12](https://github.com/reduct-storage/reduct-cli/pull/12)
+- Improve output of server status command, [PR-12](https://github.com/reductstore/reduct-cli/pull/12)
 
 ## [0.1.0] - 2022-10-24
 
 ### Added:
 
-- Add alias commands: add, remove, show, [PR-6](https://github.com/reduct-storage/reduct-cli/pull/6)
-- Add `server status` command to check server's status, [PR-9](https://github.com/reduct-storage/reduct-cli/pull/9)
+- Add alias commands: add, remove, show, [PR-6](https://github.com/reductstore/reduct-cli/pull/6)
+- Add `server status` command to check server's status, [PR-9](https://github.com/reductstore/reduct-cli/pull/9)
 
 ### Changed:
 
-- Make alias command more idiomatic, [PR-7](https://github.com/reduct-storage/reduct-cli/pull/7)
+- Make alias command more idiomatic, [PR-7](https://github.com/reductstore/reduct-cli/pull/7)
 
 ## [0.0.0] - 2022-10-17
 
 - Init release
 
-[Unreleased]: https://github.com/reduct-storage/reduct-cli/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.3.0...HEAD
 
-[0.3.0]: https://github.com/reduct-storage/reduct-cli/compare/v0.2.0...v0.3.0
+[0.3.0]: https://github.com/reductstore/reduct-cli/compare/v0.2.0...v0.3.0
 
-[0.2.0]: https://github.com/reduct-storage/reduct-cli/compare/v0.1.0...v0.2.0
+[0.2.0]: https://github.com/reductstore/reduct-cli/compare/v0.1.0...v0.2.0
 
-[0.1.0]: https://github.com/reduct-storage/reduct-cli/compare/v0.0.0...v0.1.0
+[0.1.0]: https://github.com/reductstore/reduct-cli/compare/v0.0.0...v0.1.0
 
-[0.0.0]: https://github.com/reduct-storage/reduct-cli/compare/tag/v0.0.0
+[0.0.0]: https://github.com/reductstore/reduct-cli/compare/tag/v0.0.0
