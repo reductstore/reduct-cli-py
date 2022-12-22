@@ -11,12 +11,10 @@ readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["cli", "reductstore", "tool", "database", "time series database"]
 authors = [
-    { email = "atimin@gmail.com" },
-    { name = "Alexey Timin" }
+    { email = "atimin@gmail.com", name = "Alexey Timin" }
 ]
 maintainers = [
-    { email = "atimin@gmail.com" },
-    { name = "Alexey Timin" }
+    { email = "atimin@gmail.com", name = "Alexey Timin" }
 ]
 
 classifiers = [
