@@ -11,6 +11,7 @@ from reduct_cli.bucket import bucket
 from reduct_cli.server import server
 from reduct_cli.mirror import mirror
 from reduct_cli.token import token
+from reduct_cli.export import export
 
 
 @click.group()
@@ -39,3 +40,4 @@ cli.add_command(bucket, "bucket")
 cli.add_command(server, "server")
 cli.add_command(mirror, "mirror")
 cli.add_command(token, "token")
+cli.add_command(export, "export")

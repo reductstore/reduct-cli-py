@@ -1,6 +1,7 @@
 """Mirror command"""
 import asyncio
 import time
+from contextlib import contextmanager
 from datetime import datetime
 from typing import Optional
 
@@ -9,58 +10,32 @@ from rich.progress import Progress
 from reduct import Client as ReductClient, ReductError, Bucket, EntryInfo
 
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import parse_path, get_alias
+from reduct_cli.utils.helpers import parse_path, get_alias, read_records_with_progress
 from reduct_cli.utils.humanize import pretty_size
 
 
 async def _sync_entry(
-    entry: EntryInfo,
-    src_bucket: Bucket,
-    dest_bucket: Bucket,
-    progress: Progress,
-    **kwargs,
+        entry: EntryInfo,
+        src_bucket: Bucket,
+        dest_bucket: Bucket,
+        progress: Progress,
+        **kwargs,
 ):
-    progress_start = kwargs["start"] if kwargs["start"] else entry.oldest_record
-    progress_stop = kwargs["stop"] if kwargs["stop"] else entry.latest_record
-    last_time = progress_start
-    task = progress.add_task(
-        f"Entry '{entry.name}'", total=progress_stop - progress_start
-    )
-    mirrored_size = 0
-    start_op = time.time()
-    async for record in src_bucket.query(
-        entry.name, start=kwargs["start"], stop=kwargs["stop"]
-    ):
-        try:
-            mirrored_size += record.size
-            await dest_bucket.write(
-                entry.name,
-                data=record.read(1024),
-                content_length=record.size,
-                timestamp=record.timestamp,
-            )
-        except ReductError as err:
-            if err.status_code != 409:
-                raise err
-
-        progress.update(
-            task,
-            description=f"Entry '{entry.name}' (copied {pretty_size(mirrored_size)}, "
-            f"speed {pretty_size(mirrored_size / (time.time() - start_op))}/s)",
-            advance=record.timestamp - last_time,
-            refresh=True,
+    async for record in read_records_with_progress(entry, src_bucket, progress, **kwargs):
+        await dest_bucket.write(
+            entry.name,
+            data=record.read(1024),
+            content_length=record.size,
+            timestamp=record.timestamp,
         )
-        last_time = record.timestamp
-
-    progress.update(task, total=1, completed=True)
 
 
 async def _sync_bucket(
-    src_bucket_name: str,
-    dest_bucket_name: str,
-    src: ReductClient,
-    dest: ReductClient,
-    **kwargs,
+        src_bucket_name: str,
+        dest_bucket_name: str,
+        src: ReductClient,
+        dest: ReductClient,
+        **kwargs,
 ) -> None:
     src_bucket: Bucket = await src.get_bucket(src_bucket_name)
     dest_bucket: Bucket = await dest.create_bucket(
