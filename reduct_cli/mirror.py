@@ -1,17 +1,14 @@
 """Mirror command"""
 import asyncio
-import time
-from contextlib import contextmanager
 from datetime import datetime
 from typing import Optional
 
 import click
+from reduct import Client as ReductClient, Bucket, EntryInfo
 from rich.progress import Progress
-from reduct import Client as ReductClient, ReductError, Bucket, EntryInfo
 
 from reduct_cli.utils.error import error_handle
 from reduct_cli.utils.helpers import parse_path, get_alias, read_records_with_progress
-from reduct_cli.utils.humanize import pretty_size
 
 
 async def _sync_entry(
@@ -66,7 +63,8 @@ async def _sync_bucket(
 def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
     """Copy data from a bucket to another one
 
-    If the destination bucket doesn't exist, it is created with the settings of the source bucket."""
+    If the destination bucket doesn't exist, it is created with
+    the settings of the source bucket."""
 
     with error_handle():
         alias_name, src_bucket = parse_path(src)

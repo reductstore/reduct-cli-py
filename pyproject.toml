@@ -65,6 +65,6 @@ Blog = "https://dev.to/reductstore"
 reduct-cli = "reduct_cli:main"
 rcli = "reduct_cli:main"
 
-[tool.pylint]
+[tool.pylint.MASTER]
 good-names = "ls,rm"
 disable = ["fixme", "duplicate-code"]

@@ -26,9 +26,9 @@ async def _export_entry(
     entry_path.mkdir(exist_ok=True)
 
     async for record in read_records_with_progress(entry, bucket, progress, **kwargs):
-        with open(entry_path / f"{record.timestamp}.bin", "wb") as f:
+        with open(entry_path / f"{record.timestamp}.bin", "wb") as file:
             async for chunk in record.read(n=1024):
-                f.write(chunk)
+                file.write(chunk)
 
 
 async def _export_bucket(
