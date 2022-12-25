@@ -33,7 +33,12 @@ def parse_path(path) -> Tuple[str, str]:
     return tuple(args)
 
 
-async def read_records_with_progress(entry: EntryInfo, bucket: Bucket, progress: Progress, **kwargs, ):
+async def read_records_with_progress(
+    entry: EntryInfo,
+    bucket: Bucket,
+    progress: Progress,
+    **kwargs,
+):
     """Read records from entry and show progress
     Args:
         entry (EntryInfo): Entry to read records from
@@ -55,7 +60,7 @@ async def read_records_with_progress(entry: EntryInfo, bucket: Bucket, progress:
     exported_size = 0
     start_op = time.time()
     async for record in bucket.query(
-            entry.name, start=kwargs["start"], stop=kwargs["stop"]
+        entry.name, start=kwargs["start"], stop=kwargs["stop"]
     ):
         try:
             exported_size += record.size
@@ -68,7 +73,7 @@ async def read_records_with_progress(entry: EntryInfo, bucket: Bucket, progress:
         progress.update(
             task,
             description=f"Entry '{entry.name}' (copied {pretty_size(exported_size)}, "
-                        f"speed {pretty_size(exported_size / (time.time() - start_op))}/s)",
+            f"speed {pretty_size(exported_size / (time.time() - start_op))}/s)",
             advance=record.timestamp - last_time,
             refresh=True,
         )

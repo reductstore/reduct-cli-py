@@ -19,8 +19,10 @@ def export():
     """Commands to export data from a bucket"""
 
 
-async def _export_entry(path: Path, entry: EntryInfo, bucket: Bucket, progress: Progress, **kwargs) -> None:
-    entry_path  = Path(path / entry.name)
+async def _export_entry(
+    path: Path, entry: EntryInfo, bucket: Bucket, progress: Progress, **kwargs
+) -> None:
+    entry_path = Path(path / entry.name)
     entry_path.mkdir(exist_ok=True)
 
     async for record in read_records_with_progress(entry, bucket, progress, **kwargs):
@@ -30,9 +32,9 @@ async def _export_entry(path: Path, entry: EntryInfo, bucket: Bucket, progress: 
 
 
 async def _export_bucket(
-        client,
-        bucket_name: str,
-        **kwargs,
+    client,
+    bucket_name: str,
+    **kwargs,
 ) -> None:
     bucket: Bucket = await client.get_bucket(bucket_name)
     folder_path = Path(bucket_name)
@@ -64,5 +66,6 @@ def folder(ctx, path: str, start: Optional[str], stop: Optional[str]):
         alias = get_alias(ctx.obj["config_path"], alias_name)
 
         client = ReductClient(
-            alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"])
+            alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
+        )
         run(_export_bucket(client, bucket, start=start, stop=stop))

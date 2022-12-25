@@ -15,13 +15,15 @@ from reduct_cli.utils.humanize import pretty_size
 
 
 async def _sync_entry(
-        entry: EntryInfo,
-        src_bucket: Bucket,
-        dest_bucket: Bucket,
-        progress: Progress,
-        **kwargs,
+    entry: EntryInfo,
+    src_bucket: Bucket,
+    dest_bucket: Bucket,
+    progress: Progress,
+    **kwargs,
 ):
-    async for record in read_records_with_progress(entry, src_bucket, progress, **kwargs):
+    async for record in read_records_with_progress(
+        entry, src_bucket, progress, **kwargs
+    ):
         await dest_bucket.write(
             entry.name,
             data=record.read(1024),
@@ -31,11 +33,11 @@ async def _sync_entry(
 
 
 async def _sync_bucket(
-        src_bucket_name: str,
-        dest_bucket_name: str,
-        src: ReductClient,
-        dest: ReductClient,
-        **kwargs,
+    src_bucket_name: str,
+    dest_bucket_name: str,
+    src: ReductClient,
+    dest: ReductClient,
+    **kwargs,
 ) -> None:
     src_bucket: Bucket = await src.get_bucket(src_bucket_name)
     dest_bucket: Bucket = await dest.create_bucket(
@@ -64,7 +66,7 @@ async def _sync_bucket(
 def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
     """Copy data from a bucket to another one
 
-    If the destination bucket doesn't exist, it is created with the settings of the"""
+    If the destination bucket doesn't exist, it is created with the settings of the source bucket."""
 
     with error_handle():
         alias_name, src_bucket = parse_path(src)
