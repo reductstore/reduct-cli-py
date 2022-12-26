@@ -1,6 +1,5 @@
 """Mirror command"""
 import asyncio
-from datetime import datetime
 from typing import Optional
 
 import click
