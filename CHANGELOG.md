@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added:
+
+- `rcli export folder` to export data from a bucket to a folder on local machine, [PR-25](https://github.com/reductstore/reduct-cli/pull/25)
+
+### Changed:
 
 - Improve documentation, [PR-21](https://github.com/reductstore/reduct-cli/pull/21)
 - Update documentation after rebranding, [PR-23](https://github.com/reductstore/reduct-cli/pull/23)

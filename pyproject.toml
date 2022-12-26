@@ -11,12 +11,10 @@ readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["cli", "reductstore", "tool", "database", "time series database"]
 authors = [
-    { email = "atimin@gmail.com" },
-    { name = "Alexey Timin" }
+    { email = "atimin@gmail.com", name = "Alexey Timin" }
 ]
 maintainers = [
-    { email = "atimin@gmail.com" },
-    { name = "Alexey Timin" }
+    { email = "atimin@gmail.com", name = "Alexey Timin" }
 ]
 
 classifiers = [
@@ -31,7 +29,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "reduct-py~=1.1",
+    "reduct-py~=1.2",
     "click~=8.1",
     "tomlkit~=0.11",
     "rich~=12.6",
@@ -67,6 +65,6 @@ Blog = "https://dev.to/reductstore"
 reduct-cli = "reduct_cli:main"
 rcli = "reduct_cli:main"
 
-[tool.pylint]
+[tool.pylint.MASTER]
 good-names = "ls,rm"
 disable = ["fixme", "duplicate-code"]

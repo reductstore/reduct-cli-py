@@ -1,16 +1,13 @@
 """Mirror command"""
 import asyncio
-import time
-from datetime import datetime
 from typing import Optional
 
 import click
+from reduct import Client as ReductClient, Bucket, EntryInfo
 from rich.progress import Progress
-from reduct import Client as ReductClient, ReductError, Bucket, EntryInfo
 
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import parse_path, get_alias
-from reduct_cli.utils.humanize import pretty_size
+from reduct_cli.utils.helpers import parse_path, get_alias, read_records_with_progress
 
 
 async def _sync_entry(
@@ -20,39 +17,15 @@ async def _sync_entry(
     progress: Progress,
     **kwargs,
 ):
-    progress_start = kwargs["start"] if kwargs["start"] else entry.oldest_record
-    progress_stop = kwargs["stop"] if kwargs["stop"] else entry.latest_record
-    last_time = progress_start
-    task = progress.add_task(
-        f"Entry '{entry.name}'", total=progress_stop - progress_start
-    )
-    mirrored_size = 0
-    start_op = time.time()
-    async for record in src_bucket.query(
-        entry.name, start=kwargs["start"], stop=kwargs["stop"]
+    async for record in read_records_with_progress(
+        entry, src_bucket, progress, **kwargs
     ):
-        try:
-            mirrored_size += record.size
-            await dest_bucket.write(
-                entry.name,
-                data=record.read(1024),
-                content_length=record.size,
-                timestamp=record.timestamp,
-            )
-        except ReductError as err:
-            if err.status_code != 409:
-                raise err
-
-        progress.update(
-            task,
-            description=f"Entry '{entry.name}' (copied {pretty_size(mirrored_size)}, "
-            f"speed {pretty_size(mirrored_size / (time.time() - start_op))}/s)",
-            advance=record.timestamp - last_time,
-            refresh=True,
+        await dest_bucket.write(
+            entry.name,
+            data=record.read(1024),
+            content_length=record.size,
+            timestamp=record.timestamp,
         )
-        last_time = record.timestamp
-
-    progress.update(task, total=1, completed=True)
 
 
 async def _sync_bucket(
@@ -87,9 +60,12 @@ async def _sync_bucket(
 )
 @click.pass_context
 def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
-    """Copy data from a bucket to another one
+    """Copy data from a SRC to DST bucket
 
-    If the destination bucket doesn't exist, it is created with the settings of the"""
+    SRC and DST should be in the format of ALIAS/BUCKET_NAME
+
+    If the destination bucket doesn't exist, it is created with
+    the settings of the source bucket."""
 
     with error_handle():
         alias_name, src_bucket = parse_path(src)
@@ -103,12 +79,6 @@ def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
         dest_instance = ReductClient(
             alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
         )
-
-        if start:
-            start = int(datetime.fromisoformat(start).timestamp() * 1000_000)
-
-        if stop:
-            stop = int(datetime.fromisoformat(stop).timestamp() * 1000_000)
 
         asyncio.new_event_loop().run_until_complete(
             _sync_bucket(
