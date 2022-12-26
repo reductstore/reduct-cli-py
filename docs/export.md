@@ -21,7 +21,7 @@ name of the bucket.
 Here is an example of how you might use the `rcli export folder` command:
 
 ```
-rcli export folder myalias/mybucket /Users/me/Desktop/exported-data
+rcli export folder myalias/mybucket ./exported-data
 ```
 
 This will export all the data from the `mybucket` bucket in your storage engine (accessed using the `myalias` alias) to
@@ -47,17 +47,17 @@ Here are some examples of how you might use the `rcli export folder` command wit
 To export all data from the `mybucket` bucket that was created after January 1, 2022:
 
 ```
-rcli export folder --start 2022-01-01T00:00:00Z myalias/mybucket /Users/me/Desktop/exported-data
+rcli export folder --start 2022-01-01T00:00:00Z myalias/mybucket ./exported-data
 ```
 
 To export all data from the mybucket bucket that was created before January 1, 2022:
 
 ```
-rcli export folder --stop 2022-01-01T00:00:00Z myalias/mybucket /Users/me/Desktop/exported-data
+rcli export folder --stop 2022-01-01T00:00:00Z myalias/mybucket ./exported-data
 ```
 
 To export all data from the mybucket bucket that was created between January 1, 2022 and January 31, 2022:
 
 ```
-rcli export folder --start 2022-01-01T00:00:00Z --stop 2022-01-31T00:00:00Z myalias/mybucket /Users/me/Desktop/exported-data
+rcli export folder --start 2022-01-01T00:00:00Z --stop 2022-01-31T00:00:00Z myalias/mybucket ./exported-data
 ```
