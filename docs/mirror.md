@@ -1,20 +1,63 @@
 # Mirror data
 
-The `rcli` command line client provides the mirror command to copy data from one bucket to another, whether the buckets
-are on the same storage engine or on different storage engines.
+The` rcli mirror` command allows you to copy data from a source bucket in your storage engine to a destination bucket.
+This can be useful if you want to make a copy of your data for backup or to transfer data between different buckets.
 
-To mirror data from one bucket to another, use the following command, where `server-1/bucket` is the source bucket and
-`server-2`/bucket is the destination bucket:
+To use the rcli mirror command, open a terminal and type the following, replacing `[OPTIONS]` with any optional flags
+that
+you want to use (see below for a list of available options), `SRC` with the source bucket that you want to copy data
+from,
+and `DEST` with the destination bucket where you want to save the copied data:
 
-```shell
-rcli  mirror server-1/bucket server-2/bucket
+```
+rcli mirror [OPTIONS] SRC DEST
 ```
 
-You can also specify a time interval for mirroring data using the `--start` and `--stop` flags, like this:
+`SRC` and `DEST` should be in the format `ALIAS/BUCKET_NAME`, where `ALIAS` is the alias that you created for your
+storage
+engine (using the rcli alias add command), and `BUCKET_NAME` is the name of the bucket.
 
-```shell
-rcli  mirror --start 2022-11-06T20:10:30 --stop 2022-11-06T20:14:30  server-1/bucket server-2/bucket
+If the destination bucket doesn't exist, it will be created with the same settings as the source bucket.
+
+For example, to copy all data from the `mybucket` bucket in your storage engine (accessed using the `myalias` alias) to
+the
+`newbucket` bucket, you would type the following command:
+
+```
+rcli mirror myalias/mybucket myalias/newbucket
 ```
 
-This will only mirror data from the source bucket that was created or modified within the specified time interval. This
-can be useful if you only want to mirror a specific subset of the data in the source bucket.
+## Available options
+
+Here is a list of the options that you can use with the rcli mirror command:
+
+* `--start`: This option allows you to specify a starting time point for the data that you want to copy. Data with
+  timestamps newer than this time point will be included in the copy. The time point should be in ISO format (e.g.,
+  2022-01-01T00:00:00Z).
+
+* `--stop`: This option allows you to specify an ending time point for the data that you want to copy. Data with
+  timestamps
+  older than this time point will be included in the copy. The time point should be in ISO format (e.g., 2022-01-01T00:00:00Z).
+
+## Examples
+
+Here are some examples of how you might use the `rcli mirror` command with the available options:
+
+To copy all data from the `mybucket` bucket that was created after January 1, 2022 to the `newbucket` bucket:
+
+```
+rcli mirror --start 2022-01-01T00:00:00Z myalias/mybucket myalias/newbucket
+```
+
+To copy all data from the `mybucket` bucket that was created before January 1, 2022 to the `newbucket` bucket:
+
+```
+rcli mirror --stop 2022-01-01T00:00:00Z myalias/mybucket myalias/newbucket
+```
+
+To copy all data from the `mybucket` bucket that was created between January 1, 2022 and January 31, 2022 to the `newbucket`
+bucket:
+
+```
+rcli mirror --start 2022-01-01T00:00:00Z --stop 2022-01-31T00:00:00Z myalias/mybucket myalias/newbucket
+```
