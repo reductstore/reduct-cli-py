@@ -27,19 +27,20 @@ async def _export_entry(
 
     async for record in read_records_with_progress(entry, bucket, progress, **kwargs):
         with open(entry_path / f"{record.timestamp}.bin", "wb") as file:
-            async for chunk in record.read(n=1024):
+            async for chunk in record.read(1024):
                 file.write(chunk)
 
 
 async def _export_bucket(
-    client,
+    client: ReductClient,
+    dest: str,
     bucket_name: str,
     **kwargs,
 ) -> None:
     bucket: Bucket = await client.get_bucket(bucket_name)
-    folder_path = Path(bucket_name)
+    folder_path = Path(dest) / bucket_name
 
-    folder_path.mkdir(exist_ok=True)
+    folder_path.mkdir(parents=True, exist_ok=True)
     with Progress() as progress:
         tasks = [
             _export_entry(folder_path, entry, bucket, progress, **kwargs)
@@ -49,7 +50,8 @@ async def _export_bucket(
 
 
 @export.command()
-@click.argument("path")
+@click.argument("src")
+@click.argument("dest")
 @click.option(
     "--start",
     help="Mirror records with timestamps newer than this time point in ISO format",
@@ -59,13 +61,17 @@ async def _export_bucket(
     help="Mirror records  with timestamps older than this time point in ISO format",
 )
 @click.pass_context
-def folder(ctx, path: str, start: Optional[str], stop: Optional[str]):
-    """Export data from bucket to folder"""
+def folder(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
+    """Export data from SRC bucket to DST folder
+
+    SRC should be in the format of ALIAS/BUCKET_NAME
+    """
+
     with error_handle():
-        alias_name, bucket = parse_path(path)
+        alias_name, bucket = parse_path(src)
         alias = get_alias(ctx.obj["config_path"], alias_name)
 
         client = ReductClient(
             alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
         )
-        run(_export_bucket(client, bucket, start=start, stop=stop))
+        run(_export_bucket(client, dest, bucket, start=start, stop=stop))

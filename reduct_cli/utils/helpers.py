@@ -1,5 +1,6 @@
 """Helper functions"""
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Tuple
 
@@ -51,17 +52,17 @@ async def read_records_with_progress(
         Record: Record from entry
     """
 
-    progress_start = kwargs["start"] if kwargs["start"] else entry.oldest_record
-    progress_stop = kwargs["stop"] if kwargs["stop"] else entry.latest_record
-    last_time = progress_start
-    task = progress.add_task(
-        f"Entry '{entry.name}'", total=progress_stop - progress_start
-    )
+    def _to_timestamp(dt: str) -> int:
+        return int(datetime.fromisoformat(dt).timestamp() * 1000_000)
+
+    start = _to_timestamp(kwargs["start"]) if kwargs["start"] else entry.oldest_record
+    stop = _to_timestamp(kwargs["stop"]) if kwargs["stop"] else entry.latest_record
+
+    last_time = start
+    task = progress.add_task(f"Entry '{entry.name}'", total=stop - start)
     exported_size = 0
     start_op = time.time()
-    async for record in bucket.query(
-        entry.name, start=kwargs["start"], stop=kwargs["stop"]
-    ):
+    async for record in bucket.query(entry.name, start=start, stop=stop):
         try:
             exported_size += record.size
             yield record

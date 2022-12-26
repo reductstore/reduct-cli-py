@@ -61,7 +61,9 @@ async def _sync_bucket(
 )
 @click.pass_context
 def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
-    """Copy data from a bucket to another one
+    """Copy data from a SRC to DST bucket
+
+    SRC and DST should be in the format of ALIAS/BUCKET_NAME
 
     If the destination bucket doesn't exist, it is created with
     the settings of the source bucket."""
@@ -78,12 +80,6 @@ def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
         dest_instance = ReductClient(
             alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
         )
-
-        if start:
-            start = int(datetime.fromisoformat(start).timestamp() * 1000_000)
-
-        if stop:
-            stop = int(datetime.fromisoformat(stop).timestamp() * 1000_000)
 
         asyncio.new_event_loop().run_until_complete(
             _sync_bucket(
