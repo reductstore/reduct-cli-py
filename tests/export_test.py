@@ -1,7 +1,8 @@
+"""Unit tests for export command"""
 from pathlib import Path
 from tempfile import gettempdir
 
-import pytest as pytest
+import pytest
 from reduct import Client
 
 

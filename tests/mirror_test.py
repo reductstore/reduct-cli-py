@@ -1,11 +1,9 @@
 """Unit tests for mirror command"""
 import asyncio
-from typing import List
 from unittest.mock import call, ANY
 
 import pytest
-from reduct import Client, Bucket, BucketSettings, EntryInfo
-from reduct.bucket import Record
+from reduct import Client, Bucket
 
 from .conftest import AsyncIter
 
