@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Tuple
 
 from click import Abort
-from reduct import ReductError, EntryInfo, Bucket
+from reduct import EntryInfo, Bucket
 from rich.progress import Progress
 
 from reduct_cli.config import read_config, Alias
@@ -63,13 +63,9 @@ async def read_records_with_progress(
     exported_size = 0
     start_op = time.time()
     async for record in bucket.query(entry.name, start=start, stop=stop):
-        try:
-            exported_size += record.size
-            yield record
+        exported_size += record.size
 
-        except ReductError as err:
-            if err.status_code != 409:
-                raise err
+        yield record
 
         progress.update(
             task,
