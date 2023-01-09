@@ -97,8 +97,8 @@ def test__get_error(runner, conf, client):
     assert result.exit_code == 1
 
 
-@pytest.mark.usefixtures("set_alias")
-def test__mirror_409(runner, conf, client, src_bucket, dest_bucket):
+@pytest.mark.usefixtures("set_alias", "client", "src_bucket")
+def test__mirror_409(runner, conf, dest_bucket):
     """Should skip record if it already exists in destination bucket"""
     dest_bucket.write.side_effect = ReductError(409, "Conflict")
     result = runner(f"-c {conf} mirror test/src_bucket test/dest_bucket")
