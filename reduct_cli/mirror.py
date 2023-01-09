@@ -3,7 +3,7 @@ import asyncio
 from typing import Optional
 
 import click
-from reduct import Client as ReductClient, Bucket, EntryInfo
+from reduct import Client as ReductClient, Bucket, EntryInfo, ReductError
 from rich.progress import Progress
 
 from reduct_cli.utils.error import error_handle
@@ -20,12 +20,17 @@ async def _sync_entry(
     async for record in read_records_with_progress(
         entry, src_bucket, progress, **kwargs
     ):
-        await dest_bucket.write(
-            entry.name,
-            data=record.read(1024),
-            content_length=record.size,
-            timestamp=record.timestamp,
-        )
+        try:
+            await dest_bucket.write(
+                entry.name,
+                data=record.read(1024),
+                content_length=record.size,
+                timestamp=record.timestamp,
+            )
+        except ReductError as err:
+            # filter out the error that the entry already exists
+            if err.status_code != 409:
+                raise err
 
 
 async def _sync_bucket(
