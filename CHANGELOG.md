@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed:
+
+- 409 HTTP error in `rcli mirror`, [PR-27](https://github.com/reductstore/reduct-cli/pull/27)
+
 ## [0.4.0] - 2022-12-26
 
 ### Added:
