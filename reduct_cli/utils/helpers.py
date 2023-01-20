@@ -79,6 +79,7 @@ async def read_records_with_progress(
             signal_queue.put_nowait("stop")
 
         asyncio.get_event_loop().add_signal_handler(signal.SIGINT, stop_signal)
+        asyncio.get_event_loop().add_signal_handler(signal.SIGTERM, stop_signal)
 
         async for record in bucket.query(entry.name, start=start, stop=stop):
             if signal_queue.qsize() > 0:
