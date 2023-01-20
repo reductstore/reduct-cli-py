@@ -22,8 +22,14 @@ from reduct_cli.export import export
     type=Path,
     help="Path to config file. Default ${HOME}/.reduct-cli/config.toml",
 )
+@click.option(
+    "--timeout",
+    "-t",
+    type=int,
+    help="Timeout for requests in seconds. Default 5",
+)
 @click.pass_context
-def cli(ctx, config: Optional[Path] = None):
+def cli(ctx, config: Optional[Path] = None, timeout: int = 5):
     """CLI admin tool for Reduct Storage"""
     if config is None:
         config = Path.home() / ".reduct-cli" / "config.toml"
@@ -32,7 +38,7 @@ def cli(ctx, config: Optional[Path] = None):
         write_config(config, {"aliases": {}})
 
     ctx.obj["config_path"] = config
-    ctx.obj["timeout"] = 3.0
+    ctx.obj["timeout"] = timeout
 
 
 cli.add_command(alias, "alias")
