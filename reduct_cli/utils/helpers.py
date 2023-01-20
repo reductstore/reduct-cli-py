@@ -53,7 +53,9 @@ async def read_records_with_progress(
     """
 
     def _to_timestamp(date: str) -> int:
-        return int(datetime.fromisoformat(date).timestamp() * 1000_000)
+        return int(
+            datetime.fromisoformat(date.replace("Z", "+00:00")).timestamp() * 1000_000
+        )
 
     start = _to_timestamp(kwargs["start"]) if kwargs["start"] else entry.oldest_record
     stop = _to_timestamp(kwargs["stop"]) if kwargs["stop"] else entry.latest_record

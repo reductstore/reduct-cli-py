@@ -66,3 +66,15 @@ def test__export_to_folder_fail(runner, client, conf):
     result = runner(f"-c {conf} export folder test/src_bucket .")
     assert result.output == "[RuntimeError] Oops\nAborted!\n"
     assert result.exit_code == 1
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__export_utc_timestamp(runner, conf, dest_bucket, src_bucket):
+    """Should support Z designator for UTC timestamps"""
+    result = runner(
+        f"-c {conf} export folder test/src_bucket . --start 2022-01-02T00:00:01.100300Z --stop 2022-02-01T00:00:00Z"
+    )
+    assert result.exit_code == 0
+    src_bucket.query.assert_called_with(
+        "entry-1", start=1641081601100300, stop=1643673600000000
+    )
