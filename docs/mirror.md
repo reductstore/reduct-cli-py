@@ -39,6 +39,12 @@ Here is a list of the options that you can use with the rcli mirror command:
   timestamps
   older than this time point will be included in the copy. The time point should be in ISO format (e.g., 2022-01-01T00:00:00Z).
 
+You also can use the global `--parallel` option to specify the number of entries that you want to mirror in parallel:
+
+```
+rcli  --parallel 10  mirror myalias/mybucket myalias/newbucket
+```
+
 ## Examples
 
 Here are some examples of how you might use the `rcli mirror` command with the available options:
