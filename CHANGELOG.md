@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--entries` option to `rcli mirror` and `rcli export`
   commands, [PR-36](https://github.com/reductstore/reduct-cli/pull/36)
 - URL validation to `alias add` command, [PR-37](https://github.com/reductstore/reduct-cli/pull/37)
+- Graceful handling of `SIGINT` and `SIGTERM` signals, [PR-38](https://github.com/reductstore/reduct-cli/pull/38)
 
 ### Fixed:
 
