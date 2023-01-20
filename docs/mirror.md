@@ -34,10 +34,12 @@ Here is a list of the options that you can use with the rcli mirror command:
 * `--start`: This option allows you to specify a starting time point for the data that you want to copy. Data with
   timestamps newer than this time point will be included in the copy. The time point should be in ISO format (e.g.,
   2022-01-01T00:00:00Z).
-
 * `--stop`: This option allows you to specify an ending time point for the data that you want to copy. Data with
-  timestamps
-  older than this time point will be included in the copy. The time point should be in ISO format (e.g., 2022-01-01T00:00:00Z).
+  timestamps older than this time point will be included in the copy. The time point should be in ISO format (e.g.,
+  2022-01-01T00:00:00Z).
+* `--entries`: With this option, you can specify the entries that you want to export. The entries should be
+  specified
+  as a comma-separated list of entry names (e.g., `--entries=entry1,entry2`).
 
 You also can use the global `--parallel` option to specify the number of entries that you want to mirror in parallel:
 
@@ -61,7 +63,8 @@ To copy all data from the `mybucket` bucket that was created before January 1, 2
 rcli mirror --stop 2022-01-01T00:00:00Z myalias/mybucket myalias/newbucket
 ```
 
-To copy all data from the `mybucket` bucket that was created between January 1, 2022 and January 31, 2022 to the `newbucket`
+To copy all data from the `mybucket` bucket that was created between January 1, 2022 and January 31, 2022 to
+the `newbucket`
 bucket:
 
 ```

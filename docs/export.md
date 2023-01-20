@@ -31,13 +31,16 @@ the exported-data folder on your desktop.
 
 Here is a list of the options that you can use with the `rcli export folder` command:
 
-* -`-start`: This option allows you to specify a starting time point for the data that you want to export. Data with
+* `--start`: This option allows you to specify a starting time point for the data that you want to export. Data with
   timestamps newer than this time point will be included in the export. The time point should be in ISO format (e.g.,
   2022-01-01T00:00:00Z).
 
-* -`-stop`: This option allows you to specify an ending time point for the data that you want to export. Data with
+* `--stop`: This option allows you to specify an ending time point for the data that you want to export. Data with
   timestamps older than this time point will be included in the export. The time point should be in ISO format (e.g.,
   2022-01-01T00:00:00Z).
+
+* `--entries`: With this option, you can specify the entries that you want to export. The entries should be specified
+  as a comma-separated list of entry names (e.g., `--entries=entry1,entry2`).
 
 You also can use the global `--parallel` option to specify the number of entries that you want to export in parallel:
 
