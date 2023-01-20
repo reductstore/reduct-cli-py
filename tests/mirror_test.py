@@ -51,7 +51,9 @@ def test__mirror_ok(
         "dest_bucket", settings=src_settings, exist_ok=True
     )
 
-    src_bucket.query.assert_called_with("entry-1", start=1000000000, stop=5000000000)
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1", start=1000000000, stop=5000000000
+    )
     assert dest_bucket.write.await_args_list[0] == call(
         "entry-1",
         data=ANY,
@@ -71,6 +73,16 @@ def test__mirror_ok(
         b"Bye"
     ]
 
+    assert src_bucket.query.call_args_list[1] == call(
+        "entry-2", start=1000000000, stop=5000000000
+    )
+    assert dest_bucket.write.await_args_list[2] == call(
+        "entry-2",
+        data=ANY,
+        content_length=records[0].size,
+        timestamp=records[0].timestamp,
+    )
+
 
 @pytest.mark.usefixtures("set_alias", "client")
 def test__mirror_ok_with_interval(runner, conf, src_bucket):
@@ -83,7 +95,7 @@ def test__mirror_ok_with_interval(runner, conf, src_bucket):
     assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
-    src_bucket.query.assert_called_with(
+    assert src_bucket.query.call_args_list[0] == call(
         "entry-1", start=1641074401100300, stop=1643666400000000
     )
 
@@ -113,6 +125,29 @@ def test__mirror_utc_timestamp(runner, conf, src_bucket):
         f"--start 2022-01-02T00:00:01.100300Z --stop 2022-02-01T00:00:00Z"
     )
     assert result.exit_code == 0
-    src_bucket.query.assert_called_with(
+    assert src_bucket.query.call_args_list[0] == call(
         "entry-1", start=1641081601100300, stop=1643673600000000
     )
+
+
+@pytest.mark.usefixtures("set_alias", "client", "dest_bucket")
+def test__mirror_specific_entry(runner, conf, src_bucket):
+    """Should mirror specific entry"""
+    result = runner(
+        f"-c {conf} mirror test/src_bucket test/dest_bucket --entries=entry-2"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [call("entry-2", start=ANY, stop=ANY)]
+
+
+@pytest.mark.usefixtures("set_alias", "client", "dest_bucket")
+def test__mirror_multiple_specific_entry(runner, conf, src_bucket):
+    """Should mirror multiple specific entries"""
+    result = runner(
+        f"-c {conf} mirror test/src_bucket test/dest_bucket --entries=entry-2,entry-1"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [
+        call("entry-1", start=ANY, stop=ANY),
+        call("entry-2", start=ANY, stop=ANY),
+    ]

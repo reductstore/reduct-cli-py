@@ -1,6 +1,7 @@
 """Unit tests for export command"""
 from pathlib import Path
 from tempfile import gettempdir
+from unittest.mock import call, ANY
 
 import pytest
 from reduct import Client
@@ -28,15 +29,16 @@ def test__export_to_folder_ok_with_interval(runner, conf, src_bucket, records):
     assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
-    src_bucket.query.assert_called_with(
-        "entry-1", start=1641074401100300, stop=1643666400000000
-    )
+    assert src_bucket.query.call_args_list == [
+        call("entry-1", start=1641074401100300, stop=1643666400000000),
+        call("entry-2", start=1641074401100300, stop=1643666400000000),
+    ]
 
     assert (
         path / "src_bucket" / "entry-1" / f"{records[0].timestamp}.bin"
     ).read_bytes() == b"Hey"
     assert (
-        path / "src_bucket" / "entry-1" / f"{records[1].timestamp}.bin"
+        path / "src_bucket" / "entry-2" / f"{records[1].timestamp}.bin"
     ).read_bytes() == b"Bye"
 
 
@@ -48,14 +50,9 @@ def test__export_to_folder_ok_without_interval(runner, conf, src_bucket, records
     assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
-    src_bucket.query.assert_called_with("entry-1", start=1000000000, stop=5000000000)
-
-    assert (
-        path / "src_bucket" / "entry-1" / f"{records[0].timestamp}.bin"
-    ).read_bytes() == b"Hey"
-    assert (
-        path / "src_bucket" / "entry-1" / f"{records[1].timestamp}.bin"
-    ).read_bytes() == b"Bye"
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1", start=1000000000, stop=5000000000
+    )
 
 
 @pytest.mark.usefixtures("set_alias")
@@ -76,6 +73,27 @@ def test__export_utc_timestamp(runner, conf, src_bucket):
         f"--start 2022-01-02T00:00:01.100300Z --stop 2022-02-01T00:00:00Z"
     )
     assert result.exit_code == 0
-    src_bucket.query.assert_called_with(
+    assert src_bucket.query.call_args_list[0] == call(
         "entry-1", start=1641081601100300, stop=1643673600000000
     )
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__export_specific_entry(runner, conf, src_bucket):
+    """Should export specific entry"""
+    result = runner(f"-c {conf} export folder test/src_bucket . --entries=entry-2")
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [call("entry-2", start=ANY, stop=ANY)]
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__export_multiple_specific_entry(runner, conf, src_bucket):
+    """Should export multiple specific entries"""
+    result = runner(
+        f"-c {conf} export folder test/src_bucket . --entries=entry-2,entry-1"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [
+        call("entry-1", start=ANY, stop=ANY),
+        call("entry-2", start=ANY, stop=ANY),
+    ]
