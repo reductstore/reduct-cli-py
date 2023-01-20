@@ -1,6 +1,8 @@
 """Helper functions"""
+import asyncio
+import signal
 import time
-from asyncio import Semaphore
+from asyncio import Semaphore, Queue
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple, List
@@ -12,6 +14,8 @@ from rich.progress import Progress
 from reduct_cli.config import read_config, Alias
 from reduct_cli.utils.consoles import error_console
 from reduct_cli.utils.humanize import pretty_size
+
+signal_queue = Queue()
 
 
 def get_alias(config_path: Path, name: str) -> Alias:
@@ -41,7 +45,7 @@ async def read_records_with_progress(
     progress: Progress,
     sem: Semaphore,
     **kwargs,
-):
+):  # pylint: disable=too-many-locals
     """Read records from entry and show progress
     Args:
         entry (EntryInfo): Entry to read records from
@@ -70,7 +74,23 @@ async def read_records_with_progress(
         count = 0
         stats = []
         speed = 0
+
+        def stop_signal():
+            signal_queue.put_nowait("stop")
+
+        asyncio.get_event_loop().add_signal_handler(signal.SIGINT, stop_signal)
+
         async for record in bucket.query(entry.name, start=start, stop=stop):
+            if signal_queue.qsize() > 0:
+                # stop signal received
+                progress.update(
+                    task,
+                    description=f"Entry '{entry.name}' "
+                    f"(copied {count} records ({pretty_size(exported_size)}), stopped",
+                    refresh=True,
+                )
+                return
+
             exported_size += record.size
             stats.append((record.size, time.time()))
             if len(stats) > 10:
