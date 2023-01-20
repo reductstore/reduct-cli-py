@@ -68,3 +68,4 @@ rcli = "reduct_cli:main"
 [tool.pylint.MASTER]
 good-names = "ls,rm"
 disable = ["fixme", "duplicate-code"]
+extension-pkg-whitelist = "pydantic"

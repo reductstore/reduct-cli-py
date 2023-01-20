@@ -1,7 +1,7 @@
 """Configuration"""
 import os
 from pathlib import Path
-from typing import TypedDict, Dict
+from typing import Dict
 
 import tomlkit as toml
 from pydantic import HttpUrl, BaseModel
