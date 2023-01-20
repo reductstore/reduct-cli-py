@@ -25,7 +25,7 @@ def test__export_to_folder_ok_with_interval(runner, conf, src_bucket, records):
         f"--stop 2022-02-01T00:00:00+02:00 "
         f"test/src_bucket {path}"
     )
-    assert "Entry 'entry-1' (copied 6 B" in result.output
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
     src_bucket.query.assert_called_with(
@@ -45,7 +45,7 @@ def test__export_to_folder_ok_without_interval(runner, conf, src_bucket, records
     """Should export a bucket to a fodder one without time interval"""
     path = Path(gettempdir()) / "reduct-test"
     result = runner(f"-c {conf} export folder test/src_bucket {path}")
-    assert "Entry 'entry-1' (copied 6 B" in result.output
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
     src_bucket.query.assert_called_with("entry-1", start=1000000000, stop=5000000000)

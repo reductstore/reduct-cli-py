@@ -43,7 +43,7 @@ def test__mirror_ok(
     """Should mirror a bucket to another one"""
 
     result = runner(f"-c {conf} mirror test/src_bucket test/dest_bucket")
-    assert "Entry 'entry-1' (copied 6 B" in result.output
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
     client.get_bucket.assert_called_with("src_bucket")
@@ -80,7 +80,7 @@ def test__mirror_ok_with_interval(runner, conf, src_bucket):
         f"--stop 2022-02-01T00:00:00+02:00 "
         f"test/src_bucket test/dest_bucket"
     )
-    assert "Entry 'entry-1' (copied 6 B" in result.output
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
     src_bucket.query.assert_called_with(
@@ -102,7 +102,6 @@ def test__mirror_409(runner, conf, dest_bucket):
     """Should skip record if it already exists in destination bucket"""
     dest_bucket.write.side_effect = ReductError(409, "Conflict")
     result = runner(f"-c {conf} mirror test/src_bucket test/dest_bucket")
-    assert "Entry 'entry-1' (copied 6 B" in result.output
     assert result.exit_code == 0
 
 

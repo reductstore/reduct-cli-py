@@ -7,7 +7,12 @@ from reduct import Client as ReductClient, Bucket, EntryInfo, ReductError
 from rich.progress import Progress
 
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import parse_path, get_alias, read_records_with_progress
+from reduct_cli.utils.helpers import (
+    parse_path,
+    get_alias,
+    read_records_with_progress,
+    filter_entries,
+)
 
 
 async def _sync_entry(
@@ -51,7 +56,9 @@ async def _sync_bucket(
     with Progress() as progress:
         tasks = [
             _sync_entry(entry, src_bucket, dest_bucket, progress, sem, **kwargs)
-            for entry in await src_bucket.get_entry_list()
+            for entry in filter_entries(
+                await src_bucket.get_entry_list(), kwargs["entries"]
+            )
         ]
         await asyncio.gather(*tasks)
 
@@ -67,9 +74,16 @@ async def _sync_bucket(
     "--stop",
     help="Mirror records  with timestamps older than this time point in ISO format",
 )
+@click.option(
+    "--entries",
+    help="Mirror only these entries, separated by comma",
+    default="",
+)
 @click.pass_context
-def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
-    """Copy data from a SRC to DST bucket
+def mirror(
+    ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
+):
+    """Copy data from SRC to DST bucket
 
     SRC and DST should be in the format of ALIAS/BUCKET_NAME
 
@@ -98,5 +112,6 @@ def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
                 parallel=ctx.obj["parallel"],
                 start=start,
                 stop=stop,
+                entries=entries.split(","),
             )
         )
