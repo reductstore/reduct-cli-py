@@ -106,11 +106,12 @@ def test__mirror_409(runner, conf, dest_bucket):
     assert result.exit_code == 0
 
 
-@pytest.mark.usefixtures("set_alias", "client")
-def test__mirror_utc_timestamp(runner, conf, dest_bucket, src_bucket):
+@pytest.mark.usefixtures("set_alias", "client", "dest_bucket")
+def test__mirror_utc_timestamp(runner, conf, src_bucket):
     """Should support Z designator for UTC timestamps"""
     result = runner(
-        f"-c {conf} mirror test/src_bucket test/dest_bucket --start 2022-01-02T00:00:01.100300Z --stop 2022-02-01T00:00:00Z"
+        f"-c {conf} mirror test/src_bucket test/dest_bucket "
+        f"--start 2022-01-02T00:00:01.100300Z --stop 2022-02-01T00:00:00Z"
     )
     assert result.exit_code == 0
     src_bucket.query.assert_called_with(
