@@ -15,10 +15,11 @@ async def _sync_entry(
     src_bucket: Bucket,
     dest_bucket: Bucket,
     progress: Progress,
+    sem: asyncio.Semaphore,
     **kwargs,
 ):
     async for record in read_records_with_progress(
-        entry, src_bucket, progress, **kwargs
+        entry, src_bucket, progress, sem, **kwargs
     ):
         try:
             await dest_bucket.write(
@@ -38,15 +39,18 @@ async def _sync_bucket(
     dest_bucket_name: str,
     src: ReductClient,
     dest: ReductClient,
+    parallel: int,
     **kwargs,
 ) -> None:
     src_bucket: Bucket = await src.get_bucket(src_bucket_name)
     dest_bucket: Bucket = await dest.create_bucket(
         dest_bucket_name, settings=await src_bucket.get_settings(), exist_ok=True
     )
+
+    sem = asyncio.Semaphore(parallel)
     with Progress() as progress:
         tasks = [
-            _sync_entry(entry, src_bucket, dest_bucket, progress, **kwargs)
+            _sync_entry(entry, src_bucket, dest_bucket, progress, sem, **kwargs)
             for entry in await src_bucket.get_entry_list()
         ]
         await asyncio.gather(*tasks)
@@ -91,6 +95,7 @@ def mirror(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
                 dest_bucket,
                 src_instance,
                 dest_instance,
+                parallel=ctx.obj["parallel"],
                 start=start,
                 stop=stop,
             )

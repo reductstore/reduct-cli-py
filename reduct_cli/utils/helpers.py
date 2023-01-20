@@ -1,5 +1,6 @@
 """Helper functions"""
 import time
+from asyncio import Semaphore
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
@@ -38,6 +39,7 @@ async def read_records_with_progress(
     entry: EntryInfo,
     bucket: Bucket,
     progress: Progress,
+    sem: Semaphore,
     **kwargs,
 ):
     """Read records from entry and show progress
@@ -45,6 +47,7 @@ async def read_records_with_progress(
         entry (EntryInfo): Entry to read records from
         bucket (Bucket): Bucket to read records from
         progress (Progress): Progress bar to show progress
+        sem (Semaphore): Semaphore to limit parallelism
     Keyword Args:
         start (Optional[datetime]): Start time point
         stop (Optional[datetime]): Stop time point
@@ -61,21 +64,22 @@ async def read_records_with_progress(
     stop = _to_timestamp(kwargs["stop"]) if kwargs["stop"] else entry.latest_record
 
     last_time = start
-    task = progress.add_task(f"Entry '{entry.name}'", total=stop - start)
-    exported_size = 0
-    start_op = time.time()
-    async for record in bucket.query(entry.name, start=start, stop=stop):
-        exported_size += record.size
+    task = progress.add_task(f"Entry '{entry.name}' waiting", total=stop - start)
+    async with sem:
+        exported_size = 0
+        start_op = time.time()
+        async for record in bucket.query(entry.name, start=start, stop=stop):
+            exported_size += record.size
 
-        yield record
+            yield record
 
-        progress.update(
-            task,
-            description=f"Entry '{entry.name}' (copied {pretty_size(exported_size)}, "
-            f"speed {pretty_size(exported_size / (time.time() - start_op))}/s)",
-            advance=record.timestamp - last_time,
-            refresh=True,
-        )
-        last_time = record.timestamp
+            progress.update(
+                task,
+                description=f"Entry '{entry.name}' (copied {pretty_size(exported_size)}, "
+                f"speed {pretty_size(exported_size / (time.time() - start_op))}/s)",
+                advance=record.timestamp - last_time,
+                refresh=True,
+            )
+            last_time = record.timestamp
 
-    progress.update(task, total=1, completed=True)
+        progress.update(task, total=1, completed=True)

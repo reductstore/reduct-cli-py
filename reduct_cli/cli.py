@@ -28,17 +28,35 @@ from reduct_cli.export import export
     type=int,
     help="Timeout for requests in seconds. Default 5",
 )
+@click.option(
+    "--parallel",
+    "-p",
+    type=int,
+    help="Number of parallel tasks to use, defaults to 10",
+)
 @click.pass_context
-def cli(ctx, config: Optional[Path] = None, timeout: int = 5):
+def cli(
+    ctx,
+    config: Optional[Path] = None,
+    timeout: Optional[int] = None,
+    parallel: Optional[int] = None,
+):
     """CLI admin tool for Reduct Storage"""
     if config is None:
         config = Path.home() / ".reduct-cli" / "config.toml"
+
+    if timeout is None:
+        timeout = 5
+
+    if parallel is None:
+        parallel = 10
 
     if not Path.exists(config):
         write_config(config, {"aliases": {}})
 
     ctx.obj["config_path"] = config
     ctx.obj["timeout"] = timeout
+    ctx.obj["parallel"] = parallel
 
 
 cli.add_command(alias, "alias")
