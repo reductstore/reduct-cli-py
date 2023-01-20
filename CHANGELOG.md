@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added:
+
+- Support `Z` designator for UTC timestamps in `rcli export` and `rcli mirror`
+  commands, [PR-33](https://github.com/reductstore/reduct-cli/pull/33)
+
 ### Fixed:
 
 - 409 HTTP error in `rcli mirror`, [PR-27](https://github.com/reductstore/reduct-cli/pull/27)
