@@ -16,7 +16,7 @@ run = loop().run_until_complete
 
 @click.group()
 def export():
-    """Commands to export data from a bucket"""
+    """Export data from a bucket somewhere else"""
 
 
 async def _export_entry(

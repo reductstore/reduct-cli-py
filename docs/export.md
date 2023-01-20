@@ -39,6 +39,11 @@ Here is a list of the options that you can use with the `rcli export folder` com
   timestamps older than this time point will be included in the export. The time point should be in ISO format (e.g.,
   2022-01-01T00:00:00Z).
 
+You also can use the global `--parallel` option to specify the number of entries that you want to export in parallel:
+
+```
+rcli  --parallel 10  export folder myalias/mybucket ./exported-data
+```
 
 ### Examples
 
