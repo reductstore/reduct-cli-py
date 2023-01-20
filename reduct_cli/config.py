@@ -1,19 +1,20 @@
 """Configuration"""
 import os
 from pathlib import Path
-from typing import TypedDict, Dict
+from typing import Dict
 
 import tomlkit as toml
+from pydantic import HttpUrl, BaseModel
 
 
-class Alias(TypedDict):
+class Alias(BaseModel):
     """Alias of storage instance"""
 
-    url: str
+    url: HttpUrl
     token: str
 
 
-class Config(TypedDict):
+class Config(BaseModel):
     """Configuration as a dict"""
 
     aliases: Dict[str, Alias]
