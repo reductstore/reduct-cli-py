@@ -9,7 +9,12 @@ from reduct import Client as ReductClient, Bucket, EntryInfo
 from rich.progress import Progress
 
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import parse_path, get_alias, read_records_with_progress
+from reduct_cli.utils.helpers import (
+    parse_path,
+    get_alias,
+    read_records_with_progress,
+    filter_entries,
+)
 
 run = loop().run_until_complete
 
@@ -48,7 +53,9 @@ async def _export_bucket(
     with Progress() as progress:
         tasks = [
             _export_entry(folder_path, entry, bucket, progress, sem, **kwargs)
-            for entry in await bucket.get_entry_list()
+            for entry in filter_entries(
+                await bucket.get_entry_list(), kwargs["entries"]
+            )
         ]
         await asyncio.gather(*tasks)
 
@@ -64,8 +71,15 @@ async def _export_bucket(
     "--stop",
     help="Mirror records  with timestamps older than this time point in ISO format",
 )
+@click.option(
+    "--entries",
+    help="Mirror only these entries, separated by comma",
+    default="",
+)
 @click.pass_context
-def folder(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
+def folder(
+    ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
+):  # pylint: disable=too-many-arguments
     """Export data from SRC bucket to DST folder
 
     SRC should be in the format of ALIAS/BUCKET_NAME
@@ -86,5 +100,6 @@ def folder(ctx, src: str, dest: str, start: Optional[str], stop: Optional[str]):
                 parallel=ctx.obj["parallel"],
                 start=start,
                 stop=stop,
+                entries=entries.split(","),
             )
         )

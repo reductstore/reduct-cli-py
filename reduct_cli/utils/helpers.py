@@ -3,7 +3,7 @@ import time
 from asyncio import Semaphore
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, List
 
 from click import Abort
 from reduct import EntryInfo, Bucket
@@ -67,19 +67,46 @@ async def read_records_with_progress(
     task = progress.add_task(f"Entry '{entry.name}' waiting", total=stop - start)
     async with sem:
         exported_size = 0
-        start_op = time.time()
+        count = 0
+        stats = []
+        speed = 0
         async for record in bucket.query(entry.name, start=start, stop=stop):
             exported_size += record.size
+            stats.append((record.size, time.time()))
+            if len(stats) > 10:
+                stats.pop(0)
+
+            if len(stats) > 1:
+                speed = sum(s[0] for s in stats) / (stats[-1][1] - stats[0][1])
 
             yield record
 
             progress.update(
                 task,
-                description=f"Entry '{entry.name}' (copied {pretty_size(exported_size)}, "
-                f"speed {pretty_size(exported_size / (time.time() - start_op))}/s)",
+                description=f"Entry '{entry.name}' "
+                f"(copied {count} records ({pretty_size(exported_size)}), "
+                f"speed {pretty_size(speed)}/s)",
                 advance=record.timestamp - last_time,
                 refresh=True,
             )
             last_time = record.timestamp
+            count += 1
 
         progress.update(task, total=1, completed=True)
+
+
+def filter_entries(entries: List[EntryInfo], names: List[str]) -> List[EntryInfo]:
+    """Filter entries by names"""
+    if not names or len(names) == 0:
+        return entries
+
+    if len(names) == 1 and names[0] == "":
+        return entries
+
+    def _filter(entry):
+        for name in names:
+            if name == entry.name:
+                return True
+        return False
+
+    return list(filter(_filter, entries))
