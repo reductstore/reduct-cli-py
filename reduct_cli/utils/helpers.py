@@ -83,7 +83,8 @@ async def read_records_with_progress(
 
             progress.update(
                 task,
-                description=f"Entry '{entry.name}' (copied {count} records ({pretty_size(exported_size)}), "
+                description=f"Entry '{entry.name}' "
+                f"(copied {count} records ({pretty_size(exported_size)}), "
                 f"speed {pretty_size(speed)}/s)",
                 advance=record.timestamp - last_time,
                 refresh=True,

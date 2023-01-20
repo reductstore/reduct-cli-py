@@ -82,7 +82,7 @@ async def _sync_bucket(
 @click.pass_context
 def mirror(
     ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
-):
+):  # pylint: disable=too-many-arguments
     """Copy data from SRC to DST bucket
 
     SRC and DST should be in the format of ALIAS/BUCKET_NAME

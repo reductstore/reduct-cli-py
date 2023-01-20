@@ -79,7 +79,7 @@ async def _export_bucket(
 @click.pass_context
 def folder(
     ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
-):
+):  # pylint: disable=too-many-arguments
     """Export data from SRC bucket to DST folder
 
     SRC should be in the format of ALIAS/BUCKET_NAME

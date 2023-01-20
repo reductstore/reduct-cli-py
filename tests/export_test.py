@@ -43,7 +43,7 @@ def test__export_to_folder_ok_with_interval(runner, conf, src_bucket, records):
 
 
 @pytest.mark.usefixtures("set_alias", "client")
-def test__export_to_folder_ok_without_interval(runner, conf, src_bucket, records):
+def test__export_to_folder_ok_without_interval(runner, conf, src_bucket):
     """Should export a bucket to a fodder one without time interval"""
     path = Path(gettempdir()) / "reduct-test"
     result = runner(f"-c {conf} export folder test/src_bucket {path}")
