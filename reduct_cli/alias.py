@@ -3,6 +3,7 @@ from typing import Optional
 
 import click
 from click import Abort
+from reduct_cli.utils.error import error_handle
 
 from reduct_cli.config import Config, read_config, write_config, Alias
 from reduct_cli.utils.consoles import console, error_console
@@ -38,7 +39,9 @@ def show(ctx, name: str, token: bool):
 
 @alias.command()
 @click.argument("name")
-@click.option("--url", "-L", help="Server URL")
+@click.option(
+    "--url", "-L", help="Server URL must be in format http(s)://example.com[:port]"
+)
 @click.option("--token", "-t", help="API token")
 @click.pass_context
 def add(ctx, name: str, url: Optional[str], token: Optional[str]):
@@ -53,10 +56,11 @@ def add(ctx, name: str, url: Optional[str], token: Optional[str]):
     if token is None:
         token = click.prompt("API Token", type=str, default="")
 
-    entry: Alias = dict(url=url, token=token)
+    with error_handle():
+        entry = Alias(url=url, token=token).dict()
 
-    conf["aliases"][name] = entry
-    write_config(ctx.obj["config_path"], conf)
+        conf["aliases"][name] = entry
+        write_config(ctx.obj["config_path"], conf)
 
 
 @alias.command()

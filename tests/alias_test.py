@@ -40,6 +40,21 @@ def test__add_alias_twice(runner, conf, url):
     assert result.output == "Alias 'storage' already exists\nAborted!\n"
 
 
+def test__add_alias_with_invalid_url(runner, conf):
+    """Should not add an alias if the url is invalid"""
+    result = runner(f"-c {conf} alias add storage", input="invalid_url\ntoken\n")
+    assert result.exit_code == 1
+    assert result.output.split("\n") == [
+        "URL: invalid_url",
+        "API Token []: token",
+        "[ValidationError] 1 validation error for Alias",
+        "url",
+        "  invalid or missing URL scheme (type=value_error.url.scheme)",
+        "Aborted!",
+        "",
+    ]
+
+
 def test__rm_ok(runner, conf, url):
     """Should remove alias"""
     result = runner(f"-c {conf} alias add storage", input=f"{url}\ntoken\n")
