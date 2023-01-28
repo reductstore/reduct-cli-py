@@ -59,6 +59,8 @@ def test__export_bucket_ok(
         data=ANY,
         content_length=records[0].size,
         timestamp=records[0].timestamp,
+        content_type=records[0].content_type,
+        labels=records[0].labels,
     )
     assert walk_async_iterator(dest_bucket.write.await_args_list[0].kwargs["data"]) == [
         b"Hey"
@@ -68,6 +70,8 @@ def test__export_bucket_ok(
         data=ANY,
         content_length=records[1].size,
         timestamp=records[1].timestamp,
+        content_type=records[1].content_type,
+        labels=records[1].labels,
     )
     assert walk_async_iterator(dest_bucket.write.await_args_list[1].kwargs["data"]) == [
         b"Bye"
@@ -81,6 +85,8 @@ def test__export_bucket_ok(
         data=ANY,
         content_length=records[0].size,
         timestamp=records[0].timestamp,
+        content_type=records[0].content_type,
+        labels=records[0].labels,
     )
 
 
