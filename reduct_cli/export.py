@@ -6,7 +6,7 @@ import click
 from reduct import Client as ReductClient
 
 from reduct_cli.export_impl.folder import export_to_folder
-from reduct_cli.export_impl.store import export_to_bucket
+from reduct_cli.export_impl.bucket import export_to_bucket
 from reduct_cli.utils.error import error_handle
 from reduct_cli.utils.helpers import (
     parse_path,
@@ -81,7 +81,7 @@ def folder(
 def bucket(
     ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
 ):  # pylint: disable=too-many-arguments
-    """Copy data from SRC to DST bucket
+    """Copy data from ALIAS_SRC/BUCKET to ALIAS_DST/BUCKET bucket
 
     SRC and DST should be in the format of ALIAS/BUCKET_NAME
 
