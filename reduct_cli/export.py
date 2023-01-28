@@ -17,12 +17,12 @@ run = loop().run_until_complete
 
 start_option = click.option(
     "--start",
-    help="Mirror records with timestamps newer than this time point in ISO format",
+    help="Export records with timestamps newer than this time point in ISO format",
 )
 
 stop_option = click.option(
     "--stop",
-    help="Mirror records  with timestamps older than this time point in ISO format",
+    help="Export records  with timestamps older than this time point in ISO format",
 )
 entries_option = click.option(
     "--entries",
@@ -44,7 +44,7 @@ def export():
 @entries_option
 @click.option(
     "--ext",
-    help="Extension for exported files",
+    help="Extension for exported files, if not specified, will be guessed from content type",
 )
 @click.pass_context
 def folder(
