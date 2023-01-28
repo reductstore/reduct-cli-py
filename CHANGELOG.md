@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move `mirror` command to `export command`, [PR-42](https://github.com/reductstore/reduct-cli/pull/42)
+
+### Deprecated
+
+- `mirror` command, [PR-42](https://github.com/reductstore/reduct-cli/pull/42)
+
 ## [0.5.0] - 2023-01-20
 
 ### Added:

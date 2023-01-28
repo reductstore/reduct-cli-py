@@ -1,4 +1,4 @@
-"""Unit tests for export command"""
+"""Unit tests for export folder command"""
 from pathlib import Path
 from tempfile import gettempdir
 from unittest.mock import call, ANY
