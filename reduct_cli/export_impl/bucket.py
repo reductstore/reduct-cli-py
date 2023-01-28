@@ -24,9 +24,11 @@ async def _copy_entry(
         try:
             await dest_bucket.write(
                 entry.name,
-                data=record.read(1024),
+                data=record.read(1024 * 512),
                 content_length=record.size,
                 timestamp=record.timestamp,
+                content_type=record.content_type,
+                labels=record.labels,
             )
         except ReductError as err:
             # filter out the error that the entry already exists
