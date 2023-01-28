@@ -49,6 +49,7 @@ def folder(
     """Export data from SRC bucket to DST folder
 
     SRC should be in the format of ALIAS/BUCKET_NAME
+    DST should be a path to a folder
     """
 
     with error_handle():
@@ -81,7 +82,7 @@ def folder(
 def bucket(
     ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
 ):  # pylint: disable=too-many-arguments
-    """Copy data from ALIAS_SRC/BUCKET to ALIAS_DST/BUCKET bucket
+    """Copy data from SRC to DEST bucket
 
     SRC and DST should be in the format of ALIAS/BUCKET_NAME
 
