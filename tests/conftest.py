@@ -59,7 +59,13 @@ def _make_records() -> List[Record]:
             yield data
 
         return Record(
-            timestamp=timestamp, size=len(data), last=True, read_all=read_all, read=read
+            timestamp=timestamp,
+            size=len(data),
+            content_type="",
+            labels={},
+            last=True,
+            read_all=read_all,
+            read=read,
         )
 
     return [make_record(1000000000, b"Hey"), make_record(5000000000, b"Bye")]
