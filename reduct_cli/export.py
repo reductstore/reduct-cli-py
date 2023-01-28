@@ -42,14 +42,27 @@ def export():
 @stop_option
 @start_option
 @entries_option
+@click.option(
+    "--ext",
+    help="Extension for exported files",
+)
 @click.pass_context
 def folder(
-    ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
+    ctx,
+    src: str,
+    dest: str,
+    start: Optional[str],
+    stop: Optional[str],
+    entries: str,
+    ext: Optional[str],
 ):  # pylint: disable=too-many-arguments
     """Export data from SRC bucket to DST folder
 
     SRC should be in the format of ALIAS/BUCKET_NAME
     DST should be a path to a folder
+
+    As result, the folder will contain a folder for each entry in the bucket.
+    Each entry folder will contain a file for each record in the entry with the timestamp as the name.
     """
 
     with error_handle():
@@ -68,6 +81,7 @@ def folder(
                 start=start,
                 stop=stop,
                 entries=entries.split(","),
+                ext=ext,
             )
         )
 
