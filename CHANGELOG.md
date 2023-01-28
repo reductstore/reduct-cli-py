@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Copy labels and content type in `rcli export bucket`command, [PR-43](https://github.com/reductstore/reduct-cli/pull/43)
+
 ### Changed
 
 - Move `mirror` command to `export command`, [PR-42](https://github.com/reductstore/reduct-cli/pull/42)
