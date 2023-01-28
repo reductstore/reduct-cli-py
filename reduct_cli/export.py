@@ -52,7 +52,7 @@ def folder(
     """
 
     with error_handle():
-        alias_name, bucket = parse_path(src)
+        alias_name, src_bucket = parse_path(src)
         alias = get_alias(ctx.obj["config_path"], alias_name)
 
         client = ReductClient(
@@ -62,7 +62,7 @@ def folder(
             export_to_folder(
                 client,
                 dest,
-                bucket,
+                src_bucket,
                 parallel=ctx.obj["parallel"],
                 start=start,
                 stop=stop,
