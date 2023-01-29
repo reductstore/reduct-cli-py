@@ -113,10 +113,8 @@ def test__export_multiple_specific_entry(runner, conf, src_bucket, export_path):
     ]
 
 
-@pytest.mark.usefixtures("set_alias", "client")
-def test__export_to_folder_with_ext_flag(
-    runner, conf, src_bucket, records, export_path
-):
+@pytest.mark.usefixtures("set_alias", "client", "src_bucket")
+def test__export_to_folder_with_ext_flag(runner, conf, records, export_path):
     """Should export a bucket to a folder with ext flag"""
     result = runner(f"-c {conf} export folder test/src_bucket {export_path} --ext .txt")
     assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
