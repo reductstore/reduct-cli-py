@@ -1,5 +1,4 @@
 """Common fixtures"""
-import time
 from functools import partial
 from pathlib import Path
 from tempfile import gettempdir
@@ -31,7 +30,9 @@ def _make_runner() -> Callable[[str], Result]:
 
 @pytest.fixture(name="conf")
 def _make_conf() -> Path:
-    return Path(gettempdir()) / str(time.time_ns() % 1000000) / "config.toml"
+    path = Path(gettempdir()) / "config.toml"
+    yield path
+    path.unlink(missing_ok=True)
 
 
 @pytest.fixture(name="url")
@@ -51,7 +52,7 @@ def _make_settings() -> BucketSettings:
 
 @pytest.fixture(name="records")
 def _make_records() -> List[Record]:
-    def make_record(timestamp: int, data: bytes) -> Record:
+    def make_record(timestamp: int, data: bytes, content_type: str) -> Record:
         async def read_all():
             return data
 
@@ -61,14 +62,17 @@ def _make_records() -> List[Record]:
         return Record(
             timestamp=timestamp,
             size=len(data),
-            content_type="",
+            content_type=content_type,
             labels={},
             last=True,
             read_all=read_all,
             read=read,
         )
 
-    return [make_record(1000000000, b"Hey"), make_record(5000000000, b"Bye")]
+    return [
+        make_record(1000000000, b"Hey", "image/png"),
+        make_record(5000000000, b"Bye", ""),
+    ]
 
 
 @pytest.fixture(name="src_bucket")

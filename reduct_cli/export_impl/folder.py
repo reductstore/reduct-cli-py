@@ -16,18 +16,19 @@ async def _export_entry(
     entry_path = Path(path / entry.name)
     entry_path.mkdir(exist_ok=True)
 
-    ext = None
+    force_ext = None
     if kwargs["ext"] is not None:
-        ext = "." + kwargs["ext"].split(".")[-1]
+        force_ext = "." + kwargs["ext"].split(".")[-1]
 
     async for record in read_records_with_progress(
         entry, bucket, progress, sem, **kwargs
     ):
-        if ext is None:
+        if force_ext is None:
             # guess extension from content type
             guess = guess_extension(record.content_type)
             ext = guess if guess is not None else ".bin"
-
+        else:
+            ext = force_ext
         with open(entry_path / f"{record.timestamp}{ext}", "wb") as file:
             async for chunk in record.read(1024 * 512):
                 file.write(chunk)
