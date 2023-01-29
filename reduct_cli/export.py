@@ -17,12 +17,12 @@ run = loop().run_until_complete
 
 start_option = click.option(
     "--start",
-    help="Mirror records with timestamps newer than this time point in ISO format",
+    help="Export records with timestamps newer than this time point in ISO format",
 )
 
 stop_option = click.option(
     "--stop",
-    help="Mirror records  with timestamps older than this time point in ISO format",
+    help="Export records  with timestamps older than this time point in ISO format",
 )
 entries_option = click.option(
     "--entries",
@@ -42,14 +42,28 @@ def export():
 @stop_option
 @start_option
 @entries_option
+@click.option(
+    "--ext",
+    help="Extension for exported files, if not specified, will be guessed from content type",
+)
 @click.pass_context
 def folder(
-    ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
+    ctx,
+    src: str,
+    dest: str,
+    start: Optional[str],
+    stop: Optional[str],
+    entries: str,
+    ext: Optional[str],
 ):  # pylint: disable=too-many-arguments
     """Export data from SRC bucket to DST folder
 
-    SRC should be in the format of ALIAS/BUCKET_NAME
-    DST should be a path to a folder
+    SRC should be in the format of ALIAS/BUCKET_NAME.
+    DST should be a path to a folder.
+
+    As result, the folder will contain a folder for each entry in the bucket.
+    Each entry folder will contain a file for each record
+    in the entry with the timestamp as the name.
     """
 
     with error_handle():
@@ -68,6 +82,7 @@ def folder(
                 start=start,
                 stop=stop,
                 entries=entries.split(","),
+                ext=ext,
             )
         )
 

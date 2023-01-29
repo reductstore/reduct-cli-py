@@ -1,6 +1,7 @@
 """Module for export folder command"""
 import asyncio
 from pathlib import Path
+from mimetypes import guess_extension
 
 from reduct import Client as ReductClient
 from reduct import EntryInfo, Bucket
@@ -15,11 +16,21 @@ async def _export_entry(
     entry_path = Path(path / entry.name)
     entry_path.mkdir(exist_ok=True)
 
+    force_ext = None
+    if kwargs["ext"] is not None:
+        force_ext = "." + kwargs["ext"].split(".")[-1]
+
     async for record in read_records_with_progress(
         entry, bucket, progress, sem, **kwargs
     ):
-        with open(entry_path / f"{record.timestamp}.bin", "wb") as file:
-            async for chunk in record.read(1024):
+        if force_ext is None:
+            # guess extension from content type
+            guess = guess_extension(record.content_type)
+            ext = guess if guess is not None else ".bin"
+        else:
+            ext = force_ext
+        with open(entry_path / f"{record.timestamp}{ext}", "wb") as file:
+            async for chunk in record.read(1024 * 512):
                 file.write(chunk)
 
 
