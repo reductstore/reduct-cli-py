@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Copy labels and content type in `rcli export bucket`command, [PR-43](https://github.com/reductstore/reduct-cli/pull/43)
+- Guess extension from content type or force it with `--ext` option in `rcli export folder` command, [PR-45](https://github.com/reductstore/reduct-cli/pull/45)
 
 ### Changed
 
