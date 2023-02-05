@@ -72,6 +72,7 @@ async def read_records_with_progress(
         if item:
             key, value = item.split("=")
             include[key] = value
+
     exclude = {}
     for item in kwargs["exclude"]:
         if item:
