@@ -34,8 +34,9 @@ Check with our [demo server](https://play.reduct.store):
 
 ```shell
 rcli alias add -L  https://play.reduct.store -t reduct play
-rcli server status play
+rcli server status play       
 rcli bucket ls --full play
+rcli export folder play/data . --inlcude size=big
 ```
 
 ## Links
