@@ -5,8 +5,8 @@ from typing import Optional
 import click
 from reduct import Client as ReductClient
 
-from reduct_cli.export_impl.folder import export_to_folder
 from reduct_cli.export_impl.bucket import export_to_bucket
+from reduct_cli.export_impl.folder import export_to_folder
 from reduct_cli.utils.error import error_handle
 from reduct_cli.utils.helpers import (
     parse_path,
@@ -26,7 +26,21 @@ stop_option = click.option(
 )
 entries_option = click.option(
     "--entries",
-    help="Mirror only these entries, separated by comma",
+    help="Export only these entries, separated by comma",
+    default="",
+)
+
+include_option = click.option(
+    "--include",
+    help="Export only these records which have these labels with given values, "
+    "separated by comma. Example: --include label1=values1,label2=value2",
+    default="",
+)
+
+exclude_option = click.option(
+    "--exclude",
+    help="Export only these records which DON NOT have these labels with given values, "
+    "separated by comma. Example: --exclude label1=values1,label2=value2",
     default="",
 )
 
@@ -42,6 +56,8 @@ def export():
 @stop_option
 @start_option
 @entries_option
+@include_option
+@exclude_option
 @click.option(
     "--ext",
     help="Extension for exported files, if not specified, will be guessed from content type",
@@ -54,6 +70,8 @@ def folder(
     start: Optional[str],
     stop: Optional[str],
     entries: str,
+    include: str,
+    exclude: str,
     ext: Optional[str],
 ):  # pylint: disable=too-many-arguments
     """Export data from SRC bucket to DST folder
@@ -82,6 +100,8 @@ def folder(
                 start=start,
                 stop=stop,
                 entries=entries.split(","),
+                include=include.split(","),
+                exclude=exclude.split(","),
                 ext=ext,
             )
         )
@@ -93,9 +113,18 @@ def folder(
 @stop_option
 @start_option
 @entries_option
+@include_option
+@exclude_option
 @click.pass_context
 def bucket(
-    ctx, src: str, dest: str, start: Optional[str], stop: Optional[str], entries: str
+    ctx,
+    src: str,
+    dest: str,
+    start: Optional[str],
+    stop: Optional[str],
+    entries: str,
+    include: str,
+    exclude: str,
 ):  # pylint: disable=too-many-arguments
     """Copy data from SRC to DEST bucket
 
@@ -127,5 +156,7 @@ def bucket(
                 start=start,
                 stop=stop,
                 entries=entries.split(","),
+                include=include.split(","),
+                exclude=exclude.split(","),
             )
         )

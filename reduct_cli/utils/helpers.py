@@ -67,6 +67,18 @@ async def read_records_with_progress(
     start = _to_timestamp(kwargs["start"]) if kwargs["start"] else entry.oldest_record
     stop = _to_timestamp(kwargs["stop"]) if kwargs["stop"] else entry.latest_record
 
+    include = {}
+    for item in kwargs["include"]:
+        if item:
+            key, value = item.split("=")
+            include[key] = value
+
+    exclude = {}
+    for item in kwargs["exclude"]:
+        if item:
+            key, value = item.split("=")
+            exclude[key] = value
+
     last_time = start
     task = progress.add_task(f"Entry '{entry.name}' waiting", total=stop - start)
     async with sem:
@@ -81,7 +93,9 @@ async def read_records_with_progress(
         asyncio.get_event_loop().add_signal_handler(signal.SIGINT, stop_signal)
         asyncio.get_event_loop().add_signal_handler(signal.SIGTERM, stop_signal)
 
-        async for record in bucket.query(entry.name, start=start, stop=stop):
+        async for record in bucket.query(
+            entry.name, start=start, stop=stop, include=include, exclude=exclude
+        ):
             if signal_queue.qsize() > 0:
                 # stop signal received
                 progress.update(

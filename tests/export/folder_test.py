@@ -41,8 +41,20 @@ def test__export_to_folder_ok_with_interval(
     assert result.exit_code == 0
 
     assert src_bucket.query.call_args_list == [
-        call("entry-1", start=1641074401100300, stop=1643666400000000),
-        call("entry-2", start=1641074401100300, stop=1643666400000000),
+        call(
+            "entry-1",
+            start=1641074401100300,
+            stop=1643666400000000,
+            include={},
+            exclude={},
+        ),
+        call(
+            "entry-2",
+            start=1641074401100300,
+            stop=1643666400000000,
+            include={},
+            exclude={},
+        ),
     ]
 
     assert (
@@ -63,7 +75,7 @@ def test__export_to_folder_ok_without_interval(runner, conf, src_bucket, export_
     assert result.exit_code == 0
 
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1000000000, stop=5000000000
+        "entry-1", start=1000000000, stop=5000000000, include={}, exclude={}
     )
 
 
@@ -86,7 +98,7 @@ def test__export_utc_timestamp(runner, conf, src_bucket, export_path):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1641081601100300, stop=1643673600000000
+        "entry-1", start=1641081601100300, stop=1643673600000000, include={}, exclude={}
     )
 
 
@@ -97,7 +109,9 @@ def test__export_specific_entry(runner, conf, src_bucket, export_path):
         f"-c {conf} export folder test/src_bucket {export_path} --entries=entry-2"
     )
     assert result.exit_code == 0
-    assert src_bucket.query.call_args_list == [call("entry-2", start=ANY, stop=ANY)]
+    assert src_bucket.query.call_args_list == [
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={})
+    ]
 
 
 @pytest.mark.usefixtures("set_alias", "client")
@@ -108,8 +122,8 @@ def test__export_multiple_specific_entry(runner, conf, src_bucket, export_path):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [
-        call("entry-1", start=ANY, stop=ANY),
-        call("entry-2", start=ANY, stop=ANY),
+        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}),
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}),
     ]
 
 
@@ -126,3 +140,22 @@ def test__export_to_folder_with_ext_flag(runner, conf, records, export_path):
     assert (
         export_path / "src_bucket" / "entry-2" / f"{records[1].timestamp}.txt"
     ).read_bytes() == b"Bye"
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__export_to_folder_with_filters(runner, conf, src_bucket, export_path):
+    """Should export a bucket to a folder with filters"""
+    result = runner(
+        f"-c {conf} export folder test/src_bucket {export_path} "
+        f"--include label1=value1,label2=value2 --exclude label3=value3,label4=value4"
+    )
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
+    assert result.exit_code == 0
+
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1",
+        start=ANY,
+        stop=ANY,
+        include={"label1": "value1", "label2": "value2"},
+        exclude={"label3": "value3", "label4": "value4"},
+    )

@@ -52,7 +52,7 @@ def test__export_bucket_ok(
     )
 
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1000000000, stop=5000000000
+        "entry-1", start=1000000000, stop=5000000000, include={}, exclude={}
     )
     assert dest_bucket.write.await_args_list[0] == call(
         "entry-1",
@@ -78,7 +78,7 @@ def test__export_bucket_ok(
     ]
 
     assert src_bucket.query.call_args_list[1] == call(
-        "entry-2", start=1000000000, stop=5000000000
+        "entry-2", start=1000000000, stop=5000000000, include={}, exclude={}
     )
     assert dest_bucket.write.await_args_list[2] == call(
         "entry-2",
@@ -102,7 +102,7 @@ def test__export_to_bucket_ok_with_interval(runner, conf, src_bucket):
     assert result.exit_code == 0
 
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1641074401100300, stop=1643666400000000
+        "entry-1", start=1641074401100300, stop=1643666400000000, include={}, exclude={}
     )
 
 
@@ -132,7 +132,7 @@ def test__export_bucket_utc_timestamp(runner, conf, src_bucket):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1641081601100300, stop=1643673600000000
+        "entry-1", start=1641081601100300, stop=1643673600000000, include={}, exclude={}
     )
 
 
@@ -143,7 +143,9 @@ def test__export_bucket_specific_entry(runner, conf, src_bucket):
         f"-c {conf} export bucket test/src_bucket test/dest_bucket --entries=entry-2"
     )
     assert result.exit_code == 0
-    assert src_bucket.query.call_args_list == [call("entry-2", start=ANY, stop=ANY)]
+    assert src_bucket.query.call_args_list == [
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={})
+    ]
 
 
 @pytest.mark.usefixtures("set_alias", "client", "dest_bucket")
@@ -154,6 +156,23 @@ def test__export_bucket_multiple_specific_entry(runner, conf, src_bucket):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [
-        call("entry-1", start=ANY, stop=ANY),
-        call("entry-2", start=ANY, stop=ANY),
+        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}),
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}),
     ]
+
+
+@pytest.mark.usefixtures("set_alias", "client", "dest_bucket")
+def test__export_bucket_with_filters(runner, conf, src_bucket):
+    """Should export bucket with filters"""
+    result = runner(
+        f"-c {conf} export bucket test/src_bucket test/dest_bucket "
+        f"--include label1=value1,label2=value2 --exclude label3=value3,label4=value4"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1",
+        start=ANY,
+        stop=ANY,
+        include={"label1": "value1", "label2": "value2"},
+        exclude={"label3": "value3", "label4": "value4"},
+    )
