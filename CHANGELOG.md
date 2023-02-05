@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2023-02-05
+
 ### Added
 
-- Copy labels and content type in `rcli export bucket`command, [PR-43](https://github.com/reductstore/reduct-cli/pull/43)
-- Guess extension from content type or force it with `--ext` option in `rcli export folder` command, [PR-45](https://github.com/reductstore/reduct-cli/pull/45)
-- Options `--exclude` and `--include` to `rcli export`commands, [PR-46](https://github.com/reductstore/reduct-cli/pull/46)
+- Copy labels and content type in `rcli export bucket`
+  command, [PR-43](https://github.com/reductstore/reduct-cli/pull/43)
+- Guess extension from content type or force it with `--ext` option in `rcli export folder`
+  command, [PR-45](https://github.com/reductstore/reduct-cli/pull/45)
+- Options `--exclude` and `--include` to `rcli export`
+  commands, [PR-46](https://github.com/reductstore/reduct-cli/pull/46)
 
 ### Changed
 
@@ -89,9 +94,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Init release
 
-[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.6.0...HEAD
 
-[0.4.0]: https://github.com/reductstore/reduct-cli/compare/v0.4.0...v0.5.0
+[0.6.0]: https://github.com/reductstore/reduct-cli/compare/v0.5.0...v0.6.0
+
+[0.5.0]: https://github.com/reductstore/reduct-cli/compare/v0.4.0...v0.5.0
 
 [0.4.0]: https://github.com/reductstore/reduct-cli/compare/v0.3.0...v0.4.0
 
