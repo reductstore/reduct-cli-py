@@ -2,7 +2,8 @@
 
 ## Export To Folder
 
-The `rcli export folder` command allows you to export data from a bucket in your ReductStore instance to a local folder on
+The `rcli export folder` command allows you to export data from a bucket in your ReductStore instance to a local folder
+on
 your computer. This can be useful if you want to make a copy of your data for backup or offline access.
 
 The `rcli export folder` command has the following syntax:
@@ -30,7 +31,8 @@ the exported-data folder on your desktop.
 
 ## Export To Bucket
 
-The` rcli export bucket` command allows you to copy data from a source bucket in your ReductStore instance to a destination bucket.
+The` rcli export bucket` command allows you to copy data from a source bucket in your ReductStore instance to a
+destination bucket.
 This can be useful if you want to make a copy of your data for backup or to transfer data between different buckets.
 
 To use the rcli mirror command, open a terminal and type the following, replacing `[OPTIONS]` with any optional flags
@@ -46,7 +48,8 @@ ReductStore instance (using the `rcli alias add` command), and `BUCKET_NAME` is 
 
 If the destination bucket doesn't exist, it will be created with the same settings as the source bucket.
 
-For example, to copy all data from the `mybucket` bucket in your ReductStore instance (accessed using the `myalias` alias) to
+For example, to copy all data from the `mybucket` bucket in your ReductStore instance (accessed using the `myalias`
+alias) to
 the `newbucket` bucket, you would type the following command:
 
 ```
@@ -67,6 +70,14 @@ Here is a list of the options that you can use with the `rcli export` commands:
 
 * `--entries`: With this option, you can specify the entries that you want to export. The entries should be specified
   as a comma-separated list of entry names (e.g., `--entries=entry1,entry2`).
+
+* `--include`: Specify the labels to include in the export. Only data with
+  the specified labels will be exported. The labels should be specified as a comma-separated list of label names (e.g.,
+  and values (e.g., `--include= color=red,size=big`).
+
+* `--exclude`: Specify the labels to exclude from the export. Data with
+  the specified labels will not be exported. The labels should be specified as a comma-separated list of label names (
+  e.g., and values (e.g., `--exclude= color=red,size=big`).
 
 You also can use the global `--parallel` option to specify the number of entries that you want to export in parallel:
 

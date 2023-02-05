@@ -32,14 +32,14 @@ entries_option = click.option(
 
 include_option = click.option(
     "--include",
-    help="Export only these records which have these labels with these values, "
+    help="Export only these records which have these labels with given values, "
     "separated by comma. Example: --include label1=values1,label2=value2",
     default="",
 )
 
 exclude_option = click.option(
     "--exclude",
-    help="Export only these records which DON NOT have these labels with these values, "
+    help="Export only these records which DON NOT have these labels with given values, "
     "separated by comma. Example: --exclude label1=values1,label2=value2",
     default="",
 )
