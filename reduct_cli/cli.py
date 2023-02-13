@@ -5,7 +5,7 @@ from typing import Optional
 
 import click
 
-from reduct_cli.config import write_config
+from reduct_cli.config import write_config, Config
 from reduct_cli.alias import alias
 from reduct_cli.bucket import bucket
 from reduct_cli.server import server
@@ -41,7 +41,7 @@ def cli(
     timeout: Optional[int] = None,
     parallel: Optional[int] = None,
 ):
-    """CLI admin tool for Reduct Storage"""
+    """CLI admin tool for ReductStore"""
     if config is None:
         config = Path.home() / ".reduct-cli" / "config.toml"
 
@@ -52,7 +52,7 @@ def cli(
         parallel = 10
 
     if not Path.exists(config):
-        write_config(config, {"aliases": {}})
+        write_config(config, Config(aliases={}))
 
     ctx.obj["config_path"] = config
     ctx.obj["timeout"] = timeout

@@ -8,7 +8,7 @@ from reduct_cli.utils.consoles import error_console
 
 @contextmanager
 def error_handle():
-    """Wrap try-catch block and print errorr"""
+    """Wrap try-catch block and print error"""
     try:
         yield
     except Exception as err:

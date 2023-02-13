@@ -6,7 +6,7 @@ from reduct.client import Defaults
 
 @pytest.fixture(name="client")
 def _make_client(mocker) -> Client:
-    kls = mocker.patch("reduct_cli.server.ReductClient")
+    kls = mocker.patch("reduct_cli.server.build_client")
     kls.return_value = mocker.Mock(spec=Client)
     return kls.return_value
 

@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Tuple, List
 
 from click import Abort
-from reduct import EntryInfo, Bucket
+from reduct import EntryInfo, Bucket, Client
 from rich.progress import Progress
 
 from reduct_cli.config import read_config, Alias
@@ -22,11 +22,17 @@ def get_alias(config_path: Path, name: str) -> Alias:
     """Helper method to parse alias from config"""
     conf = read_config(config_path)
 
-    if name not in conf["aliases"]:
+    if name.split("/")[0] not in conf.aliases:
         error_console.print(f"Alias '{name}' doesn't exist")
         raise Abort()
-    alias_: Alias = conf["aliases"][name]
+    alias_: Alias = conf.aliases[name]
     return alias_
+
+
+def build_client(config_path: Path, alias: str, timeout: float) -> Client:
+    """Build client from alias"""
+    alias_ = get_alias(config_path, alias)
+    return Client(alias_.url, api_token=alias_.token, timeout=timeout)
 
 
 def parse_path(path) -> Tuple[str, str]:
@@ -55,6 +61,7 @@ async def read_records_with_progress(
     Keyword Args:
         start (Optional[datetime]): Start time point
         stop (Optional[datetime]): Stop time point
+        timeout (int): Timeout for read operation
     Yields:
         Record: Record from entry
     """
@@ -94,7 +101,12 @@ async def read_records_with_progress(
         asyncio.get_event_loop().add_signal_handler(signal.SIGTERM, stop_signal)
 
         async for record in bucket.query(
-            entry.name, start=start, stop=stop, include=include, exclude=exclude
+            entry.name,
+            start=start,
+            stop=stop,
+            include=include,
+            exclude=exclude,
+            ttl=kwargs["timeout"] * sem._value,
         ):
             if signal_queue.qsize() > 0:
                 # stop signal received

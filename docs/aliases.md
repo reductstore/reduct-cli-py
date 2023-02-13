@@ -1,6 +1,6 @@
 # Aliases
 
-The ReductStore CLIclient uses aliases to simplify communication with a storage engine. This way, users don't have to
+The ReductStore CLI client uses aliases to simplify communication with a storage engine. This way, users don't have to
 type the URL and credentials for the storage engine each time they want to use it.
 Creating an alias
 

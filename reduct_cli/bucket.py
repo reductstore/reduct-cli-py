@@ -3,14 +3,14 @@ from asyncio import new_event_loop as loop
 from typing import List, Optional
 
 import click
-from reduct import Client as ReductClient, BucketInfo, BucketSettings, QuotaType
+from reduct import BucketInfo, BucketSettings, QuotaType
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
 
 from reduct_cli.utils.consoles import console
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import parse_path, get_alias
+from reduct_cli.utils.helpers import parse_path, build_client
 from reduct_cli.utils.humanize import pretty_size, print_datetime, parse_ci_size
 from reduct_cli.utils.humanize import pretty_time_interval
 
@@ -19,9 +19,8 @@ run = loop().run_until_complete
 
 async def _get_bucket_by_path(ctx, path):
     alias_name, bucket_name = parse_path(path)
-    alias = get_alias(ctx.obj["config_path"], alias_name)
-    client = ReductClient(
-        alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
+    client = build_client(
+        ctx.obj["config_path"], alias_name, timeout=ctx.obj["timeout"]
     )
 
     return await client.get_bucket(bucket_name)
@@ -40,10 +39,7 @@ def ls(ctx, alias: str, full: bool):
     """
     List buckets
     """
-    alias = get_alias(ctx.obj["config_path"], alias)
-    client = ReductClient(
-        alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
-    )
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
 
     with error_handle():
         buckets: List[BucketInfo] = run(client.list())
@@ -193,13 +189,9 @@ def create(
 
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
+    alias_name, bucket_name = parse_path(path)
+    client = build_client(ctx, path, ctx.obj["timeout"])
     with error_handle():
-        alias_name, bucket_name = parse_path(path)
-        alias = get_alias(ctx.obj["config_path"], alias_name)
-        client = ReductClient(
-            alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
-        )
-
         settings = BucketSettings(
             quota_type=quota_type,
             quota_size=parse_ci_size(quota_size),

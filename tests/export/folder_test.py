@@ -10,7 +10,7 @@ from reduct import Client
 
 @pytest.fixture(name="client")
 def _make_client(mocker, src_bucket) -> Client:
-    kls = mocker.patch("reduct_cli.export.ReductClient")
+    kls = mocker.patch("reduct_cli.export.build_client")
     client = mocker.Mock(spec=Client)
     client.get_bucket.return_value = src_bucket
 

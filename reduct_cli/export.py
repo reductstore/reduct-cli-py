@@ -3,14 +3,13 @@ from asyncio import new_event_loop as loop
 from typing import Optional
 
 import click
-from reduct import Client as ReductClient
 
 from reduct_cli.export_impl.bucket import export_to_bucket
 from reduct_cli.export_impl.folder import export_to_folder
 from reduct_cli.utils.error import error_handle
 from reduct_cli.utils.helpers import (
     parse_path,
-    get_alias,
+    build_client,
 )
 
 run = loop().run_until_complete
@@ -84,13 +83,11 @@ def folder(
     in the entry with the timestamp as the name.
     """
 
+    alias_name, src_bucket = parse_path(src)
+    client = build_client(
+        ctx.obj["config_path"], alias_name, timeout=ctx.obj["timeout"]
+    )
     with error_handle():
-        alias_name, src_bucket = parse_path(src)
-        alias = get_alias(ctx.obj["config_path"], alias_name)
-
-        client = ReductClient(
-            alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
-        )
         run(
             export_to_folder(
                 client,
@@ -135,15 +132,13 @@ def bucket(
 
     with error_handle():
         alias_name, src_bucket = parse_path(src)
-        alias = get_alias(ctx.obj["config_path"], alias_name)
-        src_instance = ReductClient(
-            alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
+        src_instance = build_client(
+            ctx.obj["config_path"], alias_name, timeout=ctx.obj["timeout"]
         )
 
         alias_name, dest_bucket = parse_path(dest)
-        alias = get_alias(ctx.obj["config_path"], alias_name)
-        dest_instance = ReductClient(
-            alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
+        dest_instance = build_client(
+            ctx.obj["config_path"], alias_name, timeout=ctx.obj["timeout"]
         )
 
         run(
