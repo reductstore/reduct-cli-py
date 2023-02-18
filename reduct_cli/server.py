@@ -2,11 +2,11 @@
 from asyncio import new_event_loop as loop
 
 import click
-from reduct import Client as ReductClient, ServerInfo
+from reduct import ServerInfo
 
 from reduct_cli.utils.consoles import console
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import get_alias
+from reduct_cli.utils.helpers import build_client
 from reduct_cli.utils.humanize import pretty_time_interval
 
 run = loop().run_until_complete
@@ -24,12 +24,9 @@ def status(ctx, alias: str):
     """
     Connect to server with alias and print its status
     """
-    alias = get_alias(ctx.obj["config_path"], alias)
-    client = ReductClient(
-        alias["url"], api_token=alias["token"], timeout=ctx.obj["timeout"]
-    )
 
     with error_handle():
+        client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
         info: ServerInfo = run(client.info())
 
         console.print("Status:     [green]Ok[/green]")

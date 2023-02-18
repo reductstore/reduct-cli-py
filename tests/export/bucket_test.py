@@ -18,7 +18,7 @@ def _make_dest_bucket(mocker) -> Bucket:
 
 @pytest.fixture(name="client")
 def _make_client(mocker, src_bucket, dest_bucket) -> Client:
-    kls = mocker.patch("reduct_cli.export.ReductClient")
+    kls = mocker.patch("reduct_cli.export.build_client")
     client = mocker.Mock(spec=Client)
     client.get_bucket.return_value = src_bucket
     client.create_bucket.return_value = dest_bucket
@@ -52,7 +52,7 @@ def test__export_bucket_ok(
     )
 
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1000000000, stop=5000000000, include={}, exclude={}
+        "entry-1", start=1000000000, stop=5000000000, include={}, exclude={}, ttl=ANY
     )
     assert dest_bucket.write.await_args_list[0] == call(
         "entry-1",
@@ -78,7 +78,7 @@ def test__export_bucket_ok(
     ]
 
     assert src_bucket.query.call_args_list[1] == call(
-        "entry-2", start=1000000000, stop=5000000000, include={}, exclude={}
+        "entry-2", start=1000000000, stop=5000000000, include={}, exclude={}, ttl=ANY
     )
     assert dest_bucket.write.await_args_list[2] == call(
         "entry-2",
@@ -102,7 +102,12 @@ def test__export_to_bucket_ok_with_interval(runner, conf, src_bucket):
     assert result.exit_code == 0
 
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1641074401100300, stop=1643666400000000, include={}, exclude={}
+        "entry-1",
+        start=1641074401100300,
+        stop=1643666400000000,
+        include={},
+        exclude={},
+        ttl=ANY,
     )
 
 
@@ -132,7 +137,12 @@ def test__export_bucket_utc_timestamp(runner, conf, src_bucket):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1641081601100300, stop=1643673600000000, include={}, exclude={}
+        "entry-1",
+        start=1641081601100300,
+        stop=1643673600000000,
+        include={},
+        exclude={},
+        ttl=ANY,
     )
 
 
@@ -144,7 +154,7 @@ def test__export_bucket_specific_entry(runner, conf, src_bucket):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [
-        call("entry-2", start=ANY, stop=ANY, include={}, exclude={})
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY)
     ]
 
 
@@ -156,8 +166,8 @@ def test__export_bucket_multiple_specific_entry(runner, conf, src_bucket):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [
-        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}),
-        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}),
+        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
     ]
 
 
@@ -175,4 +185,17 @@ def test__export_bucket_with_filters(runner, conf, src_bucket):
         stop=ANY,
         include={"label1": "value1", "label2": "value2"},
         exclude={"label3": "value3", "label4": "value4"},
+        ttl=ANY,
+    )
+
+
+@pytest.mark.usefixtures("set_alias", "client", "dest_bucket")
+def test__export_bucket_calc_ttl(runner, conf, src_bucket):
+    """Should query bucket with calculated TTL = timeout * parallel tasks"""
+    result = runner(
+        f"-c {conf} -t 3 -p 2 export bucket test/src_bucket test/dest_bucket"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=6
     )

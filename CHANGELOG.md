@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix expired query error, [PR-50](https://github.com/reductstore/reduct-cli/pull/50)
+
 ## [0.6.0] - 2023-02-05
 
 ### Added

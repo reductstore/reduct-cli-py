@@ -7,7 +7,7 @@ from reduct import Client, FullTokenInfo, Permissions, Token
 
 @pytest.fixture(name="client")
 def _make_client(mocker) -> Client:
-    kls = mocker.patch("reduct_cli.token.ReductClient")
+    kls = mocker.patch("reduct_cli.token.build_client")
     kls.return_value = mocker.Mock(spec=Client)
     return kls.return_value
 

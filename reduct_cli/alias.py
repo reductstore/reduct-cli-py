@@ -21,7 +21,7 @@ def alias(ctx):
 @click.pass_context
 def ls(ctx):
     """Print list of aliases"""
-    for name, _ in ctx.obj["conf"]["aliases"].items():
+    for name, _ in ctx.obj["conf"].aliases.items():
         console.print(name)
 
 
@@ -32,9 +32,9 @@ def ls(ctx):
 def show(ctx, name: str, token: bool):
     """Show alias configuration"""
     alias_: Alias = get_alias(ctx.obj["config_path"], name)
-    console.print(f"[bold]URL[/bold]:\t\t{alias_['url']}")
+    console.print(f"[bold]URL[/bold]:\t\t{alias_.url}")
     if token:
-        console.print(f"[bold]Token[/bold]:\t\t{alias_['token']}")
+        console.print(f"[bold]Token[/bold]:\t\t{alias_.token}")
 
 
 @alias.command()
@@ -47,7 +47,7 @@ def show(ctx, name: str, token: bool):
 def add(ctx, name: str, url: Optional[str], token: Optional[str]):
     """Add a new alias with NAME"""
     conf: Config = ctx.obj["conf"]
-    if name in conf["aliases"]:
+    if name in conf.aliases:
         error_console.print(f"Alias '{name}' already exists")
         raise Abort()
 
@@ -57,9 +57,9 @@ def add(ctx, name: str, url: Optional[str], token: Optional[str]):
         token = click.prompt("API Token", type=str, default="")
 
     with error_handle():
-        entry = Alias(url=url, token=token).dict()
+        entry = Alias(url=url, token=token)
 
-        conf["aliases"][name] = entry
+        conf.aliases[name] = entry
         write_config(ctx.obj["config_path"], conf)
 
 
@@ -74,5 +74,5 @@ def rm(ctx, name: str):
     conf: Config = ctx.obj["conf"]
     _ = get_alias(ctx.obj["config_path"], name)
 
-    conf["aliases"].pop(name)
+    conf.aliases.pop(name)
     write_config(ctx.obj["config_path"], conf)

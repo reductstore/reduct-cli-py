@@ -3,12 +3,12 @@ from asyncio import new_event_loop as loop
 from typing import List
 
 import click
-from reduct import Client as ReductClient, Permissions
+from reduct import Permissions
 from reduct import Token, FullTokenInfo
 
 from reduct_cli.utils.consoles import console
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import get_alias
+from reduct_cli.utils.helpers import build_client
 
 run = loop().run_until_complete
 
@@ -23,12 +23,7 @@ def token():
 @click.pass_context
 def ls(ctx, alias: str):
     """Print list of tokens"""
-    alias_ = get_alias(ctx.obj["config_path"], alias)
-
-    client = ReductClient(
-        alias_["url"], api_token=alias_["token"], timeout=ctx.obj["timeout"]
-    )
-
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
     with error_handle():
         tokens: List[Token] = run(client.get_token_list())
         for tkn in tokens:
@@ -41,10 +36,7 @@ def ls(ctx, alias: str):
 @click.pass_context
 def show(ctx, alias: str, name: str):
     """Show token"""
-    alias_ = get_alias(ctx.obj["config_path"], alias)
-    client = ReductClient(
-        alias_["url"], api_token=alias_["token"], timeout=ctx.obj["timeout"]
-    )
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
     with error_handle():
         tkn: FullTokenInfo = run(client.get_token(name))
         console.print(f"Name:    {tkn.name}")
@@ -73,11 +65,7 @@ def create(
     ctx, alias: str, name: str, full_access: bool, read: str, write: str
 ):  # pylint: disable=too-many-arguments
     """Create token"""
-    alias_ = get_alias(ctx.obj["config_path"], alias)
-
-    client = ReductClient(
-        alias_["url"], api_token=alias_["token"], timeout=ctx.obj["timeout"]
-    )
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
     with error_handle():
         permissions = Permissions(
             full_access=full_access,
@@ -94,12 +82,7 @@ def create(
 @click.pass_context
 def rm(ctx, alias: str, name: str):
     """Remove token"""
-    alias_ = get_alias(ctx.obj["config_path"], alias)
-
-    client = ReductClient(
-        alias_["url"], api_token=alias_["token"], timeout=ctx.obj["timeout"]
-    )
-
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
     with error_handle():
         console.print(f"We are going to [b]remove[/b] token: {name}")
         if click.confirm("Do you want to continue?"):

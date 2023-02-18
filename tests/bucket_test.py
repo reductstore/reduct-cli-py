@@ -48,7 +48,7 @@ def _make_bucket(mocker) -> Bucket:
 
 @pytest.fixture(name="client")
 def _make_client(mocker, bucket) -> Client:
-    kls = mocker.patch("reduct_cli.bucket.ReductClient")
+    kls = mocker.patch("reduct_cli.bucket.build_client")
     kls.return_value = mocker.Mock(spec=Client)
     kls.return_value.list.return_value = [
         BucketInfo(
