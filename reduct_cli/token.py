@@ -3,12 +3,12 @@ from asyncio import new_event_loop as loop
 from typing import List
 
 import click
-from reduct import Client as ReductClient, Permissions
+from reduct import Permissions
 from reduct import Token, FullTokenInfo
 
 from reduct_cli.utils.consoles import console
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import get_alias, build_client
+from reduct_cli.utils.helpers import build_client
 
 run = loop().run_until_complete
 

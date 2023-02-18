@@ -190,7 +190,7 @@ def create(
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
     alias_name, bucket_name = parse_path(path)
-    client = build_client(ctx, path, ctx.obj["timeout"])
+    client = build_client(ctx, alias_name, ctx.obj["timeout"])
     with error_handle():
         settings = BucketSettings(
             quota_type=quota_type,
