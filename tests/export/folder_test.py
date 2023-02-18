@@ -47,6 +47,7 @@ def test__export_to_folder_ok_with_interval(
             stop=1643666400000000,
             include={},
             exclude={},
+            ttl=ANY,
         ),
         call(
             "entry-2",
@@ -54,6 +55,7 @@ def test__export_to_folder_ok_with_interval(
             stop=1643666400000000,
             include={},
             exclude={},
+            ttl=ANY,
         ),
     ]
 
@@ -75,7 +77,7 @@ def test__export_to_folder_ok_without_interval(runner, conf, src_bucket, export_
     assert result.exit_code == 0
 
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1000000000, stop=5000000000, include={}, exclude={}
+        "entry-1", start=1000000000, stop=5000000000, include={}, exclude={}, ttl=ANY
     )
 
 
@@ -98,7 +100,12 @@ def test__export_utc_timestamp(runner, conf, src_bucket, export_path):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list[0] == call(
-        "entry-1", start=1641081601100300, stop=1643673600000000, include={}, exclude={}
+        "entry-1",
+        start=1641081601100300,
+        stop=1643673600000000,
+        include={},
+        exclude={},
+        ttl=ANY,
     )
 
 
@@ -110,7 +117,7 @@ def test__export_specific_entry(runner, conf, src_bucket, export_path):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [
-        call("entry-2", start=ANY, stop=ANY, include={}, exclude={})
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY)
     ]
 
 
@@ -122,8 +129,8 @@ def test__export_multiple_specific_entry(runner, conf, src_bucket, export_path):
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [
-        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}),
-        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}),
+        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
     ]
 
 
@@ -158,4 +165,22 @@ def test__export_to_folder_with_filters(runner, conf, src_bucket, export_path):
         stop=ANY,
         include={"label1": "value1", "label2": "value2"},
         exclude={"label3": "value3", "label4": "value4"},
+        ttl=ANY,
+    )
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__export_to_folder_with_ttl(runner, conf, src_bucket, export_path):
+    """Should query bucket with calculated TTL = timeout * parallel tasks"""
+    result = runner(f"-c {conf} -p 2  -t 3 export folder test/src_bucket {export_path}")
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
+    assert result.exit_code == 0
+
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1",
+        start=ANY,
+        stop=ANY,
+        include={},
+        exclude={},
+        ttl=6,
     )

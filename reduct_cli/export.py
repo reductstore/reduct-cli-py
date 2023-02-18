@@ -100,6 +100,7 @@ def folder(
                 include=include.split(","),
                 exclude=exclude.split(","),
                 ext=ext,
+                timeout=ctx.obj["timeout"],
             )
         )
 
@@ -153,5 +154,6 @@ def bucket(
                 entries=entries.split(","),
                 include=include.split(","),
                 exclude=exclude.split(","),
+                timeout=ctx.obj["timeout"],
             )
         )

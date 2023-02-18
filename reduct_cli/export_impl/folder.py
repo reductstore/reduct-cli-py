@@ -38,14 +38,13 @@ async def export_to_folder(
     client: ReductClient,
     dest: str,
     bucket_name: str,
-    parallel: int,
     **kwargs,
 ) -> None:
     """Export data from SRC bucket to DST folder"""
     bucket: Bucket = await client.get_bucket(bucket_name)
     folder_path = Path(dest) / bucket_name
     folder_path.mkdir(parents=True, exist_ok=True)
-    sem = asyncio.Semaphore(parallel)
+    sem = asyncio.Semaphore(kwargs["parallel"])
 
     with Progress() as progress:
         tasks = [

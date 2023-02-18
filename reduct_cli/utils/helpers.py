@@ -62,6 +62,7 @@ async def read_records_with_progress(
         start (Optional[datetime]): Start time point
         stop (Optional[datetime]): Stop time point
         timeout (int): Timeout for read operation
+        parallel (int): Number of parallel tasks
     Yields:
         Record: Record from entry
     """
@@ -106,7 +107,7 @@ async def read_records_with_progress(
             stop=stop,
             include=include,
             exclude=exclude,
-            ttl=kwargs["timeout"] * sem._value,
+            ttl=kwargs["timeout"] * kwargs["parallel"],
         ):
             if signal_queue.qsize() > 0:
                 # stop signal received

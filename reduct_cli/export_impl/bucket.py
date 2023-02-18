@@ -41,7 +41,6 @@ async def export_to_bucket(
     dest_bucket_name: str,
     src: ReductClient,
     dest: ReductClient,
-    parallel: int,
     **kwargs,
 ) -> None:
     """Export data from SRC bucket to DST bucket"""
@@ -50,7 +49,7 @@ async def export_to_bucket(
         dest_bucket_name, settings=await src_bucket.get_settings(), exist_ok=True
     )
 
-    sem = asyncio.Semaphore(parallel)
+    sem = asyncio.Semaphore(kwargs["parallel"])
     with Progress() as progress:
         tasks = [
             _copy_entry(entry, src_bucket, dest_bucket, progress, sem, **kwargs)
