@@ -70,6 +70,7 @@ Here is a list of the options that you can use with the `rcli export` commands:
 
 * `--entries`: With this option, you can specify the entries that you want to export. The entries should be specified
   as a comma-separated list of entry names (e.g., `--entries=entry1,entry2`).
+  You can also use the `*` wildcard to match all entries with a certain prefix (e.g., `--entries=prefix-*`).
 
 * `--include`: Specify the labels to include in the export. Only data with
   the specified labels will be exported. The labels should be specified as a comma-separated list of label names (e.g.,

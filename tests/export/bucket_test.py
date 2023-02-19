@@ -162,7 +162,28 @@ def test__export_bucket_specific_entry(runner, conf, src_bucket):
 def test__export_bucket_multiple_specific_entry(runner, conf, src_bucket):
     """Should export bucket multiple specific entries"""
     result = runner(
-        f"-c {conf} export bucket test/src_bucket test/dest_bucket --entries=entry-2,entry-1"
+        f"-c {conf} export bucket test/src_bucket test/dest_bucket --entries=entry-*"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [
+        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+        call("entry-2", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+    ]
+    src_bucket.query.call_args_list = []
+
+    result = runner(
+        f"-c {conf} export bucket test/src_bucket test/dest_bucket "
+        f"--entries=entry-1,some-other-entry"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [
+        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+        call("some-other-entry", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+    ]
+    src_bucket.query.call_args_list = []
+
+    result = runner(
+        f"-c {conf} export bucket test/src_bucket test/dest_bucket --entries=entry-1,entry-2"
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [

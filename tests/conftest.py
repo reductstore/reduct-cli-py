@@ -97,6 +97,14 @@ def _make_src_bucket(mocker, src_settings, records) -> Bucket:
             oldest_record=1000000000,
             latest_record=5000000000,
         ),
+        EntryInfo(
+            name="some-other-entry",
+            size=1050000,
+            block_count=1,
+            record_count=2,
+            oldest_record=1000000000,
+            latest_record=5000000000,
+        ),
     ]
 
     bucket.query.return_value = AsyncIter(records)

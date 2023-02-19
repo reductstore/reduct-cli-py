@@ -40,24 +40,22 @@ def test__export_to_folder_ok_with_interval(
     assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
-    assert src_bucket.query.call_args_list == [
-        call(
-            "entry-1",
-            start=1641074401100300,
-            stop=1643666400000000,
-            include={},
-            exclude={},
-            ttl=ANY,
-        ),
-        call(
-            "entry-2",
-            start=1641074401100300,
-            stop=1643666400000000,
-            include={},
-            exclude={},
-            ttl=ANY,
-        ),
-    ]
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1",
+        start=1641074401100300,
+        stop=1643666400000000,
+        include={},
+        exclude={},
+        ttl=ANY,
+    )
+    assert src_bucket.query.call_args_list[1] == call(
+        "entry-2",
+        start=1641074401100300,
+        stop=1643666400000000,
+        include={},
+        exclude={},
+        ttl=ANY,
+    )
 
     assert (
         export_path / "src_bucket" / "entry-1" / f"{records[0].timestamp}.png"
@@ -125,12 +123,31 @@ def test__export_specific_entry(runner, conf, src_bucket, export_path):
 def test__export_multiple_specific_entry(runner, conf, src_bucket, export_path):
     """Should export multiple specific entries"""
     result = runner(
-        f"-c {conf} export folder test/src_bucket {export_path} --entries=entry-2,entry-1"
+        f"-c {conf} export folder test/src_bucket {export_path} --entries=entry-*"
     )
     assert result.exit_code == 0
     assert src_bucket.query.call_args_list == [
         call("entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
         call("entry-2", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+    ]
+    src_bucket.query.call_args_list = []
+
+    result = runner(
+        f"-c {conf} export folder test/src_bucket {export_path} --entries=entry-1,some-other-entry"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [
+        call("entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+        call("some-other-entry", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
+    ]
+    src_bucket.query.call_args_list = []
+
+    result = runner(
+        f"-c {conf} export folder test/src_bucket {export_path} --entries=some-other-entry"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list == [
+        call("some-other-entry", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY),
     ]
 
 
