@@ -58,12 +58,12 @@ def test__export_to_folder_ok_with_interval(
     )
 
     assert (
-        export_path / "src_bucket" / "entry-1" / f"{records[0].timestamp}.png"
+        export_path / "entry-1" / f"{records[0].timestamp}.png"
     ).read_bytes() == b"Hey"
 
     # record 2 has no content type so it should be saved as .bin
     assert (
-        export_path / "src_bucket" / "entry-2" / f"{records[1].timestamp}.bin"
+        export_path / "entry-2" / f"{records[1].timestamp}.bin"
     ).read_bytes() == b"Bye"
 
 
@@ -159,10 +159,10 @@ def test__export_to_folder_with_ext_flag(runner, conf, records, export_path):
     assert result.exit_code == 0
 
     assert (
-        export_path / "src_bucket" / "entry-1" / f"{records[0].timestamp}.txt"
+        export_path / "entry-1" / f"{records[0].timestamp}.txt"
     ).read_bytes() == b"Hey"
     assert (
-        export_path / "src_bucket" / "entry-2" / f"{records[1].timestamp}.txt"
+        export_path / "entry-2" / f"{records[1].timestamp}.txt"
     ).read_bytes() == b"Bye"
 
 

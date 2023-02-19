@@ -42,7 +42,7 @@ async def export_to_folder(
 ) -> None:
     """Export data from SRC bucket to DST folder"""
     bucket: Bucket = await client.get_bucket(bucket_name)
-    folder_path = Path(dest) / bucket_name
+    folder_path = Path(dest)
     folder_path.mkdir(parents=True, exist_ok=True)
     sem = asyncio.Semaphore(kwargs["parallel"])
 

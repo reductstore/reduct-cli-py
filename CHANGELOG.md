@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Wildcard support for `--entries` option in `rcli export`
   command, [PR-51](https://github.com/reductstore/reduct-cli/pull/51)
+- Stop creating folder with bucket name
+  in `rcli export folder`, [PR-52](https://github.com/reductstore/reduct-cli/pull/52)
 
 ### Fixed
 
