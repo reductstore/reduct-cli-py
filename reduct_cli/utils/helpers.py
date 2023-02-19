@@ -155,6 +155,8 @@ def filter_entries(entries: List[EntryInfo], names: List[str]) -> List[EntryInfo
         for name in names:
             if name == entry.name:
                 return True
+            if name.endswith("*") and entry.name.startswith(name[:-1]):
+                return True
         return False
 
     return list(filter(_filter, entries))
