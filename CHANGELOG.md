@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Wildcard support for `--entries` option in `rcli export`
+  command, [PR-51](https://github.com/reductstore/reduct-cli/pull/51)
+
 ### Fixed
 
 - Fix expired query error, [PR-50](https://github.com/reductstore/reduct-cli/pull/50)
