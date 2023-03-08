@@ -62,11 +62,11 @@ Here is a list of the options that you can use with the `rcli export` commands:
 
 * `--start`: This option allows you to specify a starting time point for the data that you want to export. Data with
   timestamps newer than this time point will be included in the export. The time point should be in ISO format (e.g.,
-  2022-01-01T00:00:00Z).
+  2022-01-01T00:00:00Z) or Unix timestamp in milliseconds (e.g., 1633046400000).
 
 * `--stop`: This option allows you to specify an ending time point for the data that you want to export. Data with
   timestamps older than this time point will be included in the export. The time point should be in ISO format (e.g.,
-  2022-01-01T00:00:00Z).
+  2022-01-01T00:00:00Z) or Unix timestamp in milliseconds (e.g., 1633046400000).
 
 * `--entries`: With this option, you can specify the entries that you want to export. The entries should be specified
   as a comma-separated list of entry names (e.g., `--entries=entry1,entry2`).
