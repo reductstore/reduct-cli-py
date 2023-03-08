@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2023-03-08
+
 ### Added
 
 - `--with-metadata` flag for `rcli export folder` command to export metadata
@@ -114,7 +116,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Init release
 
-[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.8.0...HEAD
+
+[0.8.0]: https://github.com/reductstore/reduct-cli/compare/v0.7.0...v0.8.0
 
 [0.7.0]: https://github.com/reductstore/reduct-cli/compare/v0.6.0...v0.7.0
 
