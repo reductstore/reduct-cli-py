@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--with-metadata` flag for `rcli export folder` command to export metadata
+  along with the records, [PR-55](https://github.com/reductstore/reduct-cli/pull/55)
+
 ## [0.7.0] - 2023-02-19
 
 ### Added

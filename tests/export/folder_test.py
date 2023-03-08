@@ -204,10 +204,8 @@ def test__export_to_folder_with_ttl(runner, conf, src_bucket, export_path):
     )
 
 
-@pytest.mark.usefixtures("set_alias", "client")
-def test__export_to_folder_with_metadata(
-    runner, conf, src_bucket, export_path, records
-):
+@pytest.mark.usefixtures("set_alias", "client", "src_bucket")
+def test__export_to_folder_with_metadata(runner, conf, export_path, records):
     """Should export a bucket to a folder with metadata"""
     result = runner(
         f"-c {conf} export folder test/src_bucket {export_path} --with-metadata"

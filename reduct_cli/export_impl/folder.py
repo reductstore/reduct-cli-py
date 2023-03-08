@@ -35,7 +35,9 @@ async def _export_entry(
             async for chunk in record.read(1024 * 512):
                 file.write(chunk)
         if with_meta:
-            with open(entry_path / f"{record.timestamp}.json", "w") as file:
+            with open(
+                entry_path / f"{record.timestamp}.json", "w", encoding="utf-8"
+            ) as file:
                 json.dump(
                     {
                         "timestamp": record.timestamp,
