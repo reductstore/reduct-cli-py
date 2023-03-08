@@ -16,13 +16,16 @@ run = loop().run_until_complete
 
 start_option = click.option(
     "--start",
-    help="Export records with timestamps newer than this time point in ISO format or Unix timestamp in microseconds",
+    help="Export records with timestamps newer than this time point in ISO format"
+    " or Unix timestamp in microseconds",
 )
 
 stop_option = click.option(
     "--stop",
-    help="Export records  with timestamps older than this time point in ISO format or Unix timestamp in microseconds",
+    help="Export records  with timestamps older than this time point in ISO format"
+    " or Unix timestamp in microseconds",
 )
+
 entries_option = click.option(
     "--entries",
     help="Export only these entries, separated by comma",
