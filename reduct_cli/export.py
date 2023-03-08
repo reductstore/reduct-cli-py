@@ -61,6 +61,11 @@ def export():
     "--ext",
     help="Extension for exported files, if not specified, will be guessed from content type",
 )
+@click.option(
+    "--with-metadata/--no-with-metadata",
+    help="Export metadata along with the data",
+    default=False,
+)
 @click.pass_context
 def folder(
     ctx,
@@ -72,6 +77,7 @@ def folder(
     include: str,
     exclude: str,
     ext: Optional[str],
+    with_metadata: bool,
 ):  # pylint: disable=too-many-arguments
     """Export data from SRC bucket to DST folder
 
@@ -101,6 +107,7 @@ def folder(
                 exclude=exclude.split(","),
                 ext=ext,
                 timeout=ctx.obj["timeout"],
+                with_metadata=with_metadata,
             )
         )
 

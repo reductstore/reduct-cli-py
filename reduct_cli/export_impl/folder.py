@@ -1,7 +1,8 @@
 """Module for export folder command"""
 import asyncio
-from pathlib import Path
+import json
 from mimetypes import guess_extension
+from pathlib import Path
 
 from reduct import Client as ReductClient
 from reduct import EntryInfo, Bucket
@@ -20,6 +21,7 @@ async def _export_entry(
     if kwargs["ext"] is not None:
         force_ext = "." + kwargs["ext"].split(".")[-1]
 
+    with_meta = kwargs["with_metadata"]
     async for record in read_records_with_progress(
         entry, bucket, progress, sem, **kwargs
     ):
@@ -32,6 +34,18 @@ async def _export_entry(
         with open(entry_path / f"{record.timestamp}{ext}", "wb") as file:
             async for chunk in record.read(1024 * 512):
                 file.write(chunk)
+        if with_meta:
+            with open(entry_path / f"{record.timestamp}.json", "w") as file:
+                json.dump(
+                    {
+                        "timestamp": record.timestamp,
+                        "content_type": record.content_type,
+                        "size": record.size,
+                        "labels": record.labels,
+                    },
+                    file,
+                    indent=4,
+                )
 
 
 async def export_to_folder(
