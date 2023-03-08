@@ -1,4 +1,5 @@
 """Unit tests for export folder command"""
+import json
 import shutil
 from pathlib import Path
 from tempfile import gettempdir
@@ -201,3 +202,23 @@ def test__export_to_folder_with_ttl(runner, conf, src_bucket, export_path):
         exclude={},
         ttl=6,
     )
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__export_to_folder_with_metadata(
+    runner, conf, src_bucket, export_path, records
+):
+    """Should export a bucket to a folder with metadata"""
+    result = runner(
+        f"-c {conf} export folder test/src_bucket {export_path} --with-metadata"
+    )
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
+    assert result.exit_code == 0
+
+    metadata = (export_path / "entry-1" / f"{records[0].timestamp}.json").read_bytes()
+    assert json.loads(metadata) == {
+        "timestamp": records[0].timestamp,
+        "content_type": records[0].content_type,
+        "size": records[0].size,
+        "labels": records[0].labels,
+    }
