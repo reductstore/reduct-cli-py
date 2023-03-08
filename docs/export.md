@@ -40,7 +40,7 @@ that you want to use (see below for a list of available options), `SRC` with the
 data from, and `DEST` with the destination bucket where you want to save the copied data:
 
 ```
-rcli mirror [OPTIONS] SRC DEST
+rcli export bucket [OPTIONS] SRC DEST
 ```
 
 `SRC` and `DEST` should be in the format `ALIAS/BUCKET_NAME`, where `ALIAS` is the alias that you created for your
@@ -79,6 +79,14 @@ Here is a list of the options that you can use with the `rcli export` commands:
 * `--exclude`: Specify the labels to exclude from the export. Data with
   the specified labels will not be exported. The labels should be specified as a comma-separated list of label names (
   e.g., and values (e.g., `--exclude= color=red,size=big`).
+
+* `--ext`: Specify the file extension that you want to use for the exported data files. If not specified, the default
+  extension will be guessed based on the MIME content type of the data. Only for `rcli export folder`.
+
+* `--with-metadata`: If this option is specified, the CLI client creates a metadata file in JSON format for each
+  exported data record.
+  The metadata file contains information like the timestamp, content type, size and the labels that were applied to the
+  data. Only for `rcli export folder`.
 
 You also can use the global `--parallel` option to specify the number of entries that you want to export in parallel:
 
