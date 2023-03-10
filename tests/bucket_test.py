@@ -1,4 +1,5 @@
 """Unit tests for bucket commands"""
+
 import pytest
 from reduct import BucketInfo, Client, Bucket, BucketSettings, QuotaType, EntryInfo
 from rich.console import Console
@@ -46,11 +47,15 @@ def _make_bucket(mocker) -> Bucket:
     return bucket
 
 
+@pytest.fixture(name="build_client_func")
+def _build_client(mocker) -> Client:
+    return mocker.patch("reduct_cli.bucket.build_client")
+
+
 @pytest.fixture(name="client")
-def _make_client(mocker, bucket) -> Client:
-    kls = mocker.patch("reduct_cli.bucket.build_client")
-    kls.return_value = mocker.Mock(spec=Client)
-    kls.return_value.list.return_value = [
+def _make_client(mocker, bucket, build_client_func) -> Client:
+    build_client_func.return_value = mocker.Mock(spec=Client)
+    build_client_func.return_value.list.return_value = [
         BucketInfo(
             name="bucket-1",
             entry_count=1,
@@ -67,8 +72,8 @@ def _make_client(mocker, bucket) -> Client:
         ),
     ]
 
-    kls.return_value.get_bucket.return_value = bucket
-    return kls.return_value
+    build_client_func.return_value.get_bucket.return_value = bucket
+    return build_client_func.return_value
 
 
 @pytest.mark.usefixtures("set_alias", "client")
@@ -164,13 +169,14 @@ def test__show_error(runner, conf, client):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test__create_bucket_default(runner, conf, client):
+def test__create_bucket_default(runner, conf, client, build_client_func):
     """Should create a bucket with default settings"""
     result = runner(f"-c {conf} bucket create test/bucket-1")
     assert result.output == "Bucket 'bucket-1' created\n"
     assert result.exit_code == 0
 
     client.create_bucket.assert_called_with("bucket-1", BucketSettings())
+    build_client_func.assert_called_with(conf, "test", 5)
 
 
 @pytest.mark.usefixtures("set_alias")
