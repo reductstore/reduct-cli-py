@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Exception in `bucket create` command, [PR-57](https://github.com/reductstore/reduct-cli/pull/57)
+
 ## [0.8.0] - 2023-03-08
 
 ### Added
