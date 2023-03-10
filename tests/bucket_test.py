@@ -1,5 +1,4 @@
 """Unit tests for bucket commands"""
-from pathlib import PosixPath
 
 import pytest
 from reduct import BucketInfo, Client, Bucket, BucketSettings, QuotaType, EntryInfo
