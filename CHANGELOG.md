@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2] - 2023-06-05
+
 ### Changed
 
 - Use `reduct-py~=1.4`, [PR-60](https://github.com/reductstore/reduct-cli/pull/60)
@@ -126,7 +128,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Init release
 
-[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.8.2...HEAD
+
+[0.8.2]: https://github.com/reductstore/reduct-cli/compare/v0.8.1...v0.8.2
 
 [0.8.1]: https://github.com/reductstore/reduct-cli/compare/v0.8.0...v0.8.1
 
