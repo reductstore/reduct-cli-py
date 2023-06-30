@@ -9,7 +9,7 @@ blob data. It is written in Python and uses the [ReductStore Client SDK for Pyth
 
 ## Features
 
-* Support for ReductStore API v1.3
+* Support for ReductStore API v1.5
 * Easy management of buckets and tokens
 * Ability to check the status of a storage engine
 * Aliases for storing server credentials
@@ -34,7 +34,7 @@ Check with our [demo server](https://play.reduct.store):
 
 ```shell
 rcli alias add -L  https://play.reduct.store -t reduct play
-rcli server status play       
+rcli server status play
 rcli bucket ls --full play
 rcli export folder play/data . --inlcude size=big
 ```
