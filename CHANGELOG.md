@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.3] - 2023-06-30
+
 ### Fixed
 
 - Fix speed calculation for `rcli export` command, [PR-61](https://github.com/reductstore/reduct-cli/pull/61)
@@ -132,7 +134,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Init release
 
-[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.8.2...HEAD
+[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.8.3...HEAD
+
+[0.8.3]: https://github.com/reductstore/reduct-cli/compare/v0.8.2...v0.8.3
 
 [0.8.2]: https://github.com/reductstore/reduct-cli/compare/v0.8.1...v0.8.2
 
