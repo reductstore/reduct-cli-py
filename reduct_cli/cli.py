@@ -46,7 +46,7 @@ def cli(
         config = Path.home() / ".reduct-cli" / "config.toml"
 
     if timeout is None:
-        timeout = 5
+        timeout = 60
 
     if parallel is None:
         parallel = 10
