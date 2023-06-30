@@ -125,11 +125,9 @@ async def read_records_with_progress(
 
             exported_size += record.size
             stats.append((record.size, time.time()))
-            if len(stats) > 10:
-                stats.pop(0)
-
-            if len(stats) > 1:
+            if len(stats) > 100:
                 speed = sum(s[0] for s in stats) / (stats[-1][1] - stats[0][1])
+                stats = stats[-50:]
 
             yield record
 
@@ -137,7 +135,7 @@ async def read_records_with_progress(
                 task,
                 description=f"Entry '{entry.name}' "
                 f"(copied {count} records ({pretty_size(exported_size)}), "
-                f"speed {pretty_size(speed)}/s)",
+                f"speed {pretty_size(speed) if speed else '? B'}/s)",
                 advance=record.timestamp - last_time,
                 refresh=True,
             )
