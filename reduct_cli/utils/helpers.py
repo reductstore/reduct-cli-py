@@ -129,7 +129,6 @@ async def read_records_with_progress(
                 speed = sum(s[0] for s in stats) / (stats[-1][1] - stats[0][1])
                 stats = stats[-50:]
 
-
             yield record
 
             progress.update(
