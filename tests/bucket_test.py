@@ -176,7 +176,7 @@ def test__create_bucket_default(runner, conf, client, build_client_func):
     assert result.exit_code == 0
 
     client.create_bucket.assert_called_with("bucket-1", BucketSettings())
-    build_client_func.assert_called_with(conf, "test", 5)
+    build_client_func.assert_called_with(conf, "test", 60)
 
 
 @pytest.mark.usefixtures("set_alias")
