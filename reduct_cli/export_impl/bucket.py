@@ -44,17 +44,18 @@ async def export_to_bucket(
     **kwargs,
 ) -> None:
     """Export data from SRC bucket to DST bucket"""
-    src_bucket: Bucket = await src.get_bucket(src_bucket_name)
-    dest_bucket: Bucket = await dest.create_bucket(
-        dest_bucket_name, settings=await src_bucket.get_settings(), exist_ok=True
-    )
+    async with src as src, dest as dest:
+        src_bucket: Bucket = await src.get_bucket(src_bucket_name)
+        dest_bucket: Bucket = await dest.create_bucket(
+            dest_bucket_name, settings=await src_bucket.get_settings(), exist_ok=True
+        )
 
-    sem = asyncio.Semaphore(kwargs["parallel"])
-    with Progress() as progress:
-        tasks = [
-            _copy_entry(entry, src_bucket, dest_bucket, progress, sem, **kwargs)
-            for entry in filter_entries(
-                await src_bucket.get_entry_list(), kwargs["entries"]
-            )
-        ]
-        await asyncio.gather(*tasks)
+        sem = asyncio.Semaphore(kwargs["parallel"])
+        with Progress() as progress:
+            tasks = [
+                _copy_entry(entry, src_bucket, dest_bucket, progress, sem, **kwargs)
+                for entry in filter_entries(
+                    await src_bucket.get_entry_list(), kwargs["entries"]
+                )
+            ]
+            await asyncio.gather(*tasks)

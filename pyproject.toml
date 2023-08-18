@@ -29,7 +29,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "reduct-py~=1.5",
+    "reduct-py~=1.6",
     "click~=8.1",
     "tomlkit~=0.11",
     "rich~=12.6",

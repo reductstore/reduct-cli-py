@@ -57,16 +57,17 @@ async def export_to_folder(
     **kwargs,
 ) -> None:
     """Export data from SRC bucket to DST folder"""
-    bucket: Bucket = await client.get_bucket(bucket_name)
-    folder_path = Path(dest)
-    folder_path.mkdir(parents=True, exist_ok=True)
-    sem = asyncio.Semaphore(kwargs["parallel"])
+    async with client as client:
+        bucket: Bucket = await client.get_bucket(bucket_name)
+        folder_path = Path(dest)
+        folder_path.mkdir(parents=True, exist_ok=True)
+        sem = asyncio.Semaphore(kwargs["parallel"])
 
-    with Progress() as progress:
-        tasks = [
-            _export_entry(folder_path, entry, bucket, progress, sem, **kwargs)
-            for entry in filter_entries(
-                await bucket.get_entry_list(), kwargs["entries"]
-            )
-        ]
-        await asyncio.gather(*tasks)
+        with Progress() as progress:
+            tasks = [
+                _export_entry(folder_path, entry, bucket, progress, sem, **kwargs)
+                for entry in filter_entries(
+                    await bucket.get_entry_list(), kwargs["entries"]
+                )
+            ]
+            await asyncio.gather(*tasks)
