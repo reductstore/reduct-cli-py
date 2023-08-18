@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--only-entries` to `bucket rm` command to remove only selected entries, [PR-65](https://github.com/reductstore/reduct-cli/pull/65)
+
 ### Changed
 
 - Reuse HTTP session to improve performance, [PR-64](https://github.com/reductstore/reduct-cli/pull/64)
