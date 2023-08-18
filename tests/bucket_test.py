@@ -348,8 +348,8 @@ def test__remove_only_entries_error(runner, conf, bucket):
     assert result.exit_code == 1
 
 
-@pytest.mark.usefixtures("set_alias", "client")
-def test__remove_only_entries_error_entry_not_found(runner, conf, bucket):
+@pytest.mark.usefixtures("set_alias", "client", "bucket")
+def test__remove_only_entries_error_entry_not_found(runner, conf):
     """Should remove entries selected by wildcard"""
     result = runner(
         f"-c {conf} bucket rm test/bucket-1 --only-entries entry-* ", input="Y\n"
