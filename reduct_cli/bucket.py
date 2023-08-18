@@ -237,7 +237,7 @@ def update(
 @bucket.command()
 @click.argument("path")
 @click.option(
-    "--only-entries", "-e", help="Don't remove a bucket but only some entries"
+    "--only-entries", "-e", help="Don't remove a bucket but only selected entries"
 )
 @click.pass_context
 def rm(ctx, path: str, only_entries: Optional[str]):

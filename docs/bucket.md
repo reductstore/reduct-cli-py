@@ -80,3 +80,9 @@ rcli bucket rm test-storage/bucket-1
 
 !!!Warning
     When you remove a bucket from your storage engine, you delete all of its data. Use this command with caution.
+
+You also can remove only selected entries from a bucket using the `--only-entries` option:
+
+```shell
+rcli bucket rm test-storage/bucket-1 --only-entries entry-1,entry-2,old-*
+```
