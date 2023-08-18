@@ -263,7 +263,9 @@ def rm(ctx, path: str, only_entries: Optional[str]):
             return
 
         console.print(
-            f"All data in entries [b]'{', '.join([entry.name for entry in entries])}'[/b] will be [b]REMOVED[/b]."
+            f"All data in entries [b]'"
+            f"{', '.join([entry.name for entry in entries])}'"
+            f"[/b] will be [b]REMOVED[/b]."
         )
         if click.confirm("Do you want to continue?"):
             for entry in entries:
