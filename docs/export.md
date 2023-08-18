@@ -88,6 +88,9 @@ Here is a list of the options that you can use with the `rcli export` commands:
   The metadata file contains information like the timestamp, content type, size and the labels that were applied to the
   data. Only for `rcli export folder`.
 
+* `--limit`: This option allows you to specify the maximum number of entries that you want to export. If not specified,
+  all entries will be exported.
+
 You also can use the global `--parallel` option to specify the number of entries that you want to export in parallel:
 
 ```
