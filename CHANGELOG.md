@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Reuse HTTP session to improve performance, [PR-64](https://github.com/reductstore/reduct-cli/pull/64)
+
 ## [0.8.3] - 2023-06-30
 
 ### Fixed
