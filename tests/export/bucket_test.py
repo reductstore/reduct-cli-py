@@ -221,3 +221,15 @@ def test__export_bucket_calc_ttl(runner, conf, src_bucket):
     assert src_bucket.query.call_args_list[0] == call(
         "entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=6
     )
+
+
+@pytest.mark.usefixtures("set_alias", "client", "dest_bucket")
+def test__export_bucket_with_limit(runner, conf, src_bucket):
+    """Should export bucket with limit"""
+    result = runner(
+        f"-c {conf} export bucket test/src_bucket test/dest_bucket --limit 10"
+    )
+    assert result.exit_code == 0
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1", start=ANY, stop=ANY, include={}, exclude={}, ttl=ANY, limit=10
+    )

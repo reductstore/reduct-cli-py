@@ -28,12 +28,14 @@ stop_option = click.option(
 
 entries_option = click.option(
     "--entries",
+    "-e",
     help="Export only these entries, separated by comma",
     default="",
 )
 
 include_option = click.option(
     "--include",
+    "-I",
     help="Export only these records which have these labels with given values, "
     "separated by comma. Example: --include label1=values1,label2=value2",
     default="",
@@ -41,9 +43,14 @@ include_option = click.option(
 
 exclude_option = click.option(
     "--exclude",
+    "-E",
     help="Export only these records which DON NOT have these labels with given values, "
     "separated by comma. Example: --exclude label1=values1,label2=value2",
     default="",
+)
+
+limit_option = click.option(
+    "--limit", "-l", help="Limit the number of records to export"
 )
 
 
@@ -60,6 +67,7 @@ def export():
 @entries_option
 @include_option
 @exclude_option
+@limit_option
 @click.option(
     "--ext",
     help="Extension for exported files, if not specified, will be guessed from content type",
@@ -81,6 +89,7 @@ def folder(
     exclude: str,
     ext: Optional[str],
     with_metadata: bool,
+    limit: Optional[int],
 ):  # pylint: disable=too-many-arguments
     """Export data from SRC bucket to DST folder
 
@@ -111,6 +120,7 @@ def folder(
                 ext=ext,
                 timeout=ctx.obj["timeout"],
                 with_metadata=with_metadata,
+                limit=limit,
             )
         )
 
@@ -123,6 +133,7 @@ def folder(
 @entries_option
 @include_option
 @exclude_option
+@limit_option
 @click.pass_context
 def bucket(
     ctx,
@@ -133,6 +144,7 @@ def bucket(
     entries: str,
     include: str,
     exclude: str,
+    limit: Optional[int],
 ):  # pylint: disable=too-many-arguments
     """Copy data from SRC to DEST bucket
 
@@ -165,5 +177,6 @@ def bucket(
                 include=include.split(","),
                 exclude=exclude.split(","),
                 timeout=ctx.obj["timeout"],
+                limit=limit,
             )
         )
