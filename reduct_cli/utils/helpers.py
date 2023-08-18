@@ -76,23 +76,35 @@ async def read_records_with_progress(
                 * 1000_000
             )
 
-    start = _to_timestamp(kwargs["start"]) if kwargs["start"] else entry.oldest_record
-    stop = _to_timestamp(kwargs["stop"]) if kwargs["stop"] else entry.latest_record
+    params = {
+        "start": _to_timestamp(kwargs["start"])
+        if kwargs["start"]
+        else entry.oldest_record,
+        "stop": _to_timestamp(kwargs["stop"])
+        if kwargs["stop"]
+        else entry.latest_record,
+        "include": {},
+        "exclude": {},
+        "ttl": kwargs["timeout"] * kwargs["parallel"],
+    }
 
-    include = {}
+    if "limit" in kwargs and kwargs["limit"]:
+        params["limit"] = int(kwargs["limit"])
+
     for item in kwargs["include"]:
         if item:
             key, value = item.split("=")
-            include[key] = value
+            params["include"][key] = value
 
-    exclude = {}
     for item in kwargs["exclude"]:
         if item:
             key, value = item.split("=")
-            exclude[key] = value
+            params["exclude"][key] = value
 
-    last_time = start
-    task = progress.add_task(f"Entry '{entry.name}' waiting", total=stop - start)
+    last_time = params["start"]
+    task = progress.add_task(
+        f"Entry '{entry.name}' waiting", total=params["stop"] - params["start"]
+    )
     async with sem:
         exported_size = 0
         count = 0
@@ -107,11 +119,7 @@ async def read_records_with_progress(
 
         async for record in bucket.query(
             entry.name,
-            start=start,
-            stop=stop,
-            include=include,
-            exclude=exclude,
-            ttl=kwargs["timeout"] * kwargs["parallel"],
+            **params,
         ):
             if signal_queue.qsize() > 0:
                 # stop signal received

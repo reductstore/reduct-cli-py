@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `--only-entries` to `bucket rm` command to remove only selected entries, [PR-65](https://github.com/reductstore/reduct-cli/pull/65)
+- `--limit` option to `export` command, [PR-66](https://github.com/reductstore/reduct-cli/pull/66)
 
 ### Changed
 

@@ -205,6 +205,24 @@ def test__export_to_folder_with_ttl(runner, conf, src_bucket, export_path):
     )
 
 
+@pytest.mark.usefixtures("set_alias", "client")
+def test__export_to_folder_with_limit(runner, conf, src_bucket, export_path):
+    """Should export bucket with limit"""
+    result = runner(f"-c {conf} export folder test/src_bucket {export_path} --limit 10")
+    assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
+    assert result.exit_code == 0
+
+    assert src_bucket.query.call_args_list[0] == call(
+        "entry-1",
+        start=ANY,
+        stop=ANY,
+        include={},
+        exclude={},
+        ttl=ANY,
+        limit=10,
+    )
+
+
 @pytest.mark.usefixtures("set_alias", "client", "src_bucket")
 def test__export_to_folder_with_metadata(runner, conf, export_path, records):
     """Should export a bucket to a folder with metadata"""
