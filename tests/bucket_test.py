@@ -41,7 +41,15 @@ def _make_bucket(mocker) -> Bucket:
             record_count=10000,
             oldest_record=1000000000,
             latest_record=5000000000,
-        )
+        ),
+        EntryInfo(
+            name="entry-2",
+            size=1050000,
+            block_count=100,
+            record_count=10000,
+            oldest_record=1000000000,
+            latest_record=5000000000,
+        ),
     ]
 
     return bucket
@@ -288,3 +296,67 @@ def test__remove_error(runner, conf, bucket):
         "Aborted!\n"
     )
     assert result.exit_code == 1
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__remove_only_entries(runner, conf, bucket):
+    """Should remove selected entries from a bucket"""
+    result = runner(
+        f"-c {conf} bucket rm test/bucket-1 --only-entries entry-1,entry-2 ",
+        input="Y\n",
+    )
+    assert result.output == (
+        "All data in entries 'entry-1, entry-2' will be REMOVED.\n"
+        "Do you want to continue? [y/N]: Y\n"
+        "Entries 'entry-1, entry-2' were removed\n"
+    )
+    assert result.exit_code == 0
+
+    assert bucket.remove_entry.call_args_list[0][0][0] == "entry-1"
+    assert bucket.remove_entry.call_args_list[1][0][0] == "entry-2"
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__remove_only_entries_canceled(runner, conf, bucket):
+    """Should cancel removing selected entries from a bucket"""
+    result = runner(
+        f"-c {conf} bucket rm test/bucket-1 --only-entries entry-1 ", input="N\n"
+    )
+    assert result.output == (
+        "All data in entries 'entry-1' will be REMOVED.\n"
+        "Do you want to continue? [y/N]: N\n"
+        "Canceled\n"
+    )
+    assert result.exit_code == 0
+
+    bucket.remove_entry.assert_not_called()
+
+
+@pytest.mark.usefixtures("set_alias", "client")
+def test__remove_only_entries_error(runner, conf, bucket):
+    """Should print error if something got wrong"""
+    bucket.remove_entry.side_effect = RuntimeError("Oops")
+    result = runner(
+        f"-c {conf} bucket rm test/bucket-1 --only-entries entry-1 ", input="Y\n"
+    )
+    assert result.output == (
+        "All data in entries 'entry-1' will be REMOVED.\n"
+        "Do you want to continue? [y/N]: Y\n"
+        "[RuntimeError] Oops\n"
+        "Aborted!\n"
+    )
+    assert result.exit_code == 1
+
+
+@pytest.mark.usefixtures("set_alias", "client", "bucket")
+def test__remove_only_entries_error_entry_not_found(runner, conf):
+    """Should remove entries selected by wildcard"""
+    result = runner(
+        f"-c {conf} bucket rm test/bucket-1 --only-entries entry-* ", input="Y\n"
+    )
+    assert result.output == (
+        "All data in entries 'entry-1, entry-2' will be REMOVED.\n"
+        "Do you want to continue? [y/N]: Y\n"
+        "Entries 'entry-1, entry-2' were removed\n"
+    )
+    assert result.exit_code == 0

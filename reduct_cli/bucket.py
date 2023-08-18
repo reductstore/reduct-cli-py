@@ -3,14 +3,14 @@ from asyncio import new_event_loop as loop
 from typing import List, Optional
 
 import click
-from reduct import BucketInfo, BucketSettings, QuotaType
+from reduct import BucketInfo, BucketSettings, QuotaType, Bucket
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
 
 from reduct_cli.utils.consoles import console
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import parse_path, build_client
+from reduct_cli.utils.helpers import parse_path, build_client, filter_entries
 from reduct_cli.utils.humanize import pretty_size, print_datetime, parse_ci_size
 from reduct_cli.utils.humanize import pretty_time_interval
 
@@ -236,20 +236,52 @@ def update(
 
 @bucket.command()
 @click.argument("path")
+@click.option(
+    "--only-entries", "-e", help="Don't remove a bucket but only selected entries"
+)
 @click.pass_context
-def rm(ctx, path: str):
+def rm(ctx, path: str, only_entries: Optional[str]):
     """
     Remove bucket
 
     PATH should contain alias name and bucket name - ALIAS/BUCKET_NAME
     """
-    with error_handle():
-        bucket_ = run(_get_bucket_by_path(ctx, path))
-        console.print(
-            f"All data in bucket [b]'{bucket_.name}'[/b] will be [b]REMOVED[/b]."
-        )
+
+    async def remove_bucket(bkt: Bucket):
+        console.print(f"All data in bucket [b]'{bkt.name}'[/b] will be [b]REMOVED[/b].")
         if click.confirm("Do you want to continue?"):
-            run(bucket_.remove())
-            console.print(f"Bucket '{bucket_.name}' was removed")
+            await bkt.remove()
+            console.print(f"Bucket '{bkt.name}' was removed")
         else:
             console.print("Canceled")
+
+    async def remove_entries(bkt: Bucket):
+        entries = await bkt.get_entry_list()
+        entries = filter_entries(entries, only_entries.split(","))
+        if not entries:
+            console.print("No entries found")
+            return
+
+        console.print(
+            f"All data in entries [b]'"
+            f"{', '.join([entry.name for entry in entries])}'"
+            f"[/b] will be [b]REMOVED[/b]."
+        )
+        if click.confirm("Do you want to continue?"):
+            for entry in entries:
+                await bkt.remove_entry(entry.name)
+            console.print(
+                f"Entries '{', '.join([entry.name for entry in entries])}' were removed"
+            )
+        else:
+            console.print("Canceled")
+
+    async def cmd():
+        bucket_ = await _get_bucket_by_path(ctx, path)
+        if not only_entries:
+            await remove_bucket(bucket_)
+        else:
+            await remove_entries(bucket_)
+
+    with error_handle():
+        run(cmd())
