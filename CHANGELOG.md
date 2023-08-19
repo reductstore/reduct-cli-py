@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2023-08-19
+
 ### Added
 
 - `--only-entries` to `bucket rm` command to remove only selected entries, [PR-65](https://github.com/reductstore/reduct-cli/pull/65)
@@ -143,7 +145,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Init release
 
-[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.8.3...HEAD
+[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.9.0...HEAD
+
+[0.9.0]: https://github.com/reductstore/reduct-cli/compare/v0.8.3...v0.9.0
 
 [0.8.3]: https://github.com/reductstore/reduct-cli/compare/v0.8.2...v0.8.3
 
