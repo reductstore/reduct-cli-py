@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- RS-38: Fix compatibility with Pydantic 2.0, drop Python 3.8 support, [PR-68](https://github.com/reductstore/reduct-cli/pull/68)
+
 ## [0.9.0] - 2023-08-19
 
 ### Added
