@@ -1,23 +1,29 @@
 """Configuration"""
 import os
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Annotated, Optional
 
 import tomlkit as toml
 from pydantic import HttpUrl, BaseModel
+from pydantic.functional_validators import BeforeValidator
+from pydantic.type_adapter import TypeAdapter
+
+Url = Annotated[
+    str, BeforeValidator(lambda value: str(TypeAdapter(HttpUrl).validate_python(value)))
+]
 
 
 class Alias(BaseModel):
     """Alias of storage instance"""
 
-    url: HttpUrl
+    url: Url
     token: str
 
 
 class Config(BaseModel):
     """Configuration as a dict"""
 
-    aliases: Dict[str, Alias]
+    aliases: Dict[str, Alias] = {}
 
 
 def write_config(path: Path, config: Config):

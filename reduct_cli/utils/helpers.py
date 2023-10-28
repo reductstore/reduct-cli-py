@@ -32,7 +32,7 @@ def get_alias(config_path: Path, name: str) -> Alias:
 def build_client(config_path: Path, alias: str, timeout: float) -> Client:
     """Build client from alias"""
     alias_ = get_alias(config_path, alias)
-    return Client(str(alias_.url), api_token=alias_.token, timeout=timeout)
+    return Client(alias_.url, api_token=alias_.token, timeout=timeout)
 
 
 def parse_path(path) -> Tuple[str, str]:

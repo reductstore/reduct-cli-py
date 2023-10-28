@@ -49,7 +49,9 @@ def test__add_alias_with_invalid_url(runner, conf):
         "API Token []: token",
         "[ValidationError] 1 validation error for Alias",
         "url",
-        "  invalid or missing URL scheme (type=value_error.url.scheme)",
+        "  Input should be a valid URL, relative URL without a base ",
+        "    For further information visit "
+        "https://errors.pydantic.dev/2.4/v/url_parsing",
         "Aborted!",
         "",
     ]
@@ -82,7 +84,7 @@ def test__show(runner, conf, url):
 
     result = runner(f"-c {conf} alias show storage")
     assert result.exit_code == 0
-    assert result.output.replace(" ", "") == f"URL:{url}\n"
+    assert result.output.replace(" ", "") == f"URL:{url}/\n"
 
 
 def test__show_with_token(runner, conf, url):
@@ -92,7 +94,7 @@ def test__show_with_token(runner, conf, url):
 
     result = runner(f"-c {conf} alias show --token storage")
     assert result.exit_code == 0
-    assert result.output.replace(" ", "") == f"URL:{url}\nToken:token\n"
+    assert result.output.replace(" ", "") == f"URL:{url}/\nToken:token\n"
 
 
 def test__show_not_exist(runner, conf):
