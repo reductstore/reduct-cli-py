@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Update information in README, [PR-69](https://github.com/reductstore/reduct-cli/pull/69)
+
 ## [0.9.1] - 2023-10-28
 
 ### Fixed
