@@ -8,6 +8,7 @@ import click
 from reduct_cli.config import write_config, Config
 from reduct_cli.alias import alias
 from reduct_cli.bucket import bucket
+from reduct_cli.replication import replication
 from reduct_cli.server import server
 from reduct_cli.token import token
 from reduct_cli.export import export
@@ -65,3 +66,4 @@ cli.add_command(server, "server")
 cli.add_command(token, "token")
 cli.add_command(export, "export")
 cli.add_command(mirror, "mirror")
+cli.add_command(replication, "replication")
