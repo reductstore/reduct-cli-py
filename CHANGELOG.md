@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- RS-115: Fix too high permissions for exporting data, [PR-70](https://github.com/reductstore/reduct-cli/pull/70)
+
 ## [0.9.2] - 2023-10-28
 
 ### Fixed
