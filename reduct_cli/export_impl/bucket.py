@@ -49,7 +49,8 @@ async def export_to_bucket(
 
         dest_bucket: Bucket
         try:
-            # we don't use exist_ok here because it needs full access to the bucket even if it exists
+            # we don't use exist_ok here because it needs full access to the bucket
+            # even if it exists
             dest_bucket = await dest.get_bucket(dest_bucket_name)
         except ReductError as err:
             if err.status_code != 404:

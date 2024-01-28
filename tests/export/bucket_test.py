@@ -41,7 +41,8 @@ def walk_async_iterator(iterator: AsyncIter):
 def test__export_bucket_ok(
     runner, conf, client, src_settings, src_bucket, dest_bucket, records
 ):  # pylint: disable=too-many-arguments
-    """Should export data from a bucket to another one and create destination bucket if it doesn't exist"""
+    """Should export data from a bucket to another one
+    and create destination bucket if it doesn't exist"""
     client.get_bucket.side_effect = [src_bucket, ReductError(404, "Not found")]
 
     result = runner(f"-c {conf} export bucket test/src_bucket test/dest_bucket")
