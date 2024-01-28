@@ -46,9 +46,18 @@ async def export_to_bucket(
     """Export data from SRC bucket to DST bucket"""
     async with src as src, dest as dest:
         src_bucket: Bucket = await src.get_bucket(src_bucket_name)
-        dest_bucket: Bucket = await dest.create_bucket(
-            dest_bucket_name, settings=await src_bucket.get_settings(), exist_ok=True
-        )
+
+        dest_bucket: Bucket
+        try:
+            # we don't use exist_ok here because it needs full access to the bucket
+            # even if it exists
+            dest_bucket = await dest.get_bucket(dest_bucket_name)
+        except ReductError as err:
+            if err.status_code != 404:
+                raise err
+            dest_bucket: Bucket = await dest.create_bucket(
+                dest_bucket_name, settings=await src_bucket.get_settings()
+            )
 
         sem = asyncio.Semaphore(kwargs["parallel"])
         with Progress() as progress:

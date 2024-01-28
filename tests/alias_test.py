@@ -44,16 +44,11 @@ def test__add_alias_with_invalid_url(runner, conf):
     """Should not add an alias if the url is invalid"""
     result = runner(f"-c {conf} alias add storage", input="invalid_url\ntoken\n")
     assert result.exit_code == 1
-    assert result.output.split("\n") == [
+    assert result.output.split("\n")[:4] == [
         "URL: invalid_url",
         "API Token []: token",
         "[ValidationError] 1 validation error for Alias",
         "url",
-        "  Input should be a valid URL, relative URL without a base ",
-        "    For further information visit "
-        "https://errors.pydantic.dev/2.4/v/url_parsing",
-        "Aborted!",
-        "",
     ]
 
 

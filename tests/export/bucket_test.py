@@ -41,16 +41,16 @@ def walk_async_iterator(iterator: AsyncIter):
 def test__export_bucket_ok(
     runner, conf, client, src_settings, src_bucket, dest_bucket, records
 ):  # pylint: disable=too-many-arguments
-    """Should export data from a bucket to another one"""
+    """Should export data from a bucket to another one
+    and create destination bucket if it doesn't exist"""
+    client.get_bucket.side_effect = [src_bucket, ReductError(404, "Not found")]
 
     result = runner(f"-c {conf} export bucket test/src_bucket test/dest_bucket")
     assert "Entry 'entry-1' (copied 1 records (6 B)" in result.output
     assert result.exit_code == 0
 
-    client.get_bucket.assert_called_with("src_bucket")
-    client.create_bucket.assert_called_with(
-        "dest_bucket", settings=src_settings, exist_ok=True
-    )
+    assert client.get_bucket.call_args_list == [call("src_bucket"), call("dest_bucket")]
+    client.create_bucket.assert_called_with("dest_bucket", settings=src_settings)
 
     assert src_bucket.query.call_args_list[0] == call(
         "entry-1", start=1000000000, stop=5000000000, include={}, exclude={}, ttl=ANY
