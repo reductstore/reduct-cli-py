@@ -29,24 +29,24 @@ classifiers = [
 ]
 
 dependencies = [
-    "reduct-py~=1.7",
+    "reduct-py~=1.8",
     "click~=8.1",
     "tomlkit~=0.12",
-    "rich~=13.6",
+    "rich~=13.7",
 ]
 
 [project.optional-dependencies]
 test = [
     "pytest~=7.4",
     "pytest-mock~=3.12",
-    "pytest-asyncio~=0.21"
+    "pytest-asyncio~=0.23"
 ]
 
 lint = ["pylint~=3.0"]
 format = ["black~=23.10"]
 docs = [
     "mkdocs~=1.5",
-    "mkdocs-material~=9.4",
+    "mkdocs-material~=9.5",
     "plantuml-markdown~=3.9",
     "mkdocs-same-dir~=0.1",
     "mkdocs-click~=0.8"
@@ -58,7 +58,7 @@ Documentation = "https://cli.reduct.store"
 SourceCode = "https://github.com/reductstore/reduct-cli"
 Changelog = "https://github.com/reductstore/reduct-cli/blob/main/CHANGELOG.md"
 Twitter = "https://twitter.com/ReductStore"
-Blog = "https://dev.to/reductstore"
+Blog = "https://www.reductstore/blog"
 
 
 [project.scripts]
