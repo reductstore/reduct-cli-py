@@ -5,7 +5,7 @@ import time
 from asyncio import Semaphore, Queue
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 from click import Abort
 from reduct import EntryInfo, Bucket, Client
@@ -91,17 +91,10 @@ async def read_records_with_progress(
     if "limit" in kwargs and kwargs["limit"]:
         params["limit"] = int(kwargs["limit"])
 
-    for item in kwargs["include"]:
-        if item:
-            key, value = item.split("=")
-            params["include"][key] = value
-
-    for item in kwargs["exclude"]:
-        if item:
-            key, value = item.split("=")
-            params["exclude"][key] = value
-
+    params["include"] = extract_key_values(kwargs["include"])
+    params["exclude"] = extract_key_values(kwargs["exclude"])
     last_time = params["start"]
+
     task = progress.add_task(
         f"Entry '{entry.name}' waiting", total=params["stop"] - params["start"]
     )
@@ -171,3 +164,14 @@ def filter_entries(entries: List[EntryInfo], names: List[str]) -> List[EntryInfo
         return False
 
     return list(filter(_filter, entries))
+
+
+def extract_key_values(items: List[str]) -> Dict[str, str]:
+    """Extract key-values from list of items"""
+    params = {}
+    for item in items:
+        if item:
+            key, value = item.split("=")
+            params[key] = value
+
+    return params

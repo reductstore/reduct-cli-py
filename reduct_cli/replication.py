@@ -2,15 +2,17 @@ from asyncio import new_event_loop as loop
 from typing import List
 
 import click
-from reduct import Token, Client
+from reduct import Token, Client, ReplicationSettings
 from reduct.client import ReplicationInfo, ReplicationDetailInfo
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
 
+from reduct_cli.export import entries_option, include_option, exclude_option
 from reduct_cli.utils.consoles import console
 from reduct_cli.utils.error import error_handle
 from reduct_cli.utils.helpers import build_client
+from reduct_cli.utils.helpers import extract_key_values
 
 run = loop().run_until_complete
 
@@ -25,7 +27,10 @@ def replication():
 @click.option("--full/--no-full", help="Print full information", default=False)
 @click.pass_context
 def ls(ctx, alias: str, full: bool):
-    """Print list of tokens"""
+    """Print list of tokens
+
+    ALIAS is the name of the alias to use. See 'reduct alias' for more information.
+    """
     client: Client = build_client(
         ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"]
     )
@@ -56,7 +61,10 @@ def ls(ctx, alias: str, full: bool):
 @click.argument("name")
 @click.pass_context
 def show(ctx, alias: str, name: str):
-    """Show replication"""
+    """Show replication
+
+    Show detailed information about replication with NAME.on ALIAS.
+    """
     client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
 
     with error_handle():
@@ -98,3 +106,62 @@ def show(ctx, alias: str, name: str):
             Layout(Panel(settings_text, title="Settings")),
         )
         console.print(layout)
+
+
+@replication.command()
+@click.argument("alias")
+@click.argument("name")
+@click.argument("src-bucket")
+@click.argument("dst-bucket")
+@click.argument("dst-host")
+@click.option("--dst-token", "-T", help="Destination token", default="")
+@entries_option
+@include_option
+@exclude_option
+@click.pass_context
+def create(
+    ctx,
+    alias: str,
+    name: str,
+    src_bucket: str,
+    dst_bucket: str,
+    dst_host: str,
+    dst_token: str,
+    entries: str,
+    include: str,
+    exclude: str,
+):
+    """Create replication
+
+    The command creates a new replication with NAME which copies data from SRC_BUCKET on ALIAS to DST_BUCKET on DST_HOST.
+    SRC_BUCKET and DST_BUCKET should be created beforehand. DST_HOST is URL of the destination server.
+    """
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
+    with error_handle():
+        settings = ReplicationSettings(
+            src_bucket=src_bucket,
+            dst_bucket=dst_bucket,
+            dst_host=dst_host,
+            dst_token=dst_token,
+            entries=entries.split(",") if entries else [],
+            include=extract_key_values(include.split(",")),
+            exclude=extract_key_values(exclude.split(",")),
+        )
+
+        run(client.create_replication(name, settings))
+        console.print(f"New replication '{name}' created")
+
+
+@replication.command()
+@click.argument("alias")
+@click.argument("name")
+@click.pass_context
+def rm(ctx, alias: str, name: str):
+    """Remove replication
+
+    Remove replication with NAME on ALIAS.
+    """
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
+    with error_handle():
+        run(client.delete_replication(name))
+        console.print(f"Replication '{name}' deleted")
