@@ -31,10 +31,10 @@ def write_config(path: Path, config: Config):
     if not Path.exists(path):
         os.makedirs(path.parent, exist_ok=True)
     with open(path, "w", encoding="utf8") as config_file:
-        toml.dump(config.dict(), config_file)
+        toml.dump(config.model_dump(), config_file)
 
 
 def read_config(path: Path) -> Config:
     """Read config from TOML file"""
     with open(path, "r", encoding="utf8") as config_file:
-        return Config.parse_obj(toml.load(config_file))
+        return Config.model_validate(toml.load(config_file))

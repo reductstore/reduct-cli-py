@@ -2,7 +2,7 @@ from asyncio import new_event_loop as loop
 from typing import List
 
 import click
-from reduct import Token, Client, ReplicationSettings
+from reduct import ReplicationSettings
 from reduct.client import ReplicationInfo, ReplicationDetailInfo
 from rich.layout import Layout
 from rich.panel import Panel
@@ -11,8 +11,7 @@ from rich.table import Table
 from reduct_cli.export import entries_option, include_option, exclude_option
 from reduct_cli.utils.consoles import console
 from reduct_cli.utils.error import error_handle
-from reduct_cli.utils.helpers import build_client
-from reduct_cli.utils.helpers import extract_key_values
+from reduct_cli.utils.helpers import build_client, extract_key_values
 
 run = loop().run_until_complete
 
@@ -31,9 +30,7 @@ def ls(ctx, alias: str, full: bool):
 
     ALIAS is the name of the alias to use. See 'reduct alias' for more information.
     """
-    client: Client = build_client(
-        ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"]
-    )
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
     with error_handle():
         replications: List[ReplicationInfo] = run(client.get_replications())
         if not full:
