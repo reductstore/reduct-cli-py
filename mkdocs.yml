@@ -8,9 +8,9 @@ nav:
       - docs/aliases.md
       - docs/server.md
       - docs/bucket.md
-      - docs/mirror.md
       - docs/export.md
       - docs/token.md
+      - docs/replication.md
   - CLI Reference: docs/cli.md
   - ReductStore: https://www.reduct.store
 
