@@ -9,8 +9,8 @@ blob data. It is written in Python and uses the [ReductStore Client SDK for Pyth
 
 ## Features
 
-* Support for ReductStore API v1.7
-* Easy management of buckets and tokens
+* Support for ReductStore API v1.8
+* Easy management of buckets, tokens and replications
 * Ability to check the status of a storage engine
 * Aliases for storing server credentials
 * Export and mirror data
