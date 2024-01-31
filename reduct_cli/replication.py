@@ -155,6 +155,50 @@ def create(
 @replication.command()
 @click.argument("alias")
 @click.argument("name")
+@click.argument("src-bucket")
+@click.argument("dst-bucket")
+@click.argument("dst-host")
+@click.option("--dst-token", "-T", help="Destination token", default="")
+@entries_option
+@include_option
+@exclude_option
+@click.pass_context
+def update(
+    ctx,
+    alias: str,
+    name: str,
+    src_bucket: str,
+    dst_bucket: str,
+    dst_host: str,
+    dst_token: str,
+    entries: str,
+    include: str,
+    exclude: str,
+):
+    """Update replication
+
+    The command updates replication with NAME which copies data from SRC_BUCKET on ALIAS to DST_BUCKET on DST_HOST.
+    SRC_BUCKET and DST_BUCKET should be created beforehand. DST_HOST is URL of the destination server.
+    """
+    client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
+    with error_handle():
+        settings = ReplicationSettings(
+            src_bucket=src_bucket,
+            dst_bucket=dst_bucket,
+            dst_host=dst_host,
+            dst_token=dst_token,
+            entries=entries.split(",") if entries else [],
+            include=extract_key_values(include.split(",")),
+            exclude=extract_key_values(exclude.split(",")),
+        )
+
+        run(client.update_replication(name, settings))
+        console.print(f"Replication '{name}' updated")
+
+
+@replication.command()
+@click.argument("alias")
+@click.argument("name")
 @click.pass_context
 def rm(ctx, alias: str, name: str):
     """Remove replication
