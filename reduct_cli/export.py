@@ -29,14 +29,14 @@ stop_option = click.option(
 entries_option = click.option(
     "--entries",
     "-e",
-    help="Export only these entries, separated by comma",
+    help="Only these entries, separated by comma. Wildcards are supported.",
     default="",
 )
 
 include_option = click.option(
     "--include",
     "-I",
-    help="Export only these records which have these labels with given values, "
+    help="Only these records which have these labels with given values, "
     "separated by comma. Example: --include label1=values1,label2=value2",
     default="",
 )
@@ -44,7 +44,7 @@ include_option = click.option(
 exclude_option = click.option(
     "--exclude",
     "-E",
-    help="Export only these records which DON NOT have these labels with given values, "
+    help="Only these records which DON NOT have these labels with given values, "
     "separated by comma. Example: --exclude label1=values1,label2=value2",
     default="",
 )
