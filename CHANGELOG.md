@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2024-02-02
+
 ### Added
 
 - RS-123: Add replication subcommands, [PR-71](https://github.com/reductstore/reduct-cli/pull/71)
@@ -165,7 +167,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Init release
 
-[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.9.2...HEAD
+[Unreleased]: https://github.com/reductstore/reduct-cli/compare/v0.10.0...HEAD
+
+[0.10.0]: https://github.com/reductstore/reduct-cli/compare/v0.9.2...v0.10.0
 
 [0.9.2]: https://github.com/reductstore/reduct-cli/compare/v0.9.1...v0.9.2
 
