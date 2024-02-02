@@ -31,7 +31,7 @@ def _make_client(mocker, replication_info) -> Client:
 
 
 @pytest.fixture(name="replication_info")
-def _make_replication_info(mocker) -> ReplicationInfo:
+def _make_replication_info() -> ReplicationInfo:
     replication_info = ReplicationInfo(
         name="test",
         is_active=True,
@@ -70,7 +70,6 @@ def _make_detail_info(replication_info) -> ReplicationDetailInfo:
 def test_ls(
     runner,
     conf,
-    console,
     client,
 ):
     """Test ls command"""
@@ -84,7 +83,6 @@ def test_ls(
 def test_ls_error(
     runner,
     conf,
-    console,
     client,
 ):
     """Test ls command"""
@@ -95,7 +93,7 @@ def test_ls_error(
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_ls_full(runner, conf, console, client):
+def test_ls_full(runner, conf, client):
     """Test ls command with full option"""
     result = runner(f"-c {conf} replication ls --full test")
     assert result.exit_code == 0
@@ -113,7 +111,7 @@ def test_ls_full(runner, conf, console, client):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_show(runner, conf, console, client, replication_detail_info):
+def test_show(runner, conf, client, replication_detail_info):
     """Test show command"""
     client.get_replication_detail.return_value = replication_detail_info
     result = runner(f"-c {conf} replication show test test")
@@ -137,7 +135,7 @@ def test_show(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_show_error(runner, conf, console, client, replication_detail_info):
+def test_show_error(runner, conf, client):
     """Test show command"""
     client.get_replication_detail.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} replication show test test")
@@ -146,7 +144,7 @@ def test_show_error(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_create(runner, conf, console, client, replication_detail_info):
+def test_create(runner, conf, client):
     """Test create command"""
     result = runner(
         f"-c {conf} replication create test test src_bucket dst_bucket http://test"
@@ -173,7 +171,7 @@ def test_create(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_create_default(runner, conf, console, client, replication_detail_info):
+def test_create_default(runner, conf, client):
     """Test create command"""
     result = runner(
         f"-c {conf} replication create test test src_bucket dst_bucket http://test"
@@ -196,7 +194,7 @@ def test_create_default(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_create_error(runner, conf, console, client, replication_detail_info):
+def test_create_error(runner, conf, client):
     """Test create command"""
     client.create_replication.side_effect = RuntimeError("Oops")
     result = runner(
@@ -207,7 +205,7 @@ def test_create_error(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_update(runner, conf, console, client, replication_detail_info):
+def test_update(runner, conf, client):
     """Test update command"""
     result = runner(
         f"-c {conf} replication update test test src_bucket dst_bucket http://test"
@@ -234,7 +232,7 @@ def test_update(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_update_default(runner, conf, console, client, replication_detail_info):
+def test_update_default(runner, conf, client):
     """Test update command"""
     result = runner(
         f"-c {conf} replication update test test src_bucket dst_bucket http://test"
@@ -257,7 +255,7 @@ def test_update_default(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_update_error(runner, conf, console, client, replication_detail_info):
+def test_update_error(runner, conf, client):
     """Test update command"""
     client.update_replication.side_effect = RuntimeError("Oops")
     result = runner(
@@ -268,7 +266,7 @@ def test_update_error(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_delete(runner, conf, console, client, replication_detail_info):
+def test_delete(runner, conf, client):
     """Test delete command"""
     result = runner(f"-c {conf} replication rm test test")
     assert result.exit_code == 0
@@ -278,7 +276,7 @@ def test_delete(runner, conf, console, client, replication_detail_info):
 
 
 @pytest.mark.usefixtures("set_alias")
-def test_delete_error(runner, conf, console, client, replication_detail_info):
+def test_delete_error(runner, conf, client):
     """Test delete command"""
     client.delete_replication.side_effect = RuntimeError("Oops")
     result = runner(f"-c {conf} replication rm test test")

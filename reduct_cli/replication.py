@@ -1,3 +1,4 @@
+"""Replication commands"""
 from asyncio import new_event_loop as loop
 from typing import List
 
@@ -65,27 +66,27 @@ def show(ctx, alias: str, name: str):
     client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
 
     with error_handle():
-        replication: ReplicationDetailInfo = run(client.get_replication_detail(name))
+        repl: ReplicationDetailInfo = run(client.get_replication_detail(name))
 
         info_text = "\n".join(
             [
-                f"Name:                         {replication.info.name}",
-                f"Active:                       {replication.info.is_active}",
-                f"Provisioned:                  {replication.info.is_provisioned}",
-                f"Pending Records:              {replication.info.pending_records}",
-                f"Synced Records in hour:       {replication.diagnostics.hourly.ok}",
-                f"Errored Records in hour:      {replication.diagnostics.hourly.errored}",
+                f"Name:                         {repl.info.name}",
+                f"Active:                       {repl.info.is_active}",
+                f"Provisioned:                  {repl.info.is_provisioned}",
+                f"Pending Records:              {repl.info.pending_records}",
+                f"Synced Records in hour:       {repl.diagnostics.hourly.ok}",
+                f"Errored Records in hour:      {repl.diagnostics.hourly.errored}",
             ]
         )
 
         settings_text = "\n".join(
             [
-                f"Source Bucket:         {replication.settings.src_bucket}",
-                f"Destination Bucket:    {replication.settings.dst_bucket}",
-                f"Destination Server:    {replication.settings.dst_host}",
-                f"Entries:               {replication.settings.entries}",
-                f"Include:               {replication.settings.include}",
-                f"Exclude:               {replication.settings.exclude}",
+                f"Source Bucket:         {repl.settings.src_bucket}",
+                f"Destination Bucket:    {repl.settings.dst_bucket}",
+                f"Destination Server:    {repl.settings.dst_host}",
+                f"Entries:               {repl.settings.entries}",
+                f"Include:               {repl.settings.include}",
+                f"Exclude:               {repl.settings.exclude}",
             ]
         )
 
@@ -93,7 +94,7 @@ def show(ctx, alias: str, name: str):
         table.add_column("Error Code", justify="right", style="red")
         table.add_column("Count")
         table.add_column("Last Message", style="yellow")
-        for code, item in replication.diagnostics.hourly.errors.items():
+        for code, item in repl.diagnostics.hourly.errors.items():
             table.add_row(str(code), str(item.count), item.last_message)
 
         layout = Layout()
@@ -127,11 +128,13 @@ def create(
     entries: str,
     include: str,
     exclude: str,
-):
+):  # pylint: disable=too-many-arguments
     """Create replication
 
-    The command creates a new replication with NAME which copies data from SRC_BUCKET on ALIAS to DST_BUCKET on DST_HOST.
-    SRC_BUCKET and DST_BUCKET should be created beforehand. DST_HOST is URL of the destination server.
+    The command creates a new replication with NAME which copies data
+    from SRC_BUCKET on ALIAS to DST_BUCKET on DST_HOST.
+    SRC_BUCKET and DST_BUCKET should be created beforehand.
+    DST_HOST is URL of the destination server.
     """
     client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
     with error_handle():
@@ -171,11 +174,13 @@ def update(
     entries: str,
     include: str,
     exclude: str,
-):
+):  # pylint: disable=too-many-arguments
     """Update replication
 
-    The command updates replication with NAME which copies data from SRC_BUCKET on ALIAS to DST_BUCKET on DST_HOST.
-    SRC_BUCKET and DST_BUCKET should be created beforehand. DST_HOST is URL of the destination server.
+    The command updates replication with NAME which copies
+    data from SRC_BUCKET on ALIAS to DST_BUCKET on DST_HOST.
+    SRC_BUCKET and DST_BUCKET should be created beforehand.
+    DST_HOST is URL of the destination server.
     """
     client = build_client(ctx.obj["config_path"], alias, timeout=ctx.obj["timeout"])
     with error_handle():
