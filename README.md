@@ -9,7 +9,7 @@ blob data. It is written in Python and uses the [ReductStore Client SDK for Pyth
 
 **DEPRECATED**:
 
-We don't maintain this repository anymore, consider to use the Rust version of the CLI: https://github.com/reductstore/reduct-cli
+We don't maintain this repository anymore, consider using the Rust version of the CLI: https://github.com/reductstore/reduct-cli
 
 ## Features
 
