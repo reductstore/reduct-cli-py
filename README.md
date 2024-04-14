@@ -7,6 +7,10 @@
 The ReductStore CLI is a command line client for [ReductStore](https://www.reduct.store), a time series database for
 blob data. It is written in Python and uses the [ReductStore Client SDK for Python](https://py.reduct.store/).
 
+**DEPRECATED**:
+
+We don't maintain this repository anymore, consider to use the Rust version of the CLI: https://github.com/reductstore/reduct-cli
+
 ## Features
 
 * Support for ReductStore API v1.8
